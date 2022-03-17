@@ -1,7 +1,7 @@
 const {Scenes, Markup} = require('telegraf');
 
-const composeWizardScene = require('./sceneFactory/sceneFactory').composeWizardScene;
-const scenes = require('./scenes');
+const composeWizardScene = require('../factory/factory').composeWizardScene;
+const scenes = require('../scenes');
 
 const Sex = {
     'male': "Мужской",
@@ -11,7 +11,6 @@ module.exports.sex = Sex;
 
 // __________________________________
 
-
 const sexKeyboard = Markup.keyboard(
     [
         Sex['male'],
@@ -19,30 +18,7 @@ const sexKeyboard = Markup.keyboard(
     ]
 ).oneTime().resize();
 
-/*
-const setSexScene = new Scenes.BaseScene(scenes.ID['setSex']);
-
-setSexScene.enter(ctx => {
-    ctx.reply('Выберите Ваш пол:', sexKeyboard);
-});
-
-setSexScene.hears(Sex['male'], ctx => {
-    ctx.session.user.sex = Sex['male'];
-    ctx.reply(ctx.session.user.sex);
-    ctx.scene.leave();
-});
-
-setSexScene.hears(Sex['female'], ctx => {
-    ctx.session.user.sex = Sex['female'];
-    ctx.scene.leave();
-});
-
-setSexScene.on('message', ctx => {
-    ctx.reply('Пожалуйста, используйте клавиатуру, или введите свой пол так, как это написано на кнопках');
-});
-*/
-
-// _________________________________________________
+// __________________________________
 
 const setSexScene = composeWizardScene(
     ctx => {

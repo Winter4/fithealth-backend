@@ -1,22 +1,9 @@
 const { Scenes } = require("telegraf");
 
-const composeWizardScene = require('./sceneFactory/sceneFactory').composeWizardScene;
-const scenes = require('./scenes');
+const composeWizardScene = require('../factory/factory').composeWizardScene;
+const scenes = require('../scenes');
 
-// ________________________________________________________
-
-/*
-const setAgeScene = new Scenes.BaseScene(scenes.ID.setAge);
-
-setAgeScene.enter(ctx => {
-    ctx.reply('Пожалуйста, введите свой возраст числом:');
-});
-
-setAgeScene.on('text', (ctx, next) => {
-    let text = Number(ctx.message.text);
-    ctx.reply(text);
-});
-*/
+// ____________________________________________________________
 
 const setAgeScene = composeWizardScene(
     ctx => {

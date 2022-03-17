@@ -1,21 +1,23 @@
 const {Scenes, Markup} = require('telegraf');
 
-const composeWizardScene = require('./sceneFactory/sceneFactory').composeWizardScene;
+const composeWizardScene = require('./factory/factory').composeWizardScene;
 const scenes = require('./scenes');
-const text = require('../text');
+const text = require('./text');
 
 const choice = {
     'now':   "Внести сейчас",
     'later': "Внести позже"  
 }
 
-// _______________________________________________________________
+// __________________________________________
 
 const welcomeKeyboard = Markup.keyboard(
     [
         choice.now, choice.later
     ]
 ).oneTime().resize();
+
+// __________________________________________
 
 const welcomeScene = composeWizardScene(
     async ctx => {

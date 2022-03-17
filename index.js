@@ -7,15 +7,17 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // ______________________________________
 
 const scenes = require('./scenes/scenes');
-const welcomeStage = new Scenes.Stage([
-    scenes.Object.welcome(scenes.ID.welcome, ctx => ctx.session.setConfig ? scenes.ID.setName : ctx.scene.leave()),
-    scenes.Object.setName(scenes.ID.setName, ctx => ctx.session.setConfig ? scenes.ID.setSex : ctx.scene.leave()),
-    scenes.Object.setSex(scenes.ID.setSex, ctx => ctx.session.setConfig ? scenes.ID.setAge : ctx.scene.leave()),
-    scenes.Object.setAge(scenes.ID.setAge, ctx => ctx.scene.leave()),
+const stage = new Scenes.Stage([
+    scenes.Object.welcome(scenes.ID.welcome, ctx => ctx.session.setConfig ? scenes.ID.setter.setName : ctx.scene.enter(scenes.ID.menu.main)),
+    scenes.Object.setter.setName(scenes.ID.setter.setName, ctx => ctx.session.setConfig ? scenes.ID.setter.setSex : ctx.scene.enter(scenes.ID.menu.main)),
+    scenes.Object.setter.setSex(scenes.ID.setter.setSex, ctx => ctx.session.setConfig ? scenes.ID.setter.setAge : ctx.scene.enter(scenes.ID.menu.main)),
+    scenes.Object.setter.setAge(scenes.ID.setter.setAge, ctx => ctx.scene.enter(scenes.ID.menu.main)),
+
+    scenes.Object.menu.main
 ]);
 
 bot.use(session());
-bot.use(welcomeStage.middleware());
+bot.use(stage.middleware());
 
 // _______________________________________
 
@@ -35,10 +37,6 @@ bot.help(ctx => {
 
 bot.command('session', ctx => {
     ctx.reply(ctx.session);
-});
-
-bot.on('message', ctx => {
-    ctx.reply('I\'m in main');
 });
 
 bot.catch((err, ctx) => {
