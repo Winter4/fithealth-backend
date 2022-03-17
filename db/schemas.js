@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
 
-const Sex = require('../scenes/setSex').sex;
-
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
     },
     sex: {
-        type: Sex,
+        type: String,
         required: true,
     },
+    age: {
+        type: Number,
+        required: true,
+    }
 });
+const User = mongoose.model('users', userSchema);
+module.exports.user = User;

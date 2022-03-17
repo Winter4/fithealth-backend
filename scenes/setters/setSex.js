@@ -4,8 +4,8 @@ const composeWizardScene = require('../factory/factory').composeWizardScene;
 const scenes = require('../scenes');
 
 const Sex = {
-    'male': "Мужской",
-    'female': "Женский",
+    male: "Мужской",
+    female: "Женский",
 }
 module.exports.sex = Sex;
 

@@ -1,5 +1,6 @@
 const {Telegraf, Scenes, Markup, session} = require('telegraf');
-const { Stage } = require('telegraf');
+const db = require('./db/db')
+
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -22,6 +23,8 @@ bot.use(stage.middleware());
 // _______________________________________
 
 bot.start(ctx => {
+    db.connect();
+
     ctx.session.user = {
         name: null,
         sex: null,
