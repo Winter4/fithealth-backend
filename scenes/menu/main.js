@@ -1,6 +1,6 @@
 const { Scenes, Markup, session } = require("telegraf");
 
-const db = require('../scenes').db;
+const User = require('../requires').models.user;
 const scenes = require('../scenes');
 
 // ______________________________________________
@@ -13,6 +13,8 @@ const mainMenuKeyboard = Markup.keyboard(
     ]
 ).resize();
 
+// _______________________________________________
+
 const mainMenuScene = new Scenes.BaseScene(scenes.ID.menu.main);
 
 mainMenuScene.enter(ctx => {
@@ -20,8 +22,19 @@ mainMenuScene.enter(ctx => {
 });
 
 mainMenuScene.command('send', async ctx => {
-    await db.sendUser(ctx.session.user.name, ctx.session.user.sex, ctx.session.user.age)
-    ctx.reply('Записал в базу');
+
+    try {
+    const newUser = new User({
+        _id: ctx.session.user._id,
+        name: ctx.session.user.name, 
+        sex: ctx.session.user.sex, 
+        age: ctx.session.user.age,
+    });
+    await newUser.save();
+    } catch (e) {
+        console.log('Error on saving user: ' + e);
+    }
+
 });
 
 mainMenuScene.command('session', ctx => {

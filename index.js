@@ -26,6 +26,7 @@ bot.start(ctx => {
     db.connect();
 
     ctx.session.user = {
+        _id: ctx.message.from.id,
         name: null,
         sex: null,
         age: null,

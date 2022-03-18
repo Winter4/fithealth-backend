@@ -1,5 +1,3 @@
-module.exports.db = require('../db/db');
-
 module.exports.ID = {
     welcome:  "WELCOME_SCENE",
 
