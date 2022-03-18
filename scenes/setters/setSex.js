@@ -7,14 +7,13 @@ const Sex = {
     male: "Мужской",
     female: "Женский",
 }
-module.exports.sex = Sex;
 
 // __________________________________
 
 const sexKeyboard = Markup.keyboard(
     [
-        Sex['male'],
-        Sex['female'],
+        Sex.male,
+        Sex.female,
     ]
 ).oneTime().resize();
 
@@ -47,4 +46,4 @@ const setSexScene = composeWizardScene(
     }
 )
 
-module.exports.scene = setSexScene;
+module.exports = setSexScene;

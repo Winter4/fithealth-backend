@@ -1,5 +1,5 @@
 const {Telegraf, Scenes, Markup, session} = require('telegraf');
-const db = require('./db/db')
+const db = require('./database/database');
 
 require('dotenv').config();
 
@@ -9,12 +9,13 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
-    scenes.Object.welcome(scenes.ID.welcome, ctx => ctx.session.setConfig ? scenes.ID.setter.setName : ctx.scene.enter(scenes.ID.menu.main)),
-    scenes.Object.setter.setName(scenes.ID.setter.setName, ctx => ctx.session.setConfig ? scenes.ID.setter.setSex : ctx.scene.enter(scenes.ID.menu.main)),
-    scenes.Object.setter.setSex(scenes.ID.setter.setSex, ctx => ctx.session.setConfig ? scenes.ID.setter.setAge : ctx.scene.enter(scenes.ID.menu.main)),
-    scenes.Object.setter.setAge(scenes.ID.setter.setAge, ctx => ctx.scene.enter(scenes.ID.menu.main)),
+    scenes.object.welcome(scenes.id.welcome, ctx => ctx.session.setConfig ? scenes.id.setter.setName : scenes.id.menu.main),
+    scenes.object.setter.setName(scenes.id.setter.setName, ctx => ctx.session.setConfig ? scenes.id.setter.setSex : scenes.id.database),
+    scenes.object.setter.setSex(scenes.id.setter.setSex, ctx => ctx.session.setConfig ? scenes.id.setter.setAge : scenes.id.database),
+    scenes.object.setter.setAge(scenes.id.setter.setAge, ctx => scenes.id.database),
 
-    scenes.Object.menu.main
+    scenes.object.database,
+    scenes.object.menu.main,
 ]);
 
 bot.use(session());
@@ -32,15 +33,7 @@ bot.start(ctx => {
         age: null,
     }
     ctx.session.setConfig = null;
-    ctx.scene.enter(scenes.ID.welcome);
-});
-
-bot.help(ctx => {
-    ctx.reply('help');
-});
-
-bot.command('session', ctx => {
-    ctx.reply(ctx.session);
+    ctx.scene.enter(scenes.id.welcome);
 });
 
 bot.catch((err, ctx) => {

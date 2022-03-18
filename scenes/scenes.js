@@ -1,5 +1,6 @@
-module.exports.ID = {
+module.exports.id = {
     welcome:  "WELCOME_SCENE",
+    database: 'DATABASE_SCENE',
 
     setter: {
         setName: "SET_NAME_SCENE",
@@ -12,12 +13,13 @@ module.exports.ID = {
     },
 };
 
-module.exports.Object = {
+module.exports.object = {
     welcome:  require('./welcome'),
+    database: require('./database'),
 
     setter: {
         setName: require('./setters/setName'),
-        setSex: require('./setters/setSex').scene,
+        setSex: require('./setters/setSex'),
         setAge: require('./setters/setAge'),
     },
 
