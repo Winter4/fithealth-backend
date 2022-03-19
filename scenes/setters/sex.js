@@ -36,7 +36,6 @@ const setSexScene = composeWizardScene(
                 ctx.reply('Пожалуйста, используйте клавиатуру');
                 return;
             }
-            await ctx.reply('Записал ваш пол как ' + ctx.session.user.sex.toLowerCase(), Markup.removeKeyboard());
             done();
         }
         else {

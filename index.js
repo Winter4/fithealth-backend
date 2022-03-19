@@ -9,13 +9,13 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
-    scenes.object.welcome(scenes.id.welcome, ctx => ctx.session.setConfig ? scenes.id.setter.setName : scenes.id.menu.main),
-    scenes.object.setter.setName(scenes.id.setter.setName, ctx => ctx.session.setConfig ? scenes.id.setter.setSex : scenes.id.database),
-    scenes.object.setter.setSex(scenes.id.setter.setSex, ctx => ctx.session.setConfig ? scenes.id.setter.setAge : scenes.id.database),
-    scenes.object.setter.setAge(scenes.id.setter.setAge, ctx => scenes.id.database),
 
-    scenes.object.database,
-    scenes.object.menu.main,
+    scenes.object.setter.name(scenes.id.setter.name, ctx => ctx.session.setConfig ? scenes.id.setter.sex : db.saveUserFromContext(ctx)),
+    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
+    scenes.object.setter.age(scenes.id.setter.age, ctx => db.saveUserFromContext(ctx)),
+
+     scenes.object.menu.main,
+    scenes.object.menu.changeData,
 ]);
 
 bot.use(session());
@@ -23,21 +23,33 @@ bot.use(stage.middleware());
 
 // _______________________________________
 
-bot.start(ctx => {
-    db.connect();
-
-    ctx.session.user = {
-        _id: ctx.message.from.id,
-        name: null,
-        sex: null,
-        age: null,
+bot.start(async ctx => {
+    const userID = ctx.message.from.id;
+    
+    if (await db.userExists(userID)) {
+        ctx.session.setConfig = false;
+        ctx.scene.enter(scenes.id.menu.main);
     }
-    ctx.session.setConfig = null;
-    ctx.scene.enter(scenes.id.welcome);
+    else {
+        ctx.session.setConfig = true;
+        ctx.session.user = {
+            name: undefined,
+            sex: undefined,
+            age: undefined,
+        }
+        
+        await ctx.reply(
+            'Приветcтвую! Это Ваш первый шаг к приобретению тела мечты. ' +
+            'Команда тренеров нашего приложения рада видеть Вас здесь и сделает все, ' + 
+            'чтобы помочь достигнуть лучшего результата!'
+        );
+
+        ctx.scene.enter(scenes.id.setter.name);
+    }
 });
 
 bot.catch((err, ctx) => {
-    ctx.reply('Error: ' + err);
+    ctx.reply('Error: ' + err.message);
 });
 
-bot.launch();
+bot.launch().then(async () => await db.connect());

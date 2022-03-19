@@ -2,19 +2,18 @@ const { Scenes, Markup } = require('telegraf');
 
 const composeWizardScene = require('../factory/factory').composeWizardScene;
 const scenes = require('../scenes');
-const text = require('../text');
+const db = require('../requires').database;
 
 // ____________________________________________________________
 
 const setNameScene = composeWizardScene(
     ctx => {
-        ctx.reply('Введите своё имя: ');
+        ctx.reply('Введите своё имя: ', Markup.removeKeyboard());
         ctx.wizard.next();
     },
     async (ctx, done) => {
         if (ctx.message.text) {
             ctx.session.user.name = ctx.message.text;
-            await ctx.reply('Записал Ваше имя как ' + ctx.session.user.name);
             return done();
         }
         else {

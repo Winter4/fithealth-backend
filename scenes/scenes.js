@@ -1,29 +1,25 @@
 module.exports.id = {
-    welcome:  "WELCOME_SCENE",
-    database: 'DATABASE_SCENE',
-
     setter: {
-        setName: "SET_NAME_SCENE",
-        setSex: "SET_SEX_SCENE",
-        setAge: "SET_AGE_SCENE",
+        name: "SET_NAME_SCENE",
+        sex: "SET_SEX_SCENE",
+        age: "SET_AGE_SCENE",
     },
 
     menu: {
         main: 'MAIN_MENU_SCENE',
+        changeData: 'CHANGE_DATA_SCENE',
     },
 };
 
 module.exports.object = {
-    welcome:  require('./welcome'),
-    database: require('./database'),
-
     setter: {
-        setName: require('./setters/setName'),
-        setSex: require('./setters/setSex'),
-        setAge: require('./setters/setAge'),
+        name: require('./setters/name'),
+        sex: require('./setters/sex'),
+        age: require('./setters/age'),
     },
 
     menu: {
         main: require('./menu/main'),
+        changeData: require('./menu/changeData'),
     },
 };

@@ -1,4 +1,4 @@
-const { Scenes } = require("telegraf");
+const { Scenes, Markup } = require("telegraf");
 
 const composeWizardScene = require('../factory/factory').composeWizardScene;
 const scenes = require('../scenes');
@@ -7,7 +7,7 @@ const scenes = require('../scenes');
 
 const setAgeScene = composeWizardScene(
     ctx => {
-        ctx.reply('Введите свой возраст числом (13-100 лет):');
+        ctx.reply('Введите свой возраст числом (13-100 лет):', Markup.removeKeyboard());
         ctx.wizard.next();
     },
     async (ctx, done) => {
@@ -24,7 +24,6 @@ const setAgeScene = composeWizardScene(
                 return;
             }
             ctx.session.user.age = age;
-            await ctx.reply('Записал Ваш возраст как ' + ctx.session.user.age);
             done();
         }
         else {
