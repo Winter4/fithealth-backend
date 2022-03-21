@@ -6,6 +6,12 @@ module.exports.id = {
         height: 'SET_HEIGHT_SCENE',
         age: "SET_AGE_SCENE",
         activity: 'SET_ACTIVITY_SCENE',
+
+        measure: {
+            chest: 'SET_CHEST_MEASURE_SCENE',
+            waist: 'SET_WAIST_MEASURE_SCENE',
+            hip: 'SET_HIP_MEASURE_SCENE',
+        }
     },
 
     menu: {
@@ -24,6 +30,12 @@ module.exports.object = {
         height: require('./setters/height').scene,
         age: require('./setters/age').scene,
         activity: require('./setters/activity'),
+
+        measure: {
+            chest: require('./setters/measures/chest').scene,
+            waist: require('./setters/measures/waist').scene,
+            hip: require('./setters/measures/hip').scene,
+        }
     },
 
     menu: {

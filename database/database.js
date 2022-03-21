@@ -24,6 +24,12 @@ module.exports.saveUserFromContext = async ctx => {
                 height: ctx.session.user.height,
                 age: ctx.session.user.age,
                 activity: ctx.session.user.activity,
+
+                measures: {
+                    chest: ctx.session.user.measures.chest,
+                    waist: ctx.session.user.measures.waist,
+                    hip: ctx.session.user.measures.hip,
+                }
             });
         }
         else {
@@ -32,20 +38,33 @@ module.exports.saveUserFromContext = async ctx => {
             if (ctx.session.user.name) {    
                 user.name = ctx.session.user.name;
             }
-            if (ctx.session.user.sex) {
+            else if (ctx.session.user.sex) {
                 user.sex = ctx.session.user.sex;
             }
-            if (ctx.session.user.weight) {
+            else if (ctx.session.user.weight) {
                 user.weight = ctx.session.user.weight;
             }
-            if (ctx.session.user.height) {
+            else if (ctx.session.user.height) {
                 user.height = ctx.session.user.height;
             }
-            if (ctx.session.user.age) {
+            else if (ctx.session.user.age) {
                 user.age = ctx.session.user.age;
             }
-            if (ctx.session.user.activity) {
+            else if (ctx.session.user.activity) {
                 user.activity = ctx.session.user.activity;
+            }
+
+            else if (ctx.session.user.measures) {
+
+                if (ctx.session.user.measures.chest) {
+                    user.measures.chest = ctx.session.user.measures.chest;
+                }
+                else if (ctx.session.user.measures.waist) {
+                    user.measures.waist = ctx.session.user.measures.waist;
+                }
+                else if (ctx.session.user.measures.hip) {
+                    user.measures.hip = ctx.session.user.measures.hip;
+                }
             }
         }
         await user.save();

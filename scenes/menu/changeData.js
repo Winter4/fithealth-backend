@@ -1,6 +1,5 @@
-const { Scenes, Markup, session } = require("telegraf");
+const { Scenes, Markup, } = require("telegraf");
 const scenes = require('../scenes');
-const db = require('../requires').database;
 
 // ________________________________
 
@@ -11,18 +10,23 @@ const keyboardText = {
     height: 'Рост',
     age: 'Возраст',
     activity: 'Активность',
+
+    measures: {
+        chest: 'Замер груди',
+        waist: 'Замер талии',
+        hip: 'Замер бёдер',
+    },
     back: 'Назад',
 };
-
-const enterDataAction = 'ENTER_DATA_ACTION';
 
 // ___________________________________________
 
 const changeDataKeyboard = Markup.keyboard(
     [
-        [keyboardText.name, keyboardText.sex, keyboardText.age],
-        [keyboardText.activity, keyboardText.weight, keyboardText.height],
-        [keyboardText.back]
+        [keyboardText.name, keyboardText.sex, keyboardText.activity],
+        [keyboardText.age, keyboardText.weight, keyboardText.height],
+        [keyboardText.measures.chest, keyboardText.measures.waist, keyboardText.measures.hip],
+        [keyboardText.back],
     ]
 ).resize();
 
@@ -39,6 +43,8 @@ changeDataScene.use((ctx, next) => {
     ctx.session.setConfig = false;
     return next();
 });
+
+// ____________________ SETTERS _______________________
 
 changeDataScene.hears(keyboardText.name, ctx => {
     ctx.session.user = { name: undefined };
@@ -68,7 +74,26 @@ changeDataScene.hears(keyboardText.age, ctx => {
 changeDataScene.hears(keyboardText.activity, ctx => {
     ctx.session.user = { activity: undefined };
     return ctx.scene.enter(scenes.id.setter.activity);
-})
+});
+
+// _____________________ MEASURES _________________________
+
+changeDataScene.hears(keyboardText.measures.chest, ctx => {
+    ctx.session.user = { measures: { chest: undefined }};
+    return ctx.scene.enter(scenes.id.setter.measure.chest);
+});
+
+changeDataScene.hears(keyboardText.measures.waist, ctx => {
+    ctx.session.user = { measures: { waist: undefined }};
+    return ctx.scene.enter(scenes.id.setter.measure.waist);
+});
+
+changeDataScene.hears(keyboardText.measures.hip, ctx => {
+    ctx.session.user = { measures: { hip: undefined }};
+    return ctx.scene.enter(scenes.id.setter.measure.hip);
+});
+
+// _________________________________________________________
 
 changeDataScene.hears(keyboardText.back, ctx => {
     return ctx.scene.enter(scenes.id.menu.main);

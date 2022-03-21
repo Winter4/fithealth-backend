@@ -7,6 +7,26 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // ______________________________________
 
+// if u want to add a parameter and create a scene for its setting,
+// u should update these:
+/**
+ * 1. scenes/scenes.js > ib & object
+ * 2. complete necessary new_scene.js file
+ * 3. index.js > stage
+ * 4. index.js > empty user in bot.start (new user init, else branch)
+ * 5. models/user.js > user model
+ * 6. database/database.js > saveUserFromContext function
+ * 7. ..menu/changeData > add necessary buttons & its middleware
+ * 
+ * in some time, this sttructure may turn out to be bad & unproffesional,
+ * but in the moment I'm writing it - this is the best of my skills :)
+ */
+
+// to be think of: wizards-setters, bas imports, saveUser refactor
+// TODO: Beauify (comments, ">', straight the rows, Composers (changeData menu))
+
+// _______________________________________________________________________
+
 const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
 
@@ -15,7 +35,11 @@ const stage = new Scenes.Stage([
     scenes.object.setter.weight(scenes.id.setter.weight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
     scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
     scenes.object.setter.age(scenes.id.setter.age, ctx => ctx.session.setConfig ? scenes.id.setter.activity : db.saveUserFromContext(ctx)),
-    scenes.object.setter.activity(scenes.id.setter.activity, ctx => db.saveUserFromContext(ctx)),
+    scenes.object.setter.activity(scenes.id.setter.activity, ctx => ctx.session.setConfig ? scenes.id.setter.measure.chest : db.saveUserFromContext(ctx)),
+
+    scenes.object.setter.measure.chest(scenes.id.setter.measure.chest, ctx => ctx.session.setConfig ? scenes.id.setter.measure.waist : db.saveUserFromContext(ctx)),
+    scenes.object.setter.measure.waist(scenes.id.setter.measure.waist, ctx => ctx.session.setConfig ? scenes.id.setter.measure.hip : db.saveUserFromContext(ctx)),
+    scenes.object.setter.measure.hip(scenes.id.setter.measure.hip, ctx => db.saveUserFromContext(ctx)),
 
     scenes.object.menu.main,
     scenes.object.menu.changeData,
@@ -42,6 +66,12 @@ bot.start(async ctx => {
             height: undefined,
             age: undefined,
             activity: undefined,
+            
+            measures: {
+                chest: undefined,
+                waist: undefined,
+                hip: undefined
+            }
         }
         
         await ctx.reply(
