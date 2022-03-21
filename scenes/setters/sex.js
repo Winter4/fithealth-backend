@@ -15,7 +15,7 @@ const sexKeyboard = Markup.keyboard(
         Sex.male,
         Sex.female,
     ]
-).oneTime().resize();
+).resize();
 
 // __________________________________
 

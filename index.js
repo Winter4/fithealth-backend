@@ -11,7 +11,9 @@ const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
 
     scenes.object.setter.name(scenes.id.setter.name, ctx => ctx.session.setConfig ? scenes.id.setter.sex : db.saveUserFromContext(ctx)),
-    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
+    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.weight : db.saveUserFromContext(ctx)),
+    scenes.object.setter.weight(scenes.id.setter.weight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
+    scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
     scenes.object.setter.age(scenes.id.setter.age, ctx => db.saveUserFromContext(ctx)),
 
      scenes.object.menu.main,
@@ -34,7 +36,9 @@ bot.start(async ctx => {
         ctx.session.setConfig = true;
         ctx.session.user = {
             name: undefined,
-            sex: undefined,
+            sex: undefined,age: undefined,
+            weight: undefined,
+            height: undefined,
             age: undefined,
         }
         

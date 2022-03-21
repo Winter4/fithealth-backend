@@ -17,6 +17,18 @@ const userSchema = new mongoose.Schema({
             'Женский',
         ]
     },
+    weight: {
+        type: Number,
+        required: true,
+        min: 40,
+        max: 200,
+    },
+    height: {
+        type: Number,
+        required: true,
+        min: 120,
+        max: 230,
+    },
     age: {
         type: Number,
         required: true,
