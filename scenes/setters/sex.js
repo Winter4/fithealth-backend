@@ -3,6 +3,11 @@ const {Scenes, Markup} = require('telegraf');
 const composeWizardScene = require('../factory/factory').composeWizardScene;
 const scenes = require('../scenes');
 
+// _________________________________
+
+// ATTENTION: if changing this, also change
+//            same enum in models/user
+// i couldn't make it run importing this to the models/user
 const Sex = {
     male: "Мужской",
     female: "Женский",

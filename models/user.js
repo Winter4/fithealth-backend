@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+// _____________________________________
+
+// ATTENTION: if changing this, also change
+//            same limits in /scenes/setters/scene_name
+// i couldn't make it run importing these const from the /scenes/setters/scene_name
+const weightLimits = { min: 40, max: 200 };
+const heightLimits = { min: 120, max: 230};
+const ageLimits = { min: 13, max: 100};
+
+// _____________________________________
+
 const userSchema = new mongoose.Schema({
     _id: {
         type: String,
@@ -20,20 +31,20 @@ const userSchema = new mongoose.Schema({
     weight: {
         type: Number,
         required: true,
-        min: require('../scenes/setters/weight').limits.min,
-        max: require('../scenes/setters/weight').limits.max,
+        min: weightLimits.min,
+        max: weightLimits.max,
     },
     height: {
         type: Number,
         required: true,
-        min: require('../scenes/setters/height').limits.min,
-        max: require('../scenes/setters/height').limits.max,
+        min: heightLimits.min,
+        max: heightLimits.max,
     },
     age: {
         type: Number,
         required: true,
-        min: require('../scenes/setters/age').limits.min,
-        max: require('../scenes/setters/age').limits.max,
+        min: ageLimits.min,
+        max: ageLimits.max,
     },
 
     created: {

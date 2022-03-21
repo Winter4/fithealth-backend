@@ -5,6 +5,9 @@ const scenes = require('../scenes');
 
 // ____________________________________________________________
 
+// ATTENTION: if changing this, also change
+//            same limits in models/user
+// i couldn't make it run importing this const to the models/user
 const limits = {
     min: 13,
     max: 100
@@ -15,7 +18,7 @@ module.exports.limits = limits;
 
 const setAgeScene = composeWizardScene(
     ctx => {
-        ctx.reply('Введите свой возраст числом (${limits.min}-${limits.max} лет):', Markup.removeKeyboard());
+        ctx.reply(`Введите свой возраст числом (${limits.min}-${limits.max} лет):`, Markup.removeKeyboard());
         return ctx.wizard.next();
     },
     (ctx, done) => {
