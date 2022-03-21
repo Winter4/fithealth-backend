@@ -7,6 +7,8 @@ const db = require('../requires').database;
 const keyboardText = {
     name: 'Имя',
     sex: 'Пол',
+    weight: 'Вес',
+    height: 'Рост',
     age: 'Возраст',
     back: 'Назад',
 };
@@ -18,16 +20,10 @@ const enterDataAction = 'ENTER_DATA_ACTION';
 const changeDataKeyboard = Markup.keyboard(
     [
         [keyboardText.name, keyboardText.sex],
-        [keyboardText.age],
+        [keyboardText.age, keyboardText.weight, keyboardText.height],
         [keyboardText.back]
     ]
 ).resize();
-
-const enterDataButton = Markup.inlineKeyboard(
-    [
-        Markup.button.callback('Ввести данные', enterDataAction)
-    ]
-)
 
 // ____________________________________________________________________
 
@@ -35,7 +31,7 @@ const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData);
 
 changeDataScene.enter(async ctx => {
 
-    return ctx.reply('Выберите действие', changeDataKeyboard);
+    return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
 });
 
 changeDataScene.use((ctx, next) => {
@@ -51,6 +47,16 @@ changeDataScene.hears(keyboardText.name, ctx => {
 changeDataScene.hears(keyboardText.sex, ctx => {
     ctx.session.user = { sex: undefined };
     return ctx.scene.enter(scenes.id.setter.sex);
+});
+
+changeDataScene.hears(keyboardText.weight, ctx => {
+    ctx.session.user = { weight: undefined };
+    return ctx.scene.enter(scenes.id.setter.weight);
+});
+
+changeDataScene.hears(keyboardText.height, ctx => {
+    ctx.session.user = { height: undefined };
+    return ctx.scene.enter(scenes.id.setter.height);
 });
 
 changeDataScene.hears(keyboardText.age, ctx => {
