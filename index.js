@@ -14,7 +14,8 @@ const stage = new Scenes.Stage([
     scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.weight : db.saveUserFromContext(ctx)),
     scenes.object.setter.weight(scenes.id.setter.weight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
     scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
-    scenes.object.setter.age(scenes.id.setter.age, ctx => db.saveUserFromContext(ctx)),
+    scenes.object.setter.age(scenes.id.setter.age, ctx => ctx.session.setConfig ? scenes.id.setter.activity : db.saveUserFromContext(ctx)),
+    scenes.object.setter.activity(scenes.id.setter.activity, ctx => db.saveUserFromContext(ctx)),
 
     scenes.object.menu.main,
     scenes.object.menu.changeData,
@@ -40,6 +41,7 @@ bot.start(async ctx => {
             weight: undefined,
             height: undefined,
             age: undefined,
+            activity: undefined,
         }
         
         await ctx.reply(

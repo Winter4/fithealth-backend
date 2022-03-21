@@ -10,6 +10,7 @@ const keyboardText = {
     weight: 'Вес',
     height: 'Рост',
     age: 'Возраст',
+    activity: 'Активность',
     back: 'Назад',
 };
 
@@ -19,8 +20,8 @@ const enterDataAction = 'ENTER_DATA_ACTION';
 
 const changeDataKeyboard = Markup.keyboard(
     [
-        [keyboardText.name, keyboardText.sex],
-        [keyboardText.age, keyboardText.weight, keyboardText.height],
+        [keyboardText.name, keyboardText.sex, keyboardText.age],
+        [keyboardText.activity, keyboardText.weight, keyboardText.height],
         [keyboardText.back]
     ]
 ).resize();
@@ -63,6 +64,11 @@ changeDataScene.hears(keyboardText.age, ctx => {
     ctx.session.user = { age: undefined };
     return ctx.scene.enter(scenes.id.setter.age);
 });
+
+changeDataScene.hears(keyboardText.activity, ctx => {
+    ctx.session.user = { activity: undefined };
+    return ctx.scene.enter(scenes.id.setter.activity);
+})
 
 changeDataScene.hears(keyboardText.back, ctx => {
     return ctx.scene.enter(scenes.id.menu.main);

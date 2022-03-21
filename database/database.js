@@ -23,6 +23,7 @@ module.exports.saveUserFromContext = async ctx => {
                 weight: ctx.session.user.weight,
                 height: ctx.session.user.height,
                 age: ctx.session.user.age,
+                activity: ctx.session.user.activity,
             });
         }
         else {
@@ -43,23 +44,15 @@ module.exports.saveUserFromContext = async ctx => {
             if (ctx.session.user.age) {
                 user.age = ctx.session.user.age;
             }
+            if (ctx.session.user.activity) {
+                user.activity = ctx.session.user.activity;
+            }
         }
-
         await user.save();
         ctx.scene.enter(scenes.id.menu.main);
+
     } catch (e) {
         console.log('Error on saving user from context: ' + e.message);
-    }
-};
-
-module.exports.updateUser = async (id, name) => {
-
-    try {
-        let user = await this.getUserByID(id);
-        user.name = name;
-        user.save();
-    } catch (e) {
-        console.log(e.message);
     }
 };
 

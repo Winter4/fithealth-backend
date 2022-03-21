@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
         min: ageLimits.min,
         max: ageLimits.max,
     },
+    activity: {
+        type: Number,
+        required: true,
+    },
 
     created: {
         type: Date,

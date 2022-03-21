@@ -5,6 +5,7 @@ module.exports.id = {
         weight: 'SET_WEIGHT_SCENE',
         height: 'SET_HEIGHT_SCENE',
         age: "SET_AGE_SCENE",
+        activity: 'SET_ACTIVITY_SCENE',
     },
 
     menu: {
@@ -22,6 +23,7 @@ module.exports.object = {
         weight: require('./setters/weight').scene,
         height: require('./setters/height').scene,
         age: require('./setters/age').scene,
+        activity: require('./setters/activity'),
     },
 
     menu: {
