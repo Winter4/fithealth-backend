@@ -20,20 +20,20 @@ const userSchema = new mongoose.Schema({
     weight: {
         type: Number,
         required: true,
-        min: 40,
-        max: 200,
+        min: require('../scenes/setters/weight').limits.min,
+        max: require('../scenes/setters/weight').limits.max,
     },
     height: {
         type: Number,
         required: true,
-        min: 120,
-        max: 230,
+        min: require('../scenes/setters/height').limits.min,
+        max: require('../scenes/setters/height').limits.max,
     },
     age: {
         type: Number,
         required: true,
-        min: 13,
-        max: 100
+        min: require('../scenes/setters/age').limits.min,
+        max: require('../scenes/setters/age').limits.max,
     },
 
     created: {

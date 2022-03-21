@@ -9,9 +9,9 @@ const db = require('../requires').database;
 const setNameScene = composeWizardScene(
     ctx => {
         ctx.reply('Введите своё имя: ', Markup.removeKeyboard());
-        ctx.wizard.next();
+        return ctx.wizard.next();
     },
-    async (ctx, done) => {
+    (ctx, done) => {
         if (ctx.message.text) {
             ctx.session.user.name = ctx.message.text;
             return done();
@@ -21,6 +21,6 @@ const setNameScene = composeWizardScene(
             return;
         }
     }
-)
+);
 
 module.exports = setNameScene;

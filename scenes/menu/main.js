@@ -30,7 +30,7 @@ mainMenuScene.enter(async ctx => {
     const userID = ctx.message.from.id;
     let text = await db.getUserByID(userID);
 
-    ctx.reply('Главное меню \n' + text, mainMenuKeyboard);
+    return ctx.reply('Главное меню \n' + text, mainMenuKeyboard);
 });
 
 mainMenuScene.hears(keyboardText.changeData, ctx => {
@@ -38,7 +38,7 @@ mainMenuScene.hears(keyboardText.changeData, ctx => {
 });
 
 mainMenuScene.on('message', ctx => {
-    ctx.reply('Используйте клавиаутуру меню');
+    return ctx.reply('Используйте клавиаутуру меню');
 });
 
 module.exports = mainMenuScene;

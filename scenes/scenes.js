@@ -13,13 +13,15 @@ module.exports.id = {
     },
 };
 
+// ______________________________________________
+
 module.exports.object = {
     setter: {
         name: require('./setters/name'),
         sex: require('./setters/sex'),
-        weight: require('./setters/weight'),
-        height: require('./setters/height'),
-        age: require('./setters/age'),
+        weight: require('./setters/weight').scene,
+        height: require('./setters/height').scene,
+        age: require('./setters/age').scene,
     },
 
     menu: {

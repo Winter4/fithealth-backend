@@ -6,7 +6,7 @@ const scenes = require('../scenes');
 const Sex = {
     male: "Мужской",
     female: "Женский",
-}
+};
 
 // __________________________________
 
@@ -22,7 +22,7 @@ const sexKeyboard = Markup.keyboard(
 const setSexScene = composeWizardScene(
     ctx => {
         ctx.reply('Выберите Ваш пол:', sexKeyboard);
-        ctx.wizard.next();
+        return ctx.wizard.next();
     },
     async (ctx, done) => {
         if (ctx.message.text) {
@@ -36,13 +36,13 @@ const setSexScene = composeWizardScene(
                 ctx.reply('Пожалуйста, используйте клавиатуру');
                 return;
             }
-            done();
+            return done();
         }
         else {
             ctx.reply('Пожалуйста, используйте клавиатуру');
             return;
         }
     }
-)
+);
 
 module.exports = setSexScene;

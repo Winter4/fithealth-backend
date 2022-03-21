@@ -35,12 +35,12 @@ const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData);
 
 changeDataScene.enter(async ctx => {
 
-    ctx.reply('Выберите действие', changeDataKeyboard);
+    return ctx.reply('Выберите действие', changeDataKeyboard);
 });
 
 changeDataScene.use((ctx, next) => {
     ctx.session.setConfig = false;
-    next();
+    return next();
 });
 
 changeDataScene.hears(keyboardText.name, ctx => {

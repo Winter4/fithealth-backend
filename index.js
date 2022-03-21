@@ -16,7 +16,7 @@ const stage = new Scenes.Stage([
     scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
     scenes.object.setter.age(scenes.id.setter.age, ctx => db.saveUserFromContext(ctx)),
 
-     scenes.object.menu.main,
+    scenes.object.menu.main,
     scenes.object.menu.changeData,
 ]);
 
