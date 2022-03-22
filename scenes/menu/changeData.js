@@ -6,7 +6,8 @@ const scenes = require('../scenes');
 const keyboardText = {
     name: 'Имя',
     sex: 'Пол',
-    weight: 'Вес',
+    startWeight: 'Начальный вес',
+    targetWeight: 'Желаемый вес',
     height: 'Рост',
     age: 'Возраст',
     activity: 'Активность',
@@ -23,10 +24,11 @@ const keyboardText = {
 
 const changeDataKeyboard = Markup.keyboard(
     [
-        [keyboardText.name, keyboardText.sex, keyboardText.activity],
-        [keyboardText.age, keyboardText.weight, keyboardText.height],
-        [keyboardText.measures.chest, keyboardText.measures.waist, keyboardText.measures.hip],
-        [keyboardText.back],
+        [ keyboardText.name, keyboardText.sex, keyboardText.activity ],
+        [ keyboardText.age, keyboardText.height ],
+        [ keyboardText.startWeight, keyboardText.targetWeight ],
+        [ keyboardText.measures.chest, keyboardText.measures.waist, keyboardText.measures.hip ],
+        [ keyboardText.back ],
     ]
 ).resize();
 
@@ -56,9 +58,14 @@ changeDataScene.hears(keyboardText.sex, ctx => {
     return ctx.scene.enter(scenes.id.setter.sex);
 });
 
-changeDataScene.hears(keyboardText.weight, ctx => {
-    ctx.session.user = { weight: undefined };
-    return ctx.scene.enter(scenes.id.setter.weight);
+changeDataScene.hears(keyboardText.startWeight, ctx => {
+    ctx.session.user = { startWeight: undefined };
+    return ctx.scene.enter(scenes.id.setter.startWeight);
+});
+
+changeDataScene.hears(keyboardText.targetWeight, ctx => {
+    ctx.session.user = { targetWeight: undefined };
+    return ctx.scene.enter(scenes.id.setter.targetWeight);
 });
 
 changeDataScene.hears(keyboardText.height, ctx => {

@@ -30,7 +30,13 @@ const userSchema = new mongoose.Schema({
             'Женский',
         ]
     },
-    weight: {
+    startWeight: {
+        type: Number,
+        required: true,
+        min: weightLimits.min,
+        max: weightLimits.max,
+    },
+    targetWeight: {
         type: Number,
         required: true,
         min: weightLimits.min,

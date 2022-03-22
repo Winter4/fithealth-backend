@@ -1,7 +1,6 @@
-const { Scenes, Markup } = require("telegraf");
+const { Markup } = require("telegraf");
 
 const composeWizardScene = require('../factory/factory').composeWizardScene;
-const scenes = require('../scenes');
 
 // ____________________________________________________________
 
@@ -16,9 +15,9 @@ module.exports.limits = limits;
 
 // _________________________________________
 
-const setWeightScene = composeWizardScene(
+const setTargetWeightScene = composeWizardScene(
     ctx => {
-        ctx.reply(`Введите свой вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
+        ctx.replyWithHTML(`Введите <b><i>желаемый</i></b> вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
         return ctx.wizard.next();
     },
     (ctx, done) => {
@@ -36,7 +35,7 @@ const setWeightScene = composeWizardScene(
                 ctx.reply('Пожалуйста, введите корректный вес');
                 return;
             }
-            ctx.session.user.weight = weight;
+            ctx.session.user.targetWeight = weight;
             return done();
         }
         else {
@@ -46,4 +45,4 @@ const setWeightScene = composeWizardScene(
     }
 );
 
-module.exports.scene = setWeightScene;
+module.exports.scene = setTargetWeightScene;

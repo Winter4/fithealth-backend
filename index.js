@@ -24,6 +24,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // to be think of: wizards-setters, bas imports, saveUser refactor
 // TODO: Beauify (comments, ">', straight the rows, Composers (changeData menu))
+// TODO: parse main menu message
 
 // _______________________________________________________________________
 
@@ -31,8 +32,9 @@ const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
 
     scenes.object.setter.name(scenes.id.setter.name, ctx => ctx.session.setConfig ? scenes.id.setter.sex : db.saveUserFromContext(ctx)),
-    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.weight : db.saveUserFromContext(ctx)),
-    scenes.object.setter.weight(scenes.id.setter.weight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
+    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.startWeight : db.saveUserFromContext(ctx)),
+    scenes.object.setter.startWeight(scenes.id.setter.startWeight, ctx => ctx.session.setConfig ? scenes.id.setter.targetWeight : db.saveUserFromContext(ctx)),
+    scenes.object.setter.targetWeight(scenes.id.setter.targetWeight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
     scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
     scenes.object.setter.age(scenes.id.setter.age, ctx => ctx.session.setConfig ? scenes.id.setter.activity : db.saveUserFromContext(ctx)),
     scenes.object.setter.activity(scenes.id.setter.activity, ctx => ctx.session.setConfig ? scenes.id.setter.measure.chest : db.saveUserFromContext(ctx)),
@@ -62,7 +64,8 @@ bot.start(async ctx => {
         ctx.session.user = {
             name: undefined,
             sex: undefined,age: undefined,
-            weight: undefined,
+            startWeight: undefined,
+            targetWeight: undefined,
             height: undefined,
             age: undefined,
             activity: undefined,
