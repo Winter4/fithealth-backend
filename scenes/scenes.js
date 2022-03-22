@@ -1,4 +1,3 @@
-const { requires } = require('./setters/require-belt');
 
 module.exports.id = {
     setter: {
@@ -47,7 +46,7 @@ module.exports.object = {
     },
 
     menu: {
-        main: require('./menu/main'),
+        main: require('./menu/main/home'),
         changeData: {
             home: require('./menu/changeData/home'),
             measures: require('./menu/changeData/measures'),

@@ -1,5 +1,5 @@
 const { Scenes, Markup, session } = require("telegraf");
-const scenes = require('../require-belt').scenes;
+const scenes = require('../../scenes');
 
 // _______________________________________________
 

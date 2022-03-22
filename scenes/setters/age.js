@@ -1,7 +1,6 @@
 const { Scenes, Markup } = require("telegraf");
 
 const composeWizardScene = require('../factory/factory').composeWizardScene;
-const scenes = require('../scenes');
 
 // ____________________________________________________________
 

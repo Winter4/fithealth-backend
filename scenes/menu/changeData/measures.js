@@ -1,5 +1,5 @@
 const { Scenes, Markup, session } = require("telegraf");
-const scenes = require('../require-belt').scenes;
+const scenes = require('../../scenes');
 
 // _______________________________________________
 
@@ -34,7 +34,7 @@ changeMeasuresScene.use((ctx, next) => {
     return next();
 });
 
-// ___________________________________________
+// ____________________________________________________
 
 changeMeasuresScene.hears(keys.chest, ctx => {
     ctx.session.user = { measures: { chest: undefined }};

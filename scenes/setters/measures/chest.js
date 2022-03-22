@@ -1,6 +1,6 @@
 const { Markup } = require("telegraf");
 
-const composeWizardScene = require('../require-belt').factory.composeWizardScene;
+const composeWizardScene = require('../../factory/factory').composeWizardScene;
 
 // ____________________________________________________________
 
