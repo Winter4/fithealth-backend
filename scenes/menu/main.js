@@ -34,7 +34,7 @@ mainMenuScene.enter(async ctx => {
 });
 
 mainMenuScene.hears(keyboardText.changeData, ctx => {
-    return ctx.scene.enter(scenes.id.menu.changeData);
+    return ctx.scene.enter(scenes.id.menu.changeData.home);
 });
 
 mainMenuScene.on('message', ctx => {

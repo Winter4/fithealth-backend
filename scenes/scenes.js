@@ -1,3 +1,5 @@
+const { requires } = require('./setters/require-belt');
+
 module.exports.id = {
     setter: {
         name: "SET_NAME_SCENE",
@@ -17,7 +19,11 @@ module.exports.id = {
 
     menu: {
         main: 'MAIN_MENU_SCENE',
-        changeData: 'CHANGE_DATA_SCENE',
+        changeData: {
+            home:'CHANGE_DATA_SCENE',
+            measures: 'CHANGE_MEASURES_SCENE',
+            weights: 'CHANGE_WEIGHTS_SCENE',
+        },
     },
 };
 
@@ -42,6 +48,10 @@ module.exports.object = {
 
     menu: {
         main: require('./menu/main'),
-        changeData: require('./menu/changeData'),
+        changeData: {
+            home: require('./menu/changeData/home'),
+            measures: require('./menu/changeData/measures'),
+            weights: require('./menu/changeData/weights'),
+        }
     },
 };

@@ -44,7 +44,9 @@ const stage = new Scenes.Stage([
     scenes.object.setter.measure.hip(scenes.id.setter.measure.hip, ctx => db.saveUserFromContext(ctx)),
 
     scenes.object.menu.main,
-    scenes.object.menu.changeData,
+    scenes.object.menu.changeData.home,
+    scenes.object.menu.changeData.measures,
+    scenes.object.menu.changeData.weights,
 ]);
 
 bot.use(session());
