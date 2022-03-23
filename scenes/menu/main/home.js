@@ -1,6 +1,5 @@
 const { Scenes, Markup, session } = require("telegraf");
 
-const User = require('../../../models/user');
 const scenes = require('../../scenes');
 const db = require('../../../database/database');
 
@@ -30,9 +29,28 @@ const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
 mainMenuScene.enter(async ctx => {
 
     const userID = ctx.message.from.id;
-    let text = await db.getUserByID(userID);
+    const user = await db.getUserByID(userID);
+    
+    let text = 'Приветствую, ' + user.name + '!';
+    let today = new Date();
+    let days = [
+        'воскресенье',
+        'понедельник',
+        'вторник',
+        'среда',
+        'четверг',
+        'пятница',
+        'суббота',
+    ]
+    text += '\nСегодня ' + days[today.getDay()];
+    text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-    return ctx.reply('Главное меню \n' + text, keyboard);
+    text += '\n\nСтартовый вес: ' + user.startWeight;
+    text += '\nТекущий вес: ';
+    text += '\nБлижайшая цель: ';
+    text += '\nЖелаемый вес: ' + user.targetWeight;
+
+    return ctx.reply(text, keyboard);
 });
 
 // ______________________________________________________________
