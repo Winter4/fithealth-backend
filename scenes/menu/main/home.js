@@ -9,6 +9,7 @@ const keys = {
     makeReport: 'Сделать отчёт',
     mealPlan: 'План питания',
     info: 'Информация',
+    myData: 'Мои данные',
     changeData: 'Изменить данные',
 };
 
@@ -16,7 +17,7 @@ const keyboard = Markup.keyboard(
     [
         [ keys.makeReport ],
         [ keys.mealPlan, keys.info ],
-        [ keys.changeData ],
+        [ keys.myData, keys.changeData ],
     ]
 ).resize();
 
@@ -79,6 +80,20 @@ mainMenuScene.hears(keys.info, ctx => {
     text += '9️⃣ Как использовать читмил? \n\n';
 
     return ctx.reply(text, inlineKeyboard);
+});
+
+mainMenuScene.hears(keys.myData, async ctx => {
+
+    const user = await db.getUserByID(ctx.from.id);
+    return ctx.reply(
+        `Имя: ${user.name}` + 
+        `\nПол: ${user.sex}` + 
+        `\nРост: ${user.height}` + 
+        `\nВозраст: ${user.age}` + 
+        //`\nАктивность: ${user.activity}` + 
+        '\nЗамеры (Г/Т/Б): ' + 
+        `${user.measures.chest}/${user.measures.waist}/${user.measures.hip}`
+    );
 });
 
 mainMenuScene.hears(keys.changeData, ctx => {
