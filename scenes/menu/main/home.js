@@ -14,9 +14,9 @@ const keys = {
 
 const keyboard = Markup.keyboard(
     [
-        [keys.makeReport],
-        [keys.mealPlan, keys.info],
-        [keys.changeData],
+        [ keys.makeReport ],
+        [ keys.mealPlan, keys.info ],
+        [ keys.changeData ],
     ]
 ).resize();
 
@@ -50,7 +50,13 @@ mainMenuScene.enter(async ctx => {
     text += '\nБлижайшая цель: ';
     text += '\nЖелаемый вес: ' + user.targetWeight;
 
-    return ctx.reply(text, keyboard);
+    return ctx.replyWithPhoto(
+        { source: 'images/main-menu.jpg' },
+        {
+            caption: text,
+            ...keyboard,
+        },
+    );
 });
 
 // ______________________________________________________________

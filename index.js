@@ -93,4 +93,8 @@ bot.catch((err, ctx) => {
     ctx.reply('Error: ' + err.message);
 });
 
-bot.launch().then(async () => await db.connect());
+bot.launch().then(async () => {
+    
+    await db.connect();
+    //console.log(await db.userExists(ctx.chat.id));
+});
