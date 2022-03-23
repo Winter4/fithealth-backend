@@ -15,15 +15,15 @@ const action = {
 }
 
 const text = {
-    one: 'one',
-    two: 'two',
-    three: 'three',
-    four: 'four',
-    five: 'five',
-    six: 'six',
-    seven: 'seven',
-    eight: 'eight',
-    nine: 'nine',
+    one: '1️⃣',
+    two: '2️⃣',
+    three: '3️⃣',
+    four: '4️⃣',
+    five: '5️⃣',
+    six: '6️⃣',
+    seven: '7️⃣',
+    eight: '8️⃣',
+    nine: '9️⃣',
 }
 
 const inlineInfo = Markup.inlineKeyboard([
@@ -52,6 +52,46 @@ const info = new Composer();
 info.action(action.one, ctx => {
     ctx.answerCbQuery();
     return ctx.reply('inline one');
+});
+
+info.action(action.two, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline two');
+});
+
+info.action(action.three, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline three');
+});
+
+info.action(action.four, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline four');
+});
+
+info.action(action.five, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline five');
+});
+
+info.action(action.six, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline six');
+});
+
+info.action(action.seven, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline seven');
+});
+
+info.action(action.eight, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline eight');
+});
+
+info.action(action.nine, ctx => {
+    ctx.answerCbQuery();
+    return ctx.reply('inline nine');
 });
 
 module.exports.composer = info;

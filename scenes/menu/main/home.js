@@ -61,7 +61,18 @@ mainMenuScene.hears(keys.mealPlan, ctx => {
 
 mainMenuScene.use(require('./info').composer);
 mainMenuScene.hears(keys.info, ctx => {
-    return ctx.reply('Inline: press the 1st btn', inlineKeyboard);
+    let text = '';
+    text += '1️⃣ Как работать с приложением? \n\n';
+    text += '2️⃣ Как составить завтрак? \n\n';
+    text += '3️⃣ Как составить обед? \n\n';
+    text += '4️⃣ Как составить ужин и перекус? \n\n';
+    text += '5️⃣ Когда есть и как готовить? \n\n';
+    text += '6️⃣ Как пить и что с овощами? \n\n';
+    text += '7️⃣ Как делать отчет о питании и активности? \n\n';
+    text += '8️⃣ Как делать повторные замеры? \n\n';
+    text += '9️⃣ Как использовать читмил? \n\n';
+
+    return ctx.reply(text, inlineKeyboard);
 });
 
 mainMenuScene.hears(keys.changeData, ctx => {
