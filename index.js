@@ -1,4 +1,4 @@
-const {Telegraf, Scenes, Markup, session} = require('telegraf');
+const {Telegraf, Scenes, Stage, session} = require('telegraf');
 const db = require('./database/database');
 
 require('dotenv').config();
@@ -54,6 +54,17 @@ bot.use(stage.middleware());
 
 // _______________________________________
 
+bot.use(async (ctx, next) => {
+    const userID = ctx.message.from.id;
+    const user = await db.getUserByID(userID);
+
+    if (user !== null) {
+        return ctx.scene.enter(user.state);
+    }
+
+    return next();
+});
+
 bot.start(async ctx => {
     const userID = ctx.message.from.id;
     
@@ -89,12 +100,20 @@ bot.start(async ctx => {
     }
 });
 
+bot.on('message', ctx => {
+    return ctx.reply('gotcha');
+});
+
 bot.catch((err, ctx) => {
-    ctx.reply('Error: ' + err.message);
+    ctx.reply('Возникла непредвиденная ошибка. Уведомление администратору отправлено. Приносим извинения за неудобства');
+    return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
+        `Ошибка \nUpdate type: ${ctx.updateType} \nСообщение: ${err.message} \nВремя: ${Date()}`);
 });
 
 bot.launch().then(async () => {
-    
-    await db.connect();
-    //console.log(await db.userExists(ctx.chat.id));
+    try {
+        await db.connect();
+    } catch (e) {
+        console.log(e.message);
+    }
 });

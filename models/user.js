@@ -89,7 +89,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
         required: true,
         default: () => Date.now(),
-    }
+    },
+    state: String,
 }, {versionKey: false, collection: 'users'} );
 
 module.exports = mongoose.model('users', userSchema);

@@ -30,6 +30,9 @@ const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
 mainMenuScene.enter(async ctx => {
 
     const userID = ctx.message.from.id;
+
+    db.setUserState(userID, scenes.id.menu.main);
+    
     const user = await db.getUserByID(userID);
     
     let text = 'Приветствую, ' + user.name + '!';
@@ -46,10 +49,10 @@ mainMenuScene.enter(async ctx => {
     text += '\nСегодня ' + days[today.getDay()];
     text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-    text += '\n\nСтартовый вес: ' + user.startWeight;
-    text += '\nТекущий вес: ';
-    text += '\nБлижайшая цель: ';
-    text += '\nЖелаемый вес: ' + user.targetWeight;
+    text += `\n\nСтартовый вес: ${user.startWeight}`;
+    text += `\nТекущий вес:  кг`;
+    text += `\nБлижайшая цель:  кг`;
+    text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 
     return ctx.replyWithPhoto(
         { source: 'images/main-menu.jpg' },
@@ -88,11 +91,11 @@ mainMenuScene.hears(keys.myData, async ctx => {
     return ctx.reply(
         `Имя: ${user.name}` + 
         `\nПол: ${user.sex}` + 
-        `\nРост: ${user.height}` + 
+        `\nРост: ${user.height} см` + 
         `\nВозраст: ${user.age}` + 
         //`\nАктивность: ${user.activity}` + 
         '\nЗамеры (Г/Т/Б): ' + 
-        `${user.measures.chest}/${user.measures.waist}/${user.measures.hip}`
+        `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
     );
 });
 

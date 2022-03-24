@@ -71,12 +71,17 @@ module.exports.saveUserFromContext = async ctx => {
                 }
             }
         }
+
         await user.save();
         ctx.scene.enter(scenes.id.menu.main);
 
     } catch (e) {
         console.log('Error on saving user from context: ' + e.message);
     }
+};
+
+module.exports.setUserState = async (id, state) => {
+    await User.updateOne({ _id: id}, { state: state });
 };
 
 module.exports.getUserByID = async id => {

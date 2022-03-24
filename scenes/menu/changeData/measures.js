@@ -1,5 +1,6 @@
 const { Scenes, Markup, session } = require("telegraf");
 const scenes = require('../../scenes');
+const db = require('../../../database/database');
 
 // _______________________________________________
 
@@ -26,6 +27,7 @@ const measuresKeyboard = Markup.keyboard(
 const changeMeasuresScene = new Scenes.BaseScene(scenes.id.menu.changeData.measures);
 
 changeMeasuresScene.enter(ctx => {
+    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.measures);
     return ctx.reply('Выберите замер, который хотите изменить', measuresKeyboard);
 });
 

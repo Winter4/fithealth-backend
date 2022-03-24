@@ -1,5 +1,6 @@
 const { Scenes, Markup, session } = require("telegraf");
 const scenes = require('../../scenes');
+const db = require('../../../database/database');
 
 // _______________________________________________
 
@@ -25,6 +26,7 @@ const keyboard = Markup.keyboard(
 const changeWeightsScene = new Scenes.BaseScene(scenes.id.menu.changeData.weights);
 
 changeWeightsScene.enter(ctx => {
+    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.weights);
     return ctx.reply('Выберите вес, который хотите изменить', keyboard);
 });
 

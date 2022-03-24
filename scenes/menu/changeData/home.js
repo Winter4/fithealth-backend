@@ -1,5 +1,6 @@
 const { Scenes, Markup, } = require("telegraf");
 const scenes = require('../../scenes');
+const db = require('../../../database/database');
 
 // ________________________________
 
@@ -33,6 +34,7 @@ const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData.home);
 
 changeDataScene.enter(async ctx => {
 
+    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
     return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
 });
 
