@@ -32,10 +32,16 @@ const changeDataKeyboard = Markup.keyboard(
 
 const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData.home);
 
-changeDataScene.enter(async ctx => {
+changeDataScene.enter(ctx => {
 
-    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
-    return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
+    if (ctx.session.recoveryMode == true) {
+        ctx.session.recoveryMode = false;
+        return ctx.handleRecovery(changeDataScene, ctx);
+    }
+    else {
+        db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
+        return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
+    }
 });
 
 changeDataScene.use((ctx, next) => {

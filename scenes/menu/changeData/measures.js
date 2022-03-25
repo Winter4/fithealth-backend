@@ -27,8 +27,15 @@ const measuresKeyboard = Markup.keyboard(
 const changeMeasuresScene = new Scenes.BaseScene(scenes.id.menu.changeData.measures);
 
 changeMeasuresScene.enter(ctx => {
-    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.measures);
-    return ctx.reply('Выберите замер, который хотите изменить', measuresKeyboard);
+
+    if (ctx.session.recoveryMode == true) {
+        ctx.session.recoveryMode = false;
+        return ctx.handleRecovery(changeMeasuresScene, ctx);
+    }
+    else {
+        db.setUserState(ctx.from.id, scenes.id.menu.changeData.measures);
+        return ctx.reply('Выберите замер, который хотите изменить', measuresKeyboard);
+    }
 });
 
 changeMeasuresScene.use((ctx, next) => {

@@ -26,8 +26,15 @@ const keyboard = Markup.keyboard(
 const changeWeightsScene = new Scenes.BaseScene(scenes.id.menu.changeData.weights);
 
 changeWeightsScene.enter(ctx => {
-    db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.weights);
-    return ctx.reply('Выберите вес, который хотите изменить', keyboard);
+
+    if (ctx.session.recoveryMode == true) {
+        ctx.session.recoveryMode = false;
+        return ctx.handleRecovery(changeWeightsScene, ctx);
+    }
+    else {
+        db.setUserState(ctx.from.id, scenes.id.menu.changeData.weights);
+        return ctx.reply('Выберите вес, который хотите изменить', keyboard);
+    }
 });
 
 changeWeightsScene.use((ctx, next) => {

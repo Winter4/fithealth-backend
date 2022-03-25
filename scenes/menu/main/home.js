@@ -29,38 +29,43 @@ const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
 
 mainMenuScene.enter(async ctx => {
 
-    const userID = ctx.message.from.id;
+    if (ctx.session.recoveryMode == true) {
+        ctx.session.recoveryMode = false;
+        return ctx.handleRecovery(mainMenuScene, ctx);
+    }
+    else {
+        const userID = ctx.from.id;
+        db.setUserState(userID, scenes.id.menu.main);
+        
+        const user = await db.getUserByID(userID);
+        
+        let text = `Приветствую, ${user.name}!`;
+        let today = new Date();
+        let days = [
+            'воскресенье',
+            'понедельник',
+            'вторник',
+            'среда',
+            'четверг',
+            'пятница',
+            'суббота',
+        ]
+        text += `\nСегодня ${days[today.getDay()]}`;
+        text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-    db.setUserState(userID, scenes.id.menu.main);
-    
-    const user = await db.getUserByID(userID);
-    
-    let text = 'Приветствую, ' + user.name + '!';
-    let today = new Date();
-    let days = [
-        'воскресенье',
-        'понедельник',
-        'вторник',
-        'среда',
-        'четверг',
-        'пятница',
-        'суббота',
-    ]
-    text += '\nСегодня ' + days[today.getDay()];
-    text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
+        text += `\n\nСтартовый вес: ${user.startWeight}`;
+        text += `\nТекущий вес:  кг`;
+        text += `\nБлижайшая цель:  кг`;
+        text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 
-    text += `\n\nСтартовый вес: ${user.startWeight}`;
-    text += `\nТекущий вес:  кг`;
-    text += `\nБлижайшая цель:  кг`;
-    text += `\nЖелаемый вес: ${user.targetWeight} кг`;
-
-    return ctx.replyWithPhoto(
-        { source: 'images/main-menu.jpg' },
-        {
-            caption: text,
-            ...keyboard,
-        },
-    );
+        return ctx.replyWithPhoto(
+            { source: 'images/main-menu.jpg' },
+            {
+                caption: text,
+                ...keyboard,
+            },
+        );
+    }
 });
 
 // ______________________________________________________________

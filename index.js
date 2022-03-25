@@ -24,7 +24,6 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // to be think of: wizards-setters, bas imports, saveUser refactor
 // TODO: Beauify (comments, ">', straight the rows, Composers (changeData menu))
-// TODO: parse main menu message
 
 // _______________________________________________________________________
 
@@ -54,11 +53,19 @@ bot.use(stage.middleware());
 
 // _______________________________________
 
+bot.context.handleRecovery = (scene, ctx) => {
+    const handler = scene.middleware();
+    return handler(ctx, Promise.resolve());
+};
+
+// _________________________________________________
+
 bot.use(async (ctx, next) => {
-    const userID = ctx.message.from.id;
-    const user = await db.getUserByID(userID);
+
+    const user = await db.getUserByID(ctx.from.id);
 
     if (user !== null) {
+        ctx.session.recoveryMode = true;
         return ctx.scene.enter(user.state);
     }
 
@@ -73,7 +80,6 @@ bot.start(async ctx => {
         ctx.scene.enter(scenes.id.menu.main);
     }
     else {
-        ctx.session.setConfig = true;
         ctx.session.user = {
             name: undefined,
             sex: undefined,age: undefined,
@@ -96,6 +102,7 @@ bot.start(async ctx => {
             'чтобы помочь достигнуть лучшего результата!'
         );
 
+        ctx.session.setConfig = true;
         ctx.scene.enter(scenes.id.setter.name);
     }
 });
@@ -106,6 +113,7 @@ bot.on('message', ctx => {
 
 bot.catch((err, ctx) => {
     ctx.reply('Возникла непредвиденная ошибка. Уведомление администратору отправлено. Приносим извинения за неудобства');
+    console.log(err);
     return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
         `Ошибка \nUpdate type: ${ctx.updateType} \nСообщение: ${err.message} \nВремя: ${Date()}`);
 });
