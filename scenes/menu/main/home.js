@@ -70,8 +70,29 @@ mainMenuScene.enter(async ctx => {
 
 // ______________________________________________________________
 
-mainMenuScene.hears(keys.mealPlan, ctx => {
-    return ctx.reply('Meal plan test');
+mainMenuScene.hears(keys.mealPlan, async ctx => {
+
+    const user = await db.getUserByID(ctx.from.id);
+
+    const sexParam = user.sex == 'Мужской' ? 5 : -161;
+    let basicCaloricIntake = 
+        10 * user.startWeight + 
+        6.25 * user.height -
+        5 * user.age +
+        sexParam
+    ;
+    basicCaloricIntake *= user.activity;
+    basicCaloricIntake = basicCaloricIntake.toFixed();
+
+    const lessCaloricIntake = (basicCaloricIntake * 0.8).toFixed();
+    const moreCaloricIntake = (basicCaloricIntake * 1.2).toFixed();
+
+    let text = 'Ваша дневная норма калорий в зависимости от желаемого результата: \n'
+    text += `- <b><i>Поддержание</i></b> веса: ${basicCaloricIntake} \n`;
+    text += `- <b><i>Снижение</i></b> веса: ${lessCaloricIntake} \n`;
+    text += `- <b><i>Набора</i></b> веса: ${moreCaloricIntake} \n`;
+
+    return ctx.replyWithHTML(text);
 });
 
 mainMenuScene.use(require('./info').composer);

@@ -9,7 +9,7 @@ const composeWizardScene = require('../factory/factory').composeWizardScene;
 // i couldn't make it run importing this const to the models/user
 const limits = {
     min: 13,
-    max: 100
+    max: 80
 };
 module.exports.limits = limits;
 

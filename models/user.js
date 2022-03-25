@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 // i couldn't make it run importing these const from the /scenes/setters/scene_name
 const weightLimits = { min: 40, max: 200 };
 const heightLimits = { min: 120, max: 230 };
-const ageLimits = { min: 13, max: 100 };
+const ageLimits = { min: 13, max: 80 };
 
 const measureLimits = { min: 20, max: 200 };
 
