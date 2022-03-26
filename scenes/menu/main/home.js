@@ -8,16 +8,15 @@ const db = require('../../../database/database');
 const keys = {
     makeReport: 'Сделать отчёт',
     mealPlan: 'План питания',
-    info: 'Информация',
-    myData: 'Мои данные',
-    changeData: 'Изменить данные',
+    info: 'Справка',
+    data: 'Данные',
 };
 
 const keyboard = Markup.keyboard(
     [
         [ keys.makeReport ],
         [ keys.mealPlan, keys.info ],
-        [ keys.myData, keys.changeData ],
+        [ keys.data ],
     ]
 ).resize();
 
@@ -81,7 +80,7 @@ mainMenuScene.enter(async ctx => {
 // ______________________________________________________________
 
 mainMenuScene.hears(keys.makeReport, ctx => {
-    ctx.log('test tetxt');
+    
 });
 
 mainMenuScene.hears(keys.mealPlan, async ctx => {
@@ -129,26 +128,6 @@ mainMenuScene.hears(keys.info, ctx => {
     text += '9️⃣ Как использовать читмил? \n\n';
 
     return ctx.reply(text, inlineKeyboard);
-});
-
-mainMenuScene.hears(keys.myData, async ctx => {
-
-    try {
-        const user = await db.getUserByID(ctx.from.id);
-        return ctx.reply(
-            `Имя: ${user.name}` + 
-            `\nПол: ${user.sex}` + 
-            `\nРост: ${user.height} см` + 
-            `\nВозраст: ${user.age}` + 
-            //`\nАктивность: ${user.activity}` + 
-            '\nЗамеры (Г/Т/Б): ' + 
-            `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
-        );
-    } catch (e) {
-        let newErr = new Error(`Error in <hears[keys.myData]> middleware of <main/home> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
-    }
 });
 
 mainMenuScene.hears(keys.changeData, ctx => {

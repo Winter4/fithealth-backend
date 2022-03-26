@@ -45,6 +45,16 @@ changeDataScene.enter(ctx => {
         }
         else {
             db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
+            const user = await db.getUserByID(ctx.from.id);
+            ctx.reply(
+                `Имя: ${user.name}` + 
+                `\nПол: ${user.sex}` + 
+                `\nРост: ${user.height} см` + 
+                `\nВозраст: ${user.age}` + 
+                //`\nАктивность: ${user.activity}` + 
+                '\nЗамеры (Г/Т/Б): ' + 
+                `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
+            );
             return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
         }
     } catch (e) {

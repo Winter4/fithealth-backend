@@ -16,7 +16,9 @@ module.exports.limits = limits;
 // _________________________________________
 
 const setChestMeasureScene = composeWizardScene(
-    ctx => {
+    async ctx => {
+        const photoSource = ctx.session.user.sex == 'Мужской' ? './images/man-measures.jpg' : './images/woman-measures.jpg';
+        await ctx.replyWithPhoto({ source: photoSource });
         ctx.reply(`Введите обхват груди (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());
         return ctx.wizard.next();
     },
