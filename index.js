@@ -25,6 +25,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // to be think of: wizards-setters, bas imports, saveUser refactor
 // TODO: Beauify (comments, ">', straight the rows, Composers (changeData menu))
 // TODO: mealPlan import Sex type
+// TODO: !!!!! REFACTOR SAVEUSERFROMCONEXT !!!!!!
 
 // _______________________________________________________________________
 

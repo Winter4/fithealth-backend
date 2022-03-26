@@ -26,9 +26,11 @@ const measuresKeyboard = Markup.keyboard(
 
 const changeMeasuresScene = new Scenes.BaseScene(scenes.id.menu.changeData.measures);
 
-changeMeasuresScene.enter(ctx => {
+changeMeasuresScene.enter(async ctx => {
 
     try {
+        ctx.session.user = await db.getUserByID(ctx.from.id);
+
         if (ctx.session.recoveryMode == true) {
             try {
                 ctx.session.recoveryMode = false;
@@ -55,13 +57,8 @@ changeMeasuresScene.use((ctx, next) => {
 
 // ____________________________________________________
 
-changeMeasuresScene.on('text', async (ctx, next) => {
-    ctx.session.user = await db.getUserByID(ctx.from.id);
-    return next();
-});
-
 changeMeasuresScene.hears(keys.chest, ctx => {
-    ctx.session.user.measures = { chest: undefined };
+    //ctx.session.user.measures = { chest: undefined };
     return ctx.scene.enter(settersID.chest);
 });
 

@@ -12,7 +12,7 @@ module.exports.connect = async () => {
 // saves new/updates existing user
 module.exports.saveUserFromContext = async ctx => {
     try {
-        const userID = ctx.message.from.id;
+        const userID = ctx.from.id;
         let user = {};
 
         if (ctx.session.setConfig) {
@@ -39,41 +39,40 @@ module.exports.saveUserFromContext = async ctx => {
             if (ctx.session.user.name) {    
                 user.name = ctx.session.user.name;
             }
-            else if (ctx.session.user.sex) {
+            if (ctx.session.user.sex) {
                 user.sex = ctx.session.user.sex;
             }
-            else if (ctx.session.user.startWeight) {
+            if (ctx.session.user.startWeight) {
                 user.startWeight = ctx.session.user.startWeight;
             }
-            else if (ctx.session.user.targetWeight) {
+            if (ctx.session.user.targetWeight) {
                 user.targetWeight = ctx.session.user.targetWeight;
             }
-            else if (ctx.session.user.height) {
+            if (ctx.session.user.height) {
                 user.height = ctx.session.user.height;
             }
-            else if (ctx.session.user.age) {
+            if (ctx.session.user.age) {
                 user.age = ctx.session.user.age;
             }
-            else if (ctx.session.user.activity) {
+            if (ctx.session.user.activity) {
                 user.activity = ctx.session.user.activity;
             }
 
-            else if (ctx.session.user.measures) {
-
+            if (ctx.session.user.measures) {
                 if (ctx.session.user.measures.chest) {
                     user.measures.chest = ctx.session.user.measures.chest;
                 }
-                else if (ctx.session.user.measures.waist) {
+                if (ctx.session.user.measures.waist) {
                     user.measures.waist = ctx.session.user.measures.waist;
                 }
-                else if (ctx.session.user.measures.hip) {
+                if (ctx.session.user.measures.hip) {
                     user.measures.hip = ctx.session.user.measures.hip;
                 }
             }
         }
 
-        ctx.log(`User ${ctx.from.id} saved from context`);
         await user.save();
+        ctx.log(`User ${ctx.from.id} saved from context`);
         ctx.scene.enter(scenes.id.menu.main);
 
     } catch (e) {
