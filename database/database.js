@@ -72,23 +72,34 @@ module.exports.saveUserFromContext = async ctx => {
             }
         }
 
+        ctx.log(`User ${ctx.from.id} saved from context`);
         await user.save();
         ctx.scene.enter(scenes.id.menu.main);
 
     } catch (e) {
-        console.log('Error on saving user from context: ' + e.message);
+        let newErr = new Error(`Error in saveUserFromContext: ${e.message}`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 };
 
 module.exports.setUserState = async (id, state) => {
-    await User.updateOne({ _id: id}, { state: state });
+    try {
+        await User.updateOne({ _id: id}, { state: state });
+    } catch (e) {
+        let newErr = new Error(`Error in setUserState: ${e.message}`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
+    }
 };
 
 module.exports.getUserByID = async id => {
     try {
         return await User.findById(id);
     } catch (e) {
-        console.log('Error on getting user data: ' + e.message);
+        let newErr = new Error(`Error in getUserByID: ${e.message}`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 };
 
@@ -96,6 +107,8 @@ module.exports.userExists = async id => {
     try {
         return Boolean(await User.exists({_id: id}));
     } catch (e) {
-        console.log(e.message);
+        let newErr = new Error(`Error in userExists: ${e.message}`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 }

@@ -34,13 +34,23 @@ const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData.home);
 
 changeDataScene.enter(ctx => {
 
-    if (ctx.session.recoveryMode == true) {
-        ctx.session.recoveryMode = false;
-        return ctx.handleRecovery(changeDataScene, ctx);
-    }
-    else {
-        db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
-        return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
+    try {
+        if (ctx.session.recoveryMode == true) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(changeDataScene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        else {
+            db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
+            return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
+        }
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <changeData/home> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 });
 

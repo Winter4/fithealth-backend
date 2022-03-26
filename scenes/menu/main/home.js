@@ -29,70 +29,90 @@ const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
 
 mainMenuScene.enter(async ctx => {
 
-    if (ctx.session.recoveryMode == true) {
-        ctx.session.recoveryMode = false;
-        return ctx.handleRecovery(mainMenuScene, ctx);
-    }
-    else {
-        const userID = ctx.from.id;
-        db.setUserState(userID, scenes.id.menu.main);
-        
-        const user = await db.getUserByID(userID);
-        
-        let text = `Приветствую, ${user.name}!`;
-        let today = new Date();
-        let days = [
-            'воскресенье',
-            'понедельник',
-            'вторник',
-            'среда',
-            'четверг',
-            'пятница',
-            'суббота',
-        ]
-        text += `\nСегодня ${days[today.getDay()]}`;
-        text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
+    try {
+        if (ctx.session.recoveryMode == true) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(mainMenuScene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        else {
+            const userID = ctx.from.id;
+            db.setUserState(userID, scenes.id.menu.main);
+            
+            const user = await db.getUserByID(userID);
+            
+            let text = `Приветствую, ${user.name}!`;
+            let today = new Date();
+            let days = [
+                'воскресенье',
+                'понедельник',
+                'вторник',
+                'среда',
+                'четверг',
+                'пятница',
+                'суббота',
+            ]
+            text += `\nСегодня ${days[today.getDay()]}`;
+            text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-        text += `\n\nСтартовый вес: ${user.startWeight}`;
-        text += `\nТекущий вес:  кг`;
-        text += `\nБлижайшая цель:  кг`;
-        text += `\nЖелаемый вес: ${user.targetWeight} кг`;
+            text += `\n\nСтартовый вес: ${user.startWeight}`;
+            text += `\nТекущий вес:  кг`;
+            text += `\nБлижайшая цель:  кг`;
+            text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 
-        return ctx.replyWithPhoto(
-            { source: 'images/main-menu.jpg' },
-            {
-                caption: text,
-                ...keyboard,
-            },
-        );
+            return ctx.replyWithPhoto(
+                { source: 'images/main-menu.jpg' },
+                {
+                    caption: text,
+                    ...keyboard,
+                },
+            );
+        }
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <main/home> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 });
 
 // ______________________________________________________________
 
+mainMenuScene.hears(keys.makeReport, ctx => {
+    ctx.log('test tetxt');
+});
+
 mainMenuScene.hears(keys.mealPlan, async ctx => {
 
-    const user = await db.getUserByID(ctx.from.id);
+    try {
+        const user = await db.getUserByID(ctx.from.id);
 
-    const sexParam = user.sex == 'Мужской' ? 5 : -161;
-    let basicCaloricIntake = 
-        10 * user.startWeight + 
-        6.25 * user.height -
-        5 * user.age +
-        sexParam
-    ;
-    basicCaloricIntake *= user.activity;
-    basicCaloricIntake = basicCaloricIntake.toFixed();
+        const sexParam = user.sex == 'Мужской' ? 5 : -161;
+        let basicCaloricIntake = 
+            10 * user.startWeight + 
+            6.25 * user.height -
+            5 * user.age +
+            sexParam
+        ;
+        basicCaloricIntake *= user.activity;
+        basicCaloricIntake = basicCaloricIntake.toFixed();
 
-    const lessCaloricIntake = (basicCaloricIntake * 0.8).toFixed();
-    const moreCaloricIntake = (basicCaloricIntake * 1.2).toFixed();
+        const lessCaloricIntake = (basicCaloricIntake * 0.8).toFixed();
+        const moreCaloricIntake = (basicCaloricIntake * 1.2).toFixed();
 
-    let text = 'Ваша дневная норма калорий в зависимости от желаемого результата: \n'
-    text += `- <b><i>Поддержание</i></b> веса: ${basicCaloricIntake} \n`;
-    text += `- <b><i>Снижение</i></b> веса: ${lessCaloricIntake} \n`;
-    text += `- <b><i>Набора</i></b> веса: ${moreCaloricIntake} \n`;
+        let text = 'Ваша дневная норма калорий в зависимости от желаемого результата: \n'
+        text += `- <b><i>Поддержание</i></b> веса: ${basicCaloricIntake} \n`;
+        text += `- <b><i>Снижение</i></b> веса: ${lessCaloricIntake} \n`;
+        text += `- <b><i>Набора</i></b> веса: ${moreCaloricIntake} \n`;
 
-    return ctx.replyWithHTML(text);
+        return ctx.replyWithHTML(text);
+    } catch (e) {
+        let newErr = new Error(`Error in <hears[keys.mealPlan]> middleware of <main/home> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
+    }
 });
 
 mainMenuScene.use(require('./info').composer);
@@ -113,16 +133,22 @@ mainMenuScene.hears(keys.info, ctx => {
 
 mainMenuScene.hears(keys.myData, async ctx => {
 
-    const user = await db.getUserByID(ctx.from.id);
-    return ctx.reply(
-        `Имя: ${user.name}` + 
-        `\nПол: ${user.sex}` + 
-        `\nРост: ${user.height} см` + 
-        `\nВозраст: ${user.age}` + 
-        //`\nАктивность: ${user.activity}` + 
-        '\nЗамеры (Г/Т/Б): ' + 
-        `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
-    );
+    try {
+        const user = await db.getUserByID(ctx.from.id);
+        return ctx.reply(
+            `Имя: ${user.name}` + 
+            `\nПол: ${user.sex}` + 
+            `\nРост: ${user.height} см` + 
+            `\nВозраст: ${user.age}` + 
+            //`\nАктивность: ${user.activity}` + 
+            '\nЗамеры (Г/Т/Б): ' + 
+            `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
+        );
+    } catch (e) {
+        let newErr = new Error(`Error in <hears[keys.myData]> middleware of <main/home> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
+    }
 });
 
 mainMenuScene.hears(keys.changeData, ctx => {

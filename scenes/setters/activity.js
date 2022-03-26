@@ -35,36 +35,42 @@ const setActivityScene = composeWizardScene(
         return ctx.wizard.next();
     },
     async (ctx, done) => {
-        if (ctx.message.text) {
+        try {
+            if (ctx.message.text) {
 
-            let rate = 0;
+                let rate = 0;
 
-            switch (ctx.message.text) {
-                case Activity.zero:
-                    rate = 1.2;
-                    break;
+                switch (ctx.message.text) {
+                    case Activity.zero:
+                        rate = 1.2;
+                        break;
+                        
+                    case Activity.low:
+                        rate = 1.375;
+                        break;
+
+                    case Activity.middle:
+                        rate = 1.55;
+                        break;
+
+                    case Activity.high:
+                        rate = 1.95;
+                        break;
                     
-                case Activity.low:
-                    rate = 1.375;
-                    break;
+                    default:
+                        return ctx.reply('Пожалуйста, используйте клавиатуру');
+                }
 
-                case Activity.middle:
-                    rate = 1.55;
-                    break;
-
-                case Activity.high:
-                    rate = 1.95;
-                    break;
-                
-                default:
-                    return ctx.reply('Пожалуйста, используйте клавиатуру');
+                ctx.session.user.activity = rate;
+                return done();
             }
-
-            ctx.session.user.activity = rate;
-            return done();
-        }
-        else {
-            return ctx.reply('Пожалуйста, используйте клавиатуру');            
+            else {
+                return ctx.reply('Пожалуйста, используйте клавиатуру');            
+            }
+        } catch (e) {
+            let newErr = new Error(`Error in <setters/activity> scene: ${e.message} \n`);
+            ctx.logError(ctx, newErr, __dirname);
+            throw newErr;
         }
     }
 );

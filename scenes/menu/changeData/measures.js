@@ -28,13 +28,23 @@ const changeMeasuresScene = new Scenes.BaseScene(scenes.id.menu.changeData.measu
 
 changeMeasuresScene.enter(ctx => {
 
-    if (ctx.session.recoveryMode == true) {
-        ctx.session.recoveryMode = false;
-        return ctx.handleRecovery(changeMeasuresScene, ctx);
-    }
-    else {
-        db.setUserState(ctx.from.id, scenes.id.menu.changeData.measures);
-        return ctx.reply('Выберите замер, который хотите изменить', measuresKeyboard);
+    try {
+        if (ctx.session.recoveryMode == true) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(changeMeasuresScene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        else {
+            db.setUserState(ctx.from.id, scenes.id.menu.changeData.measures);
+            return ctx.reply('Выберите замер, который хотите изменить', measuresKeyboard);
+        }
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <changeData/measures> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 });
 

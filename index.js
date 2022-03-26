@@ -11,7 +11,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // u should update these:
 /**
  * 1. scenes/scenes.js > ib & object
- * 2. complete necessary new_scene.js file
+ * 2. complete necessary new_scene.js file (don't forget to handle recovery mode)
  * 3. index.js > stage
  * 4. index.js > empty user in bot.start (new user init, else branch)
  * 5. models/user.js > user model
@@ -54,75 +54,126 @@ bot.use(stage.middleware());
 
 // _______________________________________
 
-bot.context.handleRecovery = (scene, ctx) => {
-    const handler = scene.middleware();
-    return handler(ctx, Promise.resolve());
+bot.context.log = msg => {
+    console.log(`${Date()}  |  ${msg}`);
+};
+
+bot.context.logObject = object => {
+    console.log(object);
+    console.log('_________________END__OF__OBJECT____________________');
+}
+
+bot.context.logError = (ctx, err, dirname) => {
+    console.log(`${Date()}  |  Error in ${dirname} 
+        Update type: ${ctx.updateType} 
+        Chat ID: ${ctx.chat.id}
+        Message: ${err.message}
+        Raw error: ${err}  \n`
+    );
+};
+
+bot.context.handleRecovery = async (scene, ctx) => {
+    try {
+        console.log('HANDLE');
+        const handler = await scene.middleware();
+        return await handler(ctx, Promise.resolve());
+    } catch (e) {
+        ctx.logError(ctx, e, __dirname);
+    }
 };
 
 // _________________________________________________
 
-bot.use(async (ctx, next) => {
-
-    const user = await db.getUserByID(ctx.from.id);
-
-    if (user !== null) {
-        ctx.session.recoveryMode = true;
-        return ctx.scene.enter(user.state);
-    }
-
-    return next();
-});
-
 bot.start(async ctx => {
-    const userID = ctx.message.from.id;
-    
-    if (await db.userExists(userID)) {
-        ctx.session.setConfig = false;
-        ctx.scene.enter(scenes.id.menu.main);
-    }
-    else {
-        ctx.session.user = {
-            name: undefined,
-            sex: undefined,age: undefined,
-            startWeight: undefined,
-            targetWeight: undefined,
-            height: undefined,
-            age: undefined,
-            activity: undefined,
-            
-            measures: {
-                chest: undefined,
-                waist: undefined,
-                hip: undefined
-            }
+
+    try {
+        if (await db.userExists(ctx.from.id)) {
+
+            ctx.log(`User ${ctx.chat.id} is back`);
+
+            ctx.session.setConfig = false;
+            return ctx.scene.enter(scenes.id.menu.main);
         }
-        
-        await ctx.reply(
-            'Приветcтвую! Это Ваш первый шаг к приобретению тела мечты. ' +
-            'Команда тренеров нашего приложения рада видеть Вас здесь и сделает все, ' + 
-            'чтобы помочь достигнуть лучшего результата!'
-        );
-
-        ctx.session.setConfig = true;
-        ctx.scene.enter(scenes.id.setter.name);
+        else {
+            ctx.session.user = {
+                name: undefined,
+                sex: undefined,age: undefined,
+                startWeight: undefined,
+                targetWeight: undefined,
+                height: undefined,
+                age: undefined,
+                activity: undefined,
+                
+                measures: {
+                    chest: undefined,
+                    waist: undefined,
+                    hip: undefined
+                }
+            }
+            
+            ctx.log(`New ${ctx.chat.id} user`);
+            await ctx.reply(
+                'Приветcтвую! Это Ваш первый шаг к приобретению тела мечты. ' +
+                'Команда тренеров нашего приложения рада видеть Вас здесь и сделает все, ' + 
+                'чтобы помочь достигнуть лучшего результата!'
+            );
+    
+            ctx.session.setConfig = true;
+            return ctx.scene.enter(scenes.id.setter.name);
+        }
+    } catch (e) {
+        ctx.logError(ctx, e, __dirname);
     }
 });
 
-bot.on('message', ctx => {
-    return ctx.reply('gotcha');
+bot.on('text', async (ctx, next) => {
+
+    ctx.log(`User ${ctx.from.id} texted`);
+    try {
+        const user = await db.getUserByID(ctx.from.id);
+
+        if (user !== null) {
+            ctx.session.recoveryMode = true;
+            return ctx.scene.enter(user.state);
+        }
+        return next();
+    } catch (e) {
+        ctx.logError(ctx, e, __dirname);
+    }
 });
+
+bot.on('my_chat_member', () => {
+    return;
+});
+
+bot.use(ctx => {
+
+    ctx.reply('Кажется, что-то пошло не так. Пожалуйста, перезапустите бота /start');
+
+    ctx.log(`Junkyard triggered by ${ctx.chat.id} user with update: `);
+    ctx.logObject(ctx.update);
+
+    return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, 
+        `Junkyard triggered by ${ctx.chat.id} user`);
+});
+
+// _________________________________________________________
 
 bot.catch((err, ctx) => {
-    ctx.reply('Возникла непредвиденная ошибка. Уведомление администратору отправлено. Приносим извинения за неудобства');
-    console.log(err);
+    ctx.log(`Catch triggered by ${ctx.chat.id} user`);
     return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
-        `Ошибка \nUpdate type: ${ctx.updateType} \nСообщение: ${err.message} \nВремя: ${Date()}`);
-});
+        `Ошибка 
+        Update type: ${ctx.updateType} 
+        Chat ID: ${ctx.chat.id}
+        Message: ${err.message} 
+        Время: ${Date()}`
+    );
+}); 
 
 bot.launch().then(async () => {
     try {
         await db.connect();
     } catch (e) {
-        console.log(e.message);
+        ctx.log('Failed to connect to MongoDB: ' + e.message);
     }
 });

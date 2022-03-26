@@ -27,13 +27,23 @@ const changeWeightsScene = new Scenes.BaseScene(scenes.id.menu.changeData.weight
 
 changeWeightsScene.enter(ctx => {
 
-    if (ctx.session.recoveryMode == true) {
-        ctx.session.recoveryMode = false;
-        return ctx.handleRecovery(changeWeightsScene, ctx);
-    }
-    else {
-        db.setUserState(ctx.from.id, scenes.id.menu.changeData.weights);
-        return ctx.reply('Выберите вес, который хотите изменить', keyboard);
+    try {
+        if (ctx.session.recoveryMode == true) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(changeWeightsScene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        else {
+            db.setUserState(ctx.from.id, scenes.id.menu.changeData.weights);
+            return ctx.reply('Выберите вес, который хотите изменить', keyboard);
+        }
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <changeData/weights> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
     }
 });
 

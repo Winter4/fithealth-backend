@@ -21,26 +21,32 @@ const setTargetWeightScene = composeWizardScene(
         return ctx.wizard.next();
     },
     (ctx, done) => {
-        if (ctx.message.text) {
-            let data =  ctx.message.text;
-            let weight = Number.parseInt(ctx.message.text);
-
-            // data.length > 3
-            // if length == 4, then the value == 1000+, but it can't be
-            if (Number.isNaN(data) || Number.isNaN(weight) || data.length > 3) {
-                ctx.reply('Пожалуйста, введите вес цифрами');
+        try {
+            if (ctx.message.text) {
+                let data =  ctx.message.text;
+                let weight = Number.parseInt(ctx.message.text);
+    
+                // data.length > 3
+                // if length == 4, then the value == 1000+, but it can't be
+                if (Number.isNaN(data) || Number.isNaN(weight) || data.length > 3) {
+                    ctx.reply('Пожалуйста, введите вес цифрами');
+                    return;
+                }
+                else if (weight < limits.min || weight > limits.max) {
+                    ctx.reply('Пожалуйста, введите корректный вес');
+                    return;
+                }
+                ctx.session.user.targetWeight = weight;
+                return done();
+            }
+            else {
+                ctx.reply('Пожалуйста, введите вес цифрами в текстовом формате');
                 return;
             }
-            else if (weight < limits.min || weight > limits.max) {
-                ctx.reply('Пожалуйста, введите корректный вес');
-                return;
-            }
-            ctx.session.user.targetWeight = weight;
-            return done();
-        }
-        else {
-            ctx.reply('Пожалуйста, введите вес цифрами в текстовом формате');
-            return;
+        } catch (e) {
+            let newErr = new Error(`Error in <setters/targetWeight> scene: ${e.message} \n`);
+            ctx.logError(ctx, newErr, __dirname);
+            throw newErr;
         }
     }
 );
