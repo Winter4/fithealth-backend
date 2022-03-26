@@ -133,8 +133,10 @@ bot.on('text', async (ctx, next) => {
 
         if (user !== null) {
             ctx.session.recoveryMode = true;
+            ctx.log(`^^^^ Recovery mode: ${ctx.session.recoveryMode}`);
             return ctx.scene.enter(user.state);
         }
+        ctx.log(`\t\tRecovery mode: ${ctx.session.recoveryMode}`);
         return next();
     } catch (e) {
         ctx.logError(ctx, e, __dirname);

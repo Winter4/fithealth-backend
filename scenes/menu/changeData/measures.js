@@ -55,18 +55,23 @@ changeMeasuresScene.use((ctx, next) => {
 
 // ____________________________________________________
 
+changeMeasuresScene.on('text', async (ctx, next) => {
+    ctx.session.user = await db.getUserByID(ctx.from.id);
+    return next();
+});
+
 changeMeasuresScene.hears(keys.chest, ctx => {
-    ctx.session.user = { measures: { chest: undefined }};
+    ctx.session.user.measures = { chest: undefined };
     return ctx.scene.enter(settersID.chest);
 });
 
 changeMeasuresScene.hears(keys.waist, ctx => {
-    ctx.session.user = { measures: { waist: undefined }};
+    ctx.session.user.measures = { waist: undefined };
     return ctx.scene.enter(settersID.waist);
 });
 
 changeMeasuresScene.hears(keys.hip, ctx => {
-    ctx.session.user = { measures: { hip: undefined }};
+    ctx.session.user.measures = { hip: undefined };
     return ctx.scene.enter(settersID.hip);
 });
 

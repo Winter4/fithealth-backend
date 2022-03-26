@@ -46,7 +46,7 @@ changeDataScene.enter(async ctx => {
         else {
             db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
             const user = await db.getUserByID(ctx.from.id);
-            ctx.reply(
+            await ctx.reply(
                 `Имя: ${user.name}` + 
                 `\nПол: ${user.sex}` + 
                 `\nРост: ${user.height} см` + 
