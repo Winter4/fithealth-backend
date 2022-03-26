@@ -130,7 +130,7 @@ mainMenuScene.hears(keys.info, ctx => {
     return ctx.reply(text, inlineKeyboard);
 });
 
-mainMenuScene.hears(keys.changeData, ctx => {
+mainMenuScene.hears(keys.data, ctx => {
     return ctx.scene.enter(scenes.id.menu.changeData.home);
 });
 

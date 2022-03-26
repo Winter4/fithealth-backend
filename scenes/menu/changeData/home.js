@@ -32,7 +32,7 @@ const changeDataKeyboard = Markup.keyboard(
 
 const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData.home);
 
-changeDataScene.enter(ctx => {
+changeDataScene.enter(async ctx => {
 
     try {
         if (ctx.session.recoveryMode == true) {

@@ -74,7 +74,6 @@ bot.context.logError = (ctx, err, dirname) => {
 
 bot.context.handleRecovery = async (scene, ctx) => {
     try {
-        console.log('HANDLE');
         const handler = await scene.middleware();
         return await handler(ctx, Promise.resolve());
     } catch (e) {
