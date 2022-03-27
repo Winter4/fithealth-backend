@@ -50,6 +50,10 @@ const stage = new Scenes.Stage([
     scenes.object.menu.changeData.weights,
 ]);
 
+stage.command('home', ctx => {
+    return ctx.scene.enter(scenes.id.menu.main);
+});
+
 bot.use(session());
 bot.use(stage.middleware());
 
@@ -61,15 +65,13 @@ bot.context.log = msg => {
 
 bot.context.logObject = object => {
     console.log(object);
-    console.log('_________________END__OF__OBJECT____________________');
 }
 
 bot.context.logError = (ctx, err, dirname) => {
     console.log(`${Date()}  |  Error in ${dirname} 
         Update type: ${ctx.updateType} 
         Chat ID: ${ctx.chat.id}
-        Message: ${err.message}
-        Raw error: ${err}  \n`
+        Message: ${err.message}`
     );
 };
 
@@ -81,6 +83,10 @@ bot.context.handleRecovery = async (scene, ctx) => {
         ctx.logError(ctx, e, __dirname);
     }
 };
+
+bot.telegram.setMyCommands([
+    { command: '/home', description: 'takes you to the main menu'},
+]);
 
 // _________________________________________________
 
@@ -144,14 +150,19 @@ bot.on('text', async (ctx, next) => {
     }
 });
 
-bot.on('my_chat_member', () => {
+bot.on('my_chat_member', ctx => {
+    const upd = ctx.update.my_chat_member;
+    ctx.log(`Chat_member status mdlwre was triggered by ${ctx.chat.id}  [${upd.old_chat_member.status} -> ${upd.new_chat_member.status}]`);
     return;
 });
 
+bot.on('message', async ctx => {
+    await ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user`);
+    ctx.logObject(ctx.update);
+    return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /home');
+});
+
 bot.use(ctx => {
-
-    ctx.reply('Кажется, что-то пошло не так. Пожалуйста, перезапустите бота /start');
-
     ctx.log(`Junkyard triggered by ${ctx.chat.id} user with update: `);
     ctx.logObject(ctx.update);
 
@@ -162,7 +173,6 @@ bot.use(ctx => {
 // _________________________________________________________
 
 bot.catch((err, ctx) => {
-    ctx.log(`Catch triggered by ${ctx.chat.id} user`);
     return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
         `Ошибка 
         Update type: ${ctx.updateType} 
