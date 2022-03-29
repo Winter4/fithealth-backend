@@ -20,7 +20,13 @@ const keyboard = Markup.keyboard(
     ]
 ).resize();
 
-const inlineKeyboard = require('./info').inlineKeyboard;
+const infoKeyboard = require('./info').inlineKeyboard;
+
+const reportKeybord = Markup.inlineKeyboard(
+    [
+        Markup.button.url('Перейти в калькулятор', 'google.com'),
+    ],
+);
 
 // ____________________________________________________________
 
@@ -80,7 +86,8 @@ mainMenuScene.enter(async ctx => {
 // ______________________________________________________________
 
 mainMenuScene.hears(keys.makeReport, ctx => {
-    
+    return ctx.reply('Чтобы узнать, сколько калорий вы потребили, сколько нужно и сколько осталось - воспользуйтесь нашим калькулятором', 
+    reportKeybord);
 });
 
 mainMenuScene.hears(keys.mealPlan, async ctx => {
@@ -127,7 +134,7 @@ mainMenuScene.hears(keys.info, ctx => {
     text += '8️⃣ Как делать повторные замеры? \n\n';
     text += '9️⃣ Как использовать читмил? \n\n';
 
-    return ctx.reply(text, inlineKeyboard);
+    return ctx.reply(text, infoKeyboard);
 });
 
 mainMenuScene.hears(keys.data, ctx => {
