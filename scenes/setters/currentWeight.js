@@ -15,9 +15,9 @@ module.exports.limits = limits;
 
 // _________________________________________
 
-const setStartWeightScene = composeWizardScene(
+const setCurrentWeightScene = composeWizardScene(
     ctx => {
-        ctx.replyWithHTML(`Введите свой <b><i>начальный</i></b> вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
+        ctx.replyWithHTML(`Введите свой <b><i>текущий</i></b> вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
         return ctx.wizard.next();
     },
     (ctx, done) => {
@@ -36,7 +36,7 @@ const setStartWeightScene = composeWizardScene(
                     ctx.reply('Пожалуйста, введите корректный вес');
                     return;
                 }
-                ctx.session.user.startWeight = weight;
+                ctx.session.user.currentWeight = weight;
                 return done();
             }
             else {
@@ -44,11 +44,11 @@ const setStartWeightScene = composeWizardScene(
                 return;
             }
         } catch (e) {
-            let newErr = new Error(`Error in <setters/startWeight> scene: ${e.message} \n`);
+            let newErr = new Error(`Error in <setters/currentWeight> scene: ${e.message} \n`);
             ctx.logError(ctx, newErr, __dirname);
             throw newErr;
         }
     }
 );
 
-module.exports.scene = setStartWeightScene;
+module.exports.scene = setCurrentWeightScene;

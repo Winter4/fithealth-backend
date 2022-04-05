@@ -3,7 +3,7 @@ module.exports.id = {
     setter: {
         name: "SET_NAME_SCENE",
         sex: "SET_SEX_SCENE",
-        startWeight: 'SET_START_WEIGHT_SCENE',
+        currentWeight: 'SET_CURRENT_WEIGHT_SCENE',
         targetWeight: 'SET_TARGET_WEIGHT',
         height: 'SET_HEIGHT_SCENE',
         age: "SET_AGE_SCENE",
@@ -30,7 +30,7 @@ module.exports.object = {
     setter: {
         name: require('./setters/name'),
         sex: require('./setters/sex'),
-        startWeight: require('./setters/startWeight').scene,
+        currentWeight: require('./setters/currentWeight').scene,
         targetWeight: require('./setters/targetWeight').scene,
         height: require('./setters/height').scene,
         age: require('./setters/age').scene,

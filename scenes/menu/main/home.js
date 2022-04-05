@@ -68,7 +68,7 @@ mainMenuScene.enter(async ctx => {
 
             text += '\n\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-            text += `\n\nСтартовый вес: ${user.startWeight}`;
+            text += `\n\nСтартовый вес: ${user.startWeight} кг`;
             text += `\nТекущий вес: ${user.currentWeight} кг`;
             text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 

@@ -20,8 +20,8 @@ module.exports.saveUserFromContext = async ctx => {
                 _id: userID,
                 name: ctx.session.user.name,
                 sex: ctx.session.user.sex,
-                startWeight: ctx.session.user.startWeight,
-                currentWeight: ctx.session.user.startWeight,
+                startWeight: ctx.session.user.currentWeight,
+                currentWeight: ctx.session.user.currentWeight,
                 targetWeight: ctx.session.user.targetWeight,
                 height: ctx.session.user.height,
                 age: ctx.session.user.age,
@@ -44,7 +44,7 @@ module.exports.saveUserFromContext = async ctx => {
                 user.sex = ctx.session.user.sex;
             }
             if (ctx.session.user.startWeight) {
-                user.startWeight = ctx.session.user.startWeight;
+                user.startWeight = ctx.session.user.currentWeight;
             }
             if (ctx.session.user.currentWeight) {
                 user.currentWeight = ctx.session.user.currentWeight;
