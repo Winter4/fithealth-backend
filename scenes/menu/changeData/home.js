@@ -11,9 +11,6 @@ const keys = {
     age: 'Возраст',
     activity: 'Активность',
 
-    weight: 'Вес',
-    measures: 'Замеры',
-
     back: 'Назад',
 };
 
@@ -23,7 +20,6 @@ const changeDataKeyboard = Markup.keyboard(
     [
         [ keys.name, keys.sex, keys.activity ],
         [ keys.age, keys.height ],
-        [ keys.weight, keys.measures ],
         [ keys.back ],
     ]
 ).resize();
@@ -45,16 +41,6 @@ changeDataScene.enter(async ctx => {
         }
         else {
             db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
-            const user = await db.getUserByID(ctx.from.id);
-            await ctx.reply(
-                `Имя: ${user.name}` + 
-                `\nПол: ${user.sex}` + 
-                `\nРост: ${user.height} см` + 
-                `\nВозраст: ${user.age}` + 
-                //`\nАктивность: ${user.activity}` + 
-                '\nЗамеры (Г/Т/Б): ' + 
-                `${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`
-            );
             return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
         }
     } catch (e) {
@@ -94,16 +80,6 @@ changeDataScene.hears(keys.age, ctx => {
 changeDataScene.hears(keys.activity, ctx => {
     ctx.session.user = { activity: undefined };
     return ctx.scene.enter(scenes.id.setter.activity);
-});
-
-// _____________________________________________________
-
-changeDataScene.hears(keys.weight, ctx => {
-    return ctx.scene.enter(scenes.id.menu.changeData.weights);
-});
-
-changeDataScene.hears(keys.measures, ctx => {
-    return ctx.scene.enter(scenes.id.menu.changeData.measures);
 });
 
 // _________________________________________________________

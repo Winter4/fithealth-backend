@@ -36,6 +36,12 @@ const userSchema = new mongoose.Schema({
         min: weightLimits.min,
         max: weightLimits.max,
     },
+    currentWeight: {
+        type: Number,
+        required: true,
+        min: weightLimits.min,
+        max: weightLimits.max,
+    },
     targetWeight: {
         type: Number,
         required: true,

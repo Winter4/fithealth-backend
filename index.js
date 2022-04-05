@@ -46,8 +46,6 @@ const stage = new Scenes.Stage([
 
     scenes.object.menu.main,
     scenes.object.menu.changeData.home,
-    scenes.object.menu.changeData.measures,
-    scenes.object.menu.changeData.weights,
 ]);
 
 stage.command('home', ctx => {

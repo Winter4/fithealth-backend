@@ -20,8 +20,6 @@ module.exports.id = {
         main: 'MAIN_MENU_SCENE',
         changeData: {
             home:'CHANGE_DATA_SCENE',
-            measures: 'CHANGE_MEASURES_SCENE',
-            weights: 'CHANGE_WEIGHTS_SCENE',
         },
     },
 };
@@ -49,8 +47,6 @@ module.exports.object = {
         main: require('./menu/main/home'),
         changeData: {
             home: require('./menu/changeData/home'),
-            measures: require('./menu/changeData/measures'),
-            weights: require('./menu/changeData/weights'),
         }
     },
 };

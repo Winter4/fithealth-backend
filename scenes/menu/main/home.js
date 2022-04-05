@@ -9,7 +9,7 @@ const keys = {
     makeReport: 'Сделать отчёт',
     mealPlan: 'План питания',
     info: 'Справка',
-    data: 'Данные',
+    data: 'Изменить данные',
 };
 
 const keyboard = Markup.keyboard(
@@ -55,12 +55,18 @@ mainMenuScene.enter(async ctx => {
                 'суббота',
             ]
             text += `\nСегодня ${days[today.getDay()]}`;
-            text += '\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
+
+            text += `\nВаш пол: ${user.sex.toLowerCase()}`;
+            text += `\nВаш возраст: ${user.age}`; 
+            text += `\nВаш рост: ${user.height}`;
+
+            text += '\n\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
             text += `\n\nСтартовый вес: ${user.startWeight}`;
-            text += `\nТекущий вес:  кг`;
-            text += `\nБлижайшая цель:  кг`;
+            text += `\nТекущий вес: ${user.currentWeight} кг`;
             text += `\nЖелаемый вес: ${user.targetWeight} кг`;
+
+            text += `\nЗамеры (Г/Т/Б): ${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`;
 
             return ctx.replyWithPhoto(
                 { source: 'images/main-menu.jpg' },
