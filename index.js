@@ -148,6 +148,24 @@ bot.on('text', async (ctx, next) => {
     }
 });
 
+bot.on('callback_query', async (ctx, next) => {
+
+    ctx.log(`User ${ctx.from.id} quered callback (inline button)`);
+    try {
+        const user = await db.getUserByID(ctx.from.id);
+
+        if (user !== null) {
+            ctx.session.recoveryMode = true;
+            ctx.log(`^^^^ Recovery mode: ${ctx.session.recoveryMode}`);
+            return ctx.scene.enter(user.state);
+        }
+        ctx.log(`\t\tRecovery mode: ${ctx.session.recoveryMode}`);
+        return next();
+    } catch (e) {
+        ctx.logError(ctx, e, __dirname);
+    }
+});
+
 bot.on('my_chat_member', ctx => {
     const upd = ctx.update.my_chat_member;
     ctx.log(`Chat_member status mdlwre was triggered by ${ctx.chat.id}  [${upd.old_chat_member.status} -> ${upd.new_chat_member.status}]`);
