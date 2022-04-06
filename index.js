@@ -3,6 +3,8 @@ const db = require('./database/database');
 
 require('dotenv').config();
 
+const User = require('./models/user');
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // ______________________________________
@@ -29,30 +31,34 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // _______________________________________________________________________
 
+bot.use(session());
+
 const scenes = require('./scenes/scenes');
 const stage = new Scenes.Stage([
 
-    scenes.object.setter.name(scenes.id.setter.name, ctx => ctx.session.setConfig ? scenes.id.setter.sex : db.saveUserFromContext(ctx)),
-    scenes.object.setter.sex(scenes.id.setter.sex, ctx => ctx.session.setConfig ? scenes.id.setter.currentWeight : db.saveUserFromContext(ctx)),
-    scenes.object.setter.currentWeight(scenes.id.setter.currentWeight, ctx => ctx.session.setConfig ? scenes.id.setter.targetWeight : db.saveUserFromContext(ctx)),
-    scenes.object.setter.targetWeight(scenes.id.setter.targetWeight, ctx => ctx.session.setConfig ? scenes.id.setter.height : db.saveUserFromContext(ctx)),
-    scenes.object.setter.height(scenes.id.setter.height, ctx => ctx.session.setConfig ? scenes.id.setter.age : db.saveUserFromContext(ctx)),
-    scenes.object.setter.age(scenes.id.setter.age, ctx => ctx.session.setConfig ? scenes.id.setter.activity : db.saveUserFromContext(ctx)),
-    scenes.object.setter.activity(scenes.id.setter.activity, ctx => ctx.session.setConfig ? scenes.id.setter.measure.chest : db.saveUserFromContext(ctx)),
+    scenes.object.setter.name,
+    scenes.object.setter.sex,
+    scenes.object.setter.height,
+    scenes.object.setter.age,
+    scenes.object.setter.activity,
+    scenes.object.setter.weight.current,
+    scenes.object.setter.weight.target,
 
-    scenes.object.setter.measure.chest(scenes.id.setter.measure.chest, ctx => ctx.session.setConfig ? scenes.id.setter.measure.waist : db.saveUserFromContext(ctx)),
-    scenes.object.setter.measure.waist(scenes.id.setter.measure.waist, ctx => ctx.session.setConfig ? scenes.id.setter.measure.hip : db.saveUserFromContext(ctx)),
-    scenes.object.setter.measure.hip(scenes.id.setter.measure.hip, ctx => db.saveUserFromContext(ctx)),
+    scenes.object.setter.measure.chest,
+    scenes.object.setter.measure.waist,
+    scenes.object.setter.measure.hip,
 
     scenes.object.menu.main,
     scenes.object.menu.changeData.home,
 ]);
 
-stage.command('home', ctx => {
-    return ctx.scene.enter(scenes.id.menu.main);
+stage.command('home', async ctx => {
+    if (await db.userRegisteredByID(ctx.from.id))
+        return ctx.scene.enter(scenes.id.menu.main);
+    else
+        return ctx.reply('Вы не завершили регистрацию');
 });
 
-bot.use(session());
 bot.use(stage.middleware());
 
 // _______________________________________
@@ -91,29 +97,20 @@ bot.telegram.setMyCommands([
 bot.start(async ctx => {
 
     try {
-        if (await db.userExists(ctx.from.id)) {
+        let user = await User.findOne({ _id: ctx.from.id });
 
+        if (user !== null) {
             ctx.log(`User ${ctx.chat.id} is back`);
 
-            ctx.session.setConfig = false;
-            return ctx.scene.enter(scenes.id.menu.main);
+            // if user hadn't registered before stopping the bot
+            if (await db.userRegisteredByObject(user)) 
+                return ctx.scene.enter(scenes.id.menu.main);
+            else 
+                return ctx.scene.enter(user.state);
         }
         else {
-            ctx.session.user = {
-                name: undefined,
-                sex: undefined,age: undefined,
-                currentWeight: undefined,
-                targetWeight: undefined,
-                height: undefined,
-                age: undefined,
-                activity: undefined,
-                
-                measures: {
-                    chest: undefined,
-                    waist: undefined,
-                    hip: undefined
-                }
-            }
+            user = new User({ _id: ctx.from.id });
+            await user.save();
             
             ctx.log(`New ${ctx.chat.id} user`);
             await ctx.reply(
@@ -122,7 +119,6 @@ bot.start(async ctx => {
                 'чтобы помочь достигнуть лучшего результата!'
             );
     
-            ctx.session.setConfig = true;
             return ctx.scene.enter(scenes.id.setter.name);
         }
     } catch (e) {
@@ -189,6 +185,7 @@ bot.use(ctx => {
 // _________________________________________________________
 
 bot.catch((err, ctx) => {
+    ctx.log('^^^ Error catched in index ^^^');
     return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
         `Ошибка 
         Update type: ${ctx.updateType} 
@@ -196,7 +193,7 @@ bot.catch((err, ctx) => {
         Message: ${err.message} 
         Время: ${Date()}`
     );
-}); 
+});  
 
 bot.launch().then(async () => {
     try {

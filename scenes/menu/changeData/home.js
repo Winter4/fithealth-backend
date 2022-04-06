@@ -50,35 +50,30 @@ changeDataScene.enter(async ctx => {
     }
 });
 
-changeDataScene.use((ctx, next) => {
-    ctx.session.setConfig = false;
+changeDataScene.use(async (ctx, next) => {
+    ctx.session.registered = await db.userRegisteredByID(ctx.from.id);
     return next();
 });
 
 // ____________________ SETTERS _______________________
 
 changeDataScene.hears(keys.name, ctx => {
-    ctx.session.user = { name: undefined };
     return ctx.scene.enter(scenes.id.setter.name);
 });
 
 changeDataScene.hears(keys.sex, ctx => {
-    ctx.session.user = { sex: undefined };
     return ctx.scene.enter(scenes.id.setter.sex);
 });
 
 changeDataScene.hears(keys.height, ctx => {
-    ctx.session.user = { height: undefined };
     return ctx.scene.enter(scenes.id.setter.height);
 });
 
 changeDataScene.hears(keys.age, ctx => {
-    ctx.session.user = { age: undefined };
     return ctx.scene.enter(scenes.id.setter.age);
 });
 
 changeDataScene.hears(keys.activity, ctx => {
-    ctx.session.user = { activity: undefined };
     return ctx.scene.enter(scenes.id.setter.activity);
 });
 
@@ -87,5 +82,9 @@ changeDataScene.hears(keys.activity, ctx => {
 changeDataScene.hears(keys.back, ctx => {
     return ctx.scene.enter(scenes.id.menu.main);
 })
+
+changeDataScene.on('message', ctx => {
+    return ctx.reply('Используйте клавиаутуру меню');
+});
 
 module.exports = changeDataScene;

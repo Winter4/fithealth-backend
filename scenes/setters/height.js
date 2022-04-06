@@ -1,6 +1,8 @@
 const { Scenes, Markup } = require("telegraf");
 
-const composeWizardScene = require('../factory/factory').composeWizardScene;
+const db = require('../../database/database');
+const User = require('../../models/user');
+const scenes = require('../scenes');
 
 // ____________________________________________________________
 
@@ -15,40 +17,51 @@ module.exports.limits = limits;
 
 // ________________________________________
 
-const setHeightScene = composeWizardScene(
-    ctx => {
-        ctx.reply(`Введите свой рост числом (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());
-        return ctx.wizard.next();
-    },
-    (ctx, done) => {
-        try {
-            if (ctx.message.text) {
-                let data =  ctx.message.text;
-                let height = Number.parseInt(ctx.message.text);
-    
-                // data.length > 3
-                // if length == 4, then the value == 1000+, but it can't be
-                if (Number.isNaN(data) || Number.isNaN(height) || data.length > 3) {
-                    ctx.reply('Пожалуйста, введите рост цифрами');
-                    return;
-                }
-                else if (height < limits.min || height > limits.max) {
-                    ctx.reply('Пожалуйста, введите корректный рост');
-                    return;
-                }
-                ctx.session.user.height = height;
-                return done();
-            }
-            else {
-                ctx.reply('Пожалуйста, введите рост цифрами в текстовом формате');
-                return;
-            }
-        } catch (e) {
-            let newErr = new Error(`Error in <setters/height> scene: ${e.message} \n`);
-            ctx.logError(ctx, newErr, __dirname);
-            throw newErr;
-        }
-    }
-);
+const scene = new Scenes.BaseScene(scenes.id.setter.height);
 
-module.exports.scene = setHeightScene;
+scene.enter(ctx => {
+    try {
+        if (ctx.session.recoveryMode) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(scene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        
+        db.setUserState(ctx.from.id, scenes.id.setter.height);
+        return ctx.reply(`Введите свой рост числом (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());
+        
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <setters/height> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
+    }
+});
+
+scene.on('text', async ctx => {
+    let data =  ctx.message.text;
+    let height = Number.parseInt(ctx.message.text);
+
+    // data.length > 3
+    // if length == 4, then the value == 1000+, but it can't be
+    if (Number.isNaN(data) || Number.isNaN(height) || data.length > 3) 
+        return ctx.reply('Пожалуйста, введите рост цифрами');
+    else if (height < limits.min || height > limits.max) 
+        return ctx.reply('Пожалуйста, введите корректный рост');
+
+    let user = await User.findOne({ _id: ctx.from.id });
+    user.height = height;
+    await user.save();
+
+    let sceneID = null;
+    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+    else sceneID = scenes.id.setter.age;
+
+    return ctx.scene.enter(sceneID);
+});
+
+scene.on('message', ctx => ctx.reply('Пожалуйста, введите рост цифрами в текстовом формате'));
+
+module.exports.scene = scene;

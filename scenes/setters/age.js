@@ -1,6 +1,8 @@
 const { Scenes, Markup } = require("telegraf");
 
-const composeWizardScene = require('../factory/factory').composeWizardScene;
+const db = require('../../database/database');
+const User = require('../../models/user');
+const scenes = require('../scenes')
 
 // ____________________________________________________________
 
@@ -15,40 +17,51 @@ module.exports.limits = limits;
 
 // _______________________________________
 
-const setAgeScene = composeWizardScene(
-    ctx => {
-        ctx.reply(`Введите свой возраст числом (${limits.min}-${limits.max} лет):`, Markup.removeKeyboard());
-        return ctx.wizard.next();
-    },
-    (ctx, done) => {
-        try {
-            if (ctx.message.text) {
-                let data =  ctx.message.text;
-                let age = Number.parseInt(ctx.message.text);
-    
-                // data.length > 3
-                // if length == 4, then the value == 1000+, but it can't be
-                if (Number.isNaN(data) || Number.isNaN(age) || data.length > 3) {
-                    ctx.reply('Пожалуйста, введите возраст цифрами');
-                    return;
-                }
-                else if (age < limits.min || age > limits.max) {
-                    ctx.reply('Пожалуйста, введите корректный возраст');
-                    return;
-                }
-                ctx.session.user.age = age;
-                return done();
-            }
-            else {
-                ctx.reply('Пожалуйста, введите возраст цифрами в текстовом формате');
-                return;
-            }
-        } catch (e) {
-            let newErr = new Error(`Error in <setters/age> scene: ${e.message} \n`);
-            ctx.logError(ctx, newErr, __dirname);
-            throw newErr;
-        }
-    }
-);
+const scene = new Scenes.BaseScene(scenes.id.setter.age);
 
-module.exports.scene = setAgeScene;
+scene.enter(ctx => {
+    try {
+        if (ctx.session.recoveryMode) {
+            try {
+                ctx.session.recoveryMode = false;
+                return ctx.handleRecovery(scene, ctx);
+            } catch (e) {
+                throw new Error(`Error on handling recovery: ${e.message} \n`);
+            }
+        }
+        
+        db.setUserState(ctx.from.id, scenes.id.setter.age);
+        return ctx.reply(`Введите свой возраст числом (${limits.min}-${limits.max} лет):`, Markup.removeKeyboard());
+        
+    } catch (e) {
+        let newErr = new Error(`Error in <enter> middleware of <setters/age> scene: ${e.message} \n`);
+        ctx.logError(ctx, newErr, __dirname);
+        throw newErr;
+    }
+});
+
+scene.on('text', async ctx => {
+    let data =  ctx.message.text;
+    let age = Number.parseInt(ctx.message.text);
+
+    // data.length > 3
+    // if length == 4, then the value == 1000+, but it can't be
+    if (Number.isNaN(data) || Number.isNaN(age) || data.length > 3) 
+        return ctx.reply('Пожалуйста, введите возраст цифрами');
+    else if (age < limits.min || age > limits.max) 
+        return ctx.reply('Пожалуйста, введите корректный возраст');
+    
+    let user = await User.findOne({ _id: ctx.from.id });
+    user.age = age;
+    await user.save();
+
+    let sceneID = null;
+    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+    else sceneID = scenes.id.setter.activity;
+
+    return ctx.scene.enter(sceneID);
+});
+
+scene.on('message', ctx => ctx.reply('Пожалуйста, введите возраст цифрами в текстовом формате'));
+
+module.exports.scene = scene;

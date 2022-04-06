@@ -20,11 +20,9 @@ const userSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: true,
     },
     sex: {
         type: String,
-        required: true,
         enum: [
             'Мужской',
             'Женский',
@@ -32,57 +30,49 @@ const userSchema = new mongoose.Schema({
     },
     startWeight: {
         type: Number,
-        required: true,
         min: weightLimits.min,
         max: weightLimits.max,
     },
     currentWeight: {
         type: Number,
-        required: true,
         min: weightLimits.min,
         max: weightLimits.max,
     },
     targetWeight: {
         type: Number,
-        required: true,
         min: weightLimits.min,
         max: weightLimits.max,
     },
     height: {
         type: Number,
-        required: true,
         min: heightLimits.min,
         max: heightLimits.max,
     },
     age: {
         type: Number,
-        required: true,
         min: ageLimits.min,
         max: ageLimits.max,
     },
     activity: {
         type: Number,
-        required: true,
     },
-    measures: {
-        chest: {
-            type: Number,
-            required: true,
-            min: measureLimits.min,
-            max: measureLimits.max,
-        },
-        waist: {
-            type: Number,
-            required: true,
-            min: measureLimits.min,
-            max: measureLimits.max,
-        },
-        hip: {
-            type: Number,
-            required: true,
-            min: measureLimits.min,
-            max: measureLimits.max,
-        },
+    caloriesToLose: {
+        type: Number,
+    },
+    chestMeasure: {
+        type: Number,
+        min: measureLimits.min,
+        max: measureLimits.max,
+    },
+    waistMeasure: {
+        type: Number,
+        min: measureLimits.min,
+        max: measureLimits.max,
+    },
+    hipMeasure: {
+        type: Number,
+        min: measureLimits.min,
+        max: measureLimits.max,
     },
 
     created: {
@@ -96,7 +86,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: () => Date.now(),
     },
+
     state: String,
+    registered: Boolean,
+
 }, {versionKey: false, collection: 'users'} );
 
-module.exports = mongoose.model('users', userSchema);
+
+
+module.exports = mongoose.model('user', userSchema);

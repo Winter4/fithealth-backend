@@ -43,45 +43,43 @@ mainMenuScene.enter(async ctx => {
                 throw new Error(`Error on handling recovery: ${e.message} \n`);
             }
         }
-        else {
-            const userID = ctx.from.id;
-            db.setUserState(userID, scenes.id.menu.main);
-            
-            const user = await db.getUserByID(userID);
-            
-            let text = `Приветствую, ${user.name}!`;
-            let today = new Date();
-            let days = [
-                'воскресенье',
-                'понедельник',
-                'вторник',
-                'среда',
-                'четверг',
-                'пятница',
-                'суббота',
-            ]
-            text += `\nСегодня ${days[today.getDay()]}`;
+        const userID = ctx.from.id;
+        db.setUserState(userID, scenes.id.menu.main);
+        
+        const user = await db.getUserByID(userID);
+        
+        let text = `Приветствую, ${user.name}!`;
+        let today = new Date();
+        let days = [
+            'воскресенье',
+            'понедельник',
+            'вторник',
+            'среда',
+            'четверг',
+            'пятница',
+            'суббота',
+        ]
+        text += `\nСегодня ${days[today.getDay()]}`;
 
-            text += `\nВаш пол: ${user.sex.toLowerCase()}`;
-            text += `\nВаш возраст: ${user.age}`; 
-            text += `\nВаш рост: ${user.height}`;
+        text += `\nВаш пол: ${user.sex.toLowerCase()}`;
+        text += `\nВаш возраст: ${user.age}`; 
+        text += `\nВаш рост: ${user.height}`;
 
-            text += '\n\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
+        text += '\n\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
 
-            text += `\n\nСтартовый вес: ${user.startWeight} кг`;
-            text += `\nТекущий вес: ${user.currentWeight} кг`;
-            text += `\nЖелаемый вес: ${user.targetWeight} кг`;
+        text += `\nНачальный вес: ${user.startWeight} кг`;
+        text += `\nТекущий вес: ${user.currentWeight} кг`;
+        text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 
-            text += `\nЗамеры (Г/Т/Б): ${user.measures.chest}/${user.measures.waist}/${user.measures.hip} см`;
+        text += `\nЗамеры (Г/Т/Б): ${user.chestMeasure}/${user.waistMeasure}/${user.hipMeasure} см`;
 
-            return ctx.replyWithPhoto(
-                { source: 'images/main-menu.jpg' },
-                {
-                    caption: text,
-                    ...keyboard,
-                },
-            );
-        }
+        return ctx.replyWithPhoto(
+            { source: 'images/main-menu.jpg' },
+            {
+                caption: text,
+                ...keyboard,
+            },
+        );
     } catch (e) {
         let newErr = new Error(`Error in <enter> middleware of <main/home> scene: ${e.message} \n`);
         ctx.logError(ctx, newErr, __dirname);

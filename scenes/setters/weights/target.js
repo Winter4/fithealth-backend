@@ -10,16 +10,16 @@ const scenes = require("../../scenes");
 //            same limits in models/user
 // i couldn't make it run importing this const to the models/user
 const limits = {
-    min: 20,
+    min: 40,
     max: 200
 };
 module.exports.limits = limits;
 
 // _________________________________________
 
-const scene = new Scenes.BaseScene(scenes.id.setter.measure.waist);
+const scene = new Scenes.BaseScene(scenes.id.setter.weight.target);
 
-scene.enter(async ctx => {
+scene.enter(ctx => {
     try {
         if (ctx.session.recoveryMode) {
             try {
@@ -30,17 +30,11 @@ scene.enter(async ctx => {
             }
         }
         
-        db.setUserState(ctx.from.id, scenes.id.setter.measure.waist);
-
-        const user = await db.getUserByID(ctx.from.id);
-
-        const photoSource = user.sex == 'Мужской' ? './images/man-measures.jpg' : './images/woman-measures.jpg';
-        await ctx.replyWithPhoto({ source: photoSource });
-
-        return ctx.reply(`Введите обхват талии (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());     
-
+        db.setUserState(ctx.from.id, scenes.id.setter.weight.target);
+        return ctx.replyWithHTML(`Введите свой <b><i>желаемый</i></b> вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
+        
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/measure/waist> scene: ${e.message} \n`);
+        let newErr = new Error(`Error in <enter> middleware of <setters/weight/target> scene: ${e.message} \n`);
         ctx.logError(ctx, newErr, __dirname);
         throw newErr;
     }
@@ -48,30 +42,26 @@ scene.enter(async ctx => {
 
 scene.on('text', async ctx => {
     let data =  ctx.message.text;
-    let length = Number.parseInt(ctx.message.text);
+    let weight = Number.parseInt(ctx.message.text);
 
     // data.length > 3
     // if length == 4, then the value == 1000+, but it can't be
-    if (Number.isNaN(data) || Number.isNaN(length) || data.length > 3) {
-        ctx.reply('Пожалуйста, введите обхват цифрами');
-        return;
-    }
-    else if (length < limits.min || length > limits.max) {
-        ctx.reply('Пожалуйста, введите корректный обхват');
-        return;
-    }
+    if (Number.isNaN(data) || Number.isNaN(weight) || data.length > 3) 
+        return ctx.reply('Пожалуйста, введите вес цифрами');
+    else if (weight < limits.min || weight > limits.max) 
+        return ctx.reply('Пожалуйста, введите корректный вес');
 
     let user = await User.findOne({ _id: ctx.from.id });
-    user.waistMeasure = length;
+    user.targetWeight = weight;
     await user.save();
 
     let sceneID = null;
     if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
-    else sceneID = scenes.id.setter.measure.hip;
+    else sceneID = scenes.id.setter.measure.chest;
 
     return ctx.scene.enter(sceneID);
 });
 
-scene.on('message', ctx => ctx.reply('Пожалуйста, введите обхват цифрами в текстовом формате'));
+scene.on('message', ctx => ctx.reply('Пожалуйста, введите вес цифрами в текстовом формате'));
 
 module.exports.scene = scene;
