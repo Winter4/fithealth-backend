@@ -53,6 +53,8 @@ scene.on('text', async ctx => {
     
     let user = await User.findOne({ _id: ctx.from.id });
     user.age = age;
+
+    if (db.userRegisteredByObject(user)) user.calcCalories();
     await user.save();
 
     let sceneID = null;

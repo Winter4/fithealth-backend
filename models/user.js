@@ -92,6 +92,17 @@ const userSchema = new mongoose.Schema({
 
 }, {versionKey: false, collection: 'users'} );
 
+userSchema.methods.calcCalories = function() {
+    const sexParam = this.sex == 'Мужской' ? 5 : -161;
+    let basicCaloricIntake = 
+        10 * this.currentWeight + 
+        6.25 * this.height -
+        5 * this.age +
+        sexParam
+    ;
+    basicCaloricIntake *= this.activity;
 
+    this.caloriesToLose = (basicCaloricIntake * 0.9).toFixed();
+};
 
 module.exports = mongoose.model('user', userSchema);

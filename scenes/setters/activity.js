@@ -57,6 +57,8 @@ const setRate = async (id, rate) => {
     try {
         let user = await User.findOne({ _id: id });
         user.activity = rate;
+
+        if (db.userRegisteredByObject(user)) user.calcCalories();
         await user.save();
 
         return user;
