@@ -19,7 +19,7 @@ module.exports.userRegisteredByID = async id => {
     }
 };
 
-module.exports.userRegisteredByObject = async user => {
+module.exports.userRegisteredByObject = user => {
     try {
         return Boolean(user.registered);
     } catch (e) {
