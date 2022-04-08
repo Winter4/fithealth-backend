@@ -34,34 +34,37 @@ scene.enter(ctx => {
         return ctx.reply(`Введите свой возраст числом (${limits.min}-${limits.max} лет):`, Markup.removeKeyboard());
         
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/age> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/age> file --> ${e.message}`);
     }
 });
 
 scene.on('text', async ctx => {
-    let data =  ctx.message.text;
-    let age = Number.parseInt(ctx.message.text);
 
-    // data.length > 3
-    // if length == 4, then the value == 1000+, but it can't be
-    if (Number.isNaN(data) || Number.isNaN(age) || data.length > 3) 
-        return ctx.reply('Пожалуйста, введите возраст цифрами');
-    else if (age < limits.min || age > limits.max) 
-        return ctx.reply('Пожалуйста, введите корректный возраст');
-    
-    let user = await User.findOne({ _id: ctx.from.id });
-    user.age = age;
+    try {
+        let data =  ctx.message.text;
+        let age = Number.parseInt(ctx.message.text);
 
-    if (db.userRegisteredByObject(user)) user.calcCalories();
-    await user.save();
+        // data.length > 3
+        // if length == 4, then the value == 1000+, but it can't be
+        if (Number.isNaN(data) || Number.isNaN(age) || data.length > 3) 
+            return ctx.reply('Пожалуйста, введите возраст цифрами');
+        else if (age < limits.min || age > limits.max) 
+            return ctx.reply('Пожалуйста, введите корректный возраст');
+        
+        let user = await User.findOne({ _id: ctx.from.id });
+        user.age = age;
 
-    let sceneID = null;
-    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
-    else sceneID = scenes.id.setter.activity;
+        if (db.userRegisteredByObject(user)) user.calcCalories();
+        await user.save();
 
-    return ctx.scene.enter(sceneID);
+        let sceneID = null;
+        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else sceneID = scenes.id.setter.activity;
+
+        return ctx.scene.enter(sceneID);
+    } catch (e) {
+        throw new Error(`Error in <on_text> middleware of <scenes/setters/age> file --> ${e.message}`);
+    }
 });
 
 scene.on('message', ctx => ctx.reply('Пожалуйста, введите возраст цифрами в текстовом формате'));

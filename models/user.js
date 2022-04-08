@@ -15,7 +15,7 @@ const measureLimits = { min: 20, max: 200 };
 
 const userSchema = new mongoose.Schema({
     _id: {
-        type: String,
+        type: Number,
         required: true,
     },
     name: {
@@ -93,16 +93,20 @@ const userSchema = new mongoose.Schema({
 }, {versionKey: false, collection: 'users'} );
 
 userSchema.methods.calcCalories = function() {
-    const sexParam = this.sex == 'Мужской' ? 5 : -161;
-    let basicCaloricIntake = 
-        10 * this.currentWeight + 
-        6.25 * this.height -
-        5 * this.age +
-        sexParam
-    ;
-    basicCaloricIntake *= this.activity;
+    try {
+        const sexParam = this.sex == 'Мужской' ? 5 : -161;
+        let basicCaloricIntake =
+            10 * this.currentWeight +
+            6.25 * this.height -
+            5 * this.age +
+            sexParam
+        ;
+        basicCaloricIntake *= this.activity;
 
-    this.caloriesToLose = (basicCaloricIntake * 0.9).toFixed();
+        this.caloriesToLose = (basicCaloricIntake * 0.9).toFixed();
+    } catch (e) {
+        throw new Error(`Error in <userSchema.calcCalories> of <models/user> file --> ${e.message}`);
+    }
 };
 
 module.exports = mongoose.model('user', userSchema);

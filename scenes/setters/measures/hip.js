@@ -40,33 +40,35 @@ scene.enter(async ctx => {
         return ctx.reply(`Введите обхват бёдер (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());     
 
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/measure/hip> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/measures/hip> file --> ${e.message}`);
     }
 });
 
 scene.on('text', async ctx => {
-    let data =  ctx.message.text;
-    let length = Number.parseInt(ctx.message.text);
+    try {
+        let data =  ctx.message.text;
+        let length = Number.parseInt(ctx.message.text);
 
-    // data.length > 3
-    // if length == 4, then the value == 1000+, but it can't be
-    if (Number.isNaN(data) || Number.isNaN(length) || data.length > 3) {
-        ctx.reply('Пожалуйста, введите обхват цифрами');
-        return;
+        // data.length > 3
+        // if length == 4, then the value == 1000+, but it can't be
+        if (Number.isNaN(data) || Number.isNaN(length) || data.length > 3) {
+            ctx.reply('Пожалуйста, введите обхват цифрами');
+            return;
+        }
+        else if (length < limits.min || length > limits.max) {
+            ctx.reply('Пожалуйста, введите корректный обхват');
+            return;
+        }
+
+        let user = await User.findOne({ _id: ctx.from.id });
+        user.hipMeasure = length;
+        user.registered = true;
+        await user.save();
+
+        return ctx.scene.enter(scenes.id.menu.main);
+    } catch (e) {
+        throw new Error(`Error in <on_text> middleware of <scenes/setters/measures/hip> file --> ${e.message}`);
     }
-    else if (length < limits.min || length > limits.max) {
-        ctx.reply('Пожалуйста, введите корректный обхват');
-        return;
-    }
-
-    let user = await User.findOne({ _id: ctx.from.id });
-    user.hipMeasure = length;
-    user.registered = true;
-    await user.save();
-
-    return ctx.scene.enter(scenes.id.menu.main);
 });
 
 scene.on('message', ctx => ctx.reply('Пожалуйста, введите обхват цифрами в текстовом формате'));

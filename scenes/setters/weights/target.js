@@ -34,32 +34,34 @@ scene.enter(ctx => {
         return ctx.replyWithHTML(`Введите свой <b><i>желаемый</i></b> вес числом (${limits.min}-${limits.max} кг):`, Markup.removeKeyboard());
         
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/weight/target> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/weights/target> file --> ${e.message}`);
     }
 });
 
 scene.on('text', async ctx => {
-    let data =  ctx.message.text;
-    let weight = Number.parseInt(ctx.message.text);
+    try {
+        let data =  ctx.message.text;
+        let weight = Number.parseInt(ctx.message.text);
 
-    // data.length > 3
-    // if length == 4, then the value == 1000+, but it can't be
-    if (Number.isNaN(data) || Number.isNaN(weight) || data.length > 3) 
-        return ctx.reply('Пожалуйста, введите вес цифрами');
-    else if (weight < limits.min || weight > limits.max) 
-        return ctx.reply('Пожалуйста, введите корректный вес');
+        // data.length > 3
+        // if length == 4, then the value == 1000+, but it can't be
+        if (Number.isNaN(data) || Number.isNaN(weight) || data.length > 3) 
+            return ctx.reply('Пожалуйста, введите вес цифрами');
+        else if (weight < limits.min || weight > limits.max) 
+            return ctx.reply('Пожалуйста, введите корректный вес');
 
-    let user = await User.findOne({ _id: ctx.from.id });
-    user.targetWeight = weight;
-    await user.save();
+        let user = await User.findOne({ _id: ctx.from.id });
+        user.targetWeight = weight;
+        await user.save();
 
-    let sceneID = null;
-    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
-    else sceneID = scenes.id.setter.measure.chest;
+        let sceneID = null;
+        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else sceneID = scenes.id.setter.measure.chest;
 
-    return ctx.scene.enter(sceneID);
+        return ctx.scene.enter(sceneID);
+    } catch (e) {
+        throw new Error(`Error in <on_text> middleware of <scenes/setters/weights/target> file --> ${e.message}`);
+    }
 });
 
 scene.on('message', ctx => ctx.reply('Пожалуйста, введите вес цифрами в текстовом формате'));

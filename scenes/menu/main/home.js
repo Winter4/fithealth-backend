@@ -81,17 +81,19 @@ mainMenuScene.enter(async ctx => {
             },
         );
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <main/home> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/menu/main/home> file --> ${e.message}`);
     }
 });
 
 // ______________________________________________________________
 
 mainMenuScene.hears(keys.makeReport, ctx => {
-    return ctx.reply('Чтобы узнать, сколько калорий вы потребили, сколько нужно и сколько осталось - воспользуйтесь нашим калькулятором', 
-    reportKeybord);
+    try {
+        return ctx.reply('Чтобы узнать, сколько калорий вы потребили, сколько нужно и сколько осталось - воспользуйтесь нашим калькулятором', 
+        reportKeybord);
+    } catch (e) {
+        throw new Error(`Error in <hears_makeReport> middleware of <scenes/menu/main/home> file --> ${e.message}`);
+    }
 });
 
 mainMenuScene.hears(keys.mealPlan, async ctx => {
@@ -119,26 +121,29 @@ mainMenuScene.hears(keys.mealPlan, async ctx => {
 
         return ctx.replyWithHTML(text);
     } catch (e) {
-        let newErr = new Error(`Error in <hears[keys.mealPlan]> middleware of <main/home> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <hears_mealPlan> middleware of <scenes/menu/main/home> file --> ${e.message}`);
     }
 });
 
 mainMenuScene.use(require('./info').composer);
 mainMenuScene.hears(keys.info, ctx => {
-    let text = '';
-    text += '1️⃣ Как работать с приложением? \n\n';
-    text += '2️⃣ Как составить завтрак? \n\n';
-    text += '3️⃣ Как составить обед? \n\n';
-    text += '4️⃣ Как составить ужин и перекус? \n\n';
-    text += '5️⃣ Когда есть и как готовить? \n\n';
-    text += '6️⃣ Как пить и что с овощами? \n\n';
-    text += '7️⃣ Как делать отчет о питании и активности? \n\n';
-    text += '8️⃣ Как делать повторные замеры? \n\n';
-    text += '9️⃣ Как использовать читмил? \n\n';
 
-    return ctx.reply(text, infoKeyboard);
+    try {
+        let text = '';
+        text += '1️⃣ Как работать с приложением? \n\n';
+        text += '2️⃣ Как составить завтрак? \n\n';
+        text += '3️⃣ Как составить обед? \n\n';
+        text += '4️⃣ Как составить ужин и перекус? \n\n';
+        text += '5️⃣ Когда есть и как готовить? \n\n';
+        text += '6️⃣ Как пить и что с овощами? \n\n';
+        text += '7️⃣ Как делать отчет о питании и активности? \n\n';
+        text += '8️⃣ Как делать повторные замеры? \n\n';
+        text += '9️⃣ Как использовать читмил? \n\n';
+
+        return ctx.reply(text, infoKeyboard);
+    } catch (e) {
+        throw new Error(`Error in <hears_info> middleware of <scenes/menu/main/home> file --> ${e.message}`);
+    }
 });
 
 mainMenuScene.hears(keys.data, ctx => {

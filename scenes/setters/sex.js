@@ -42,37 +42,51 @@ scene.enter(ctx => {
         return ctx.reply('Выберите Ваш пол:', sexKeyboard);
         
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/sex> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/sex> file --> ${e.message}`);
     }
 });
 
 const setSex = async (id, sex) => {
-    let user = await User.findOne({ _id: id });
-    user.sex = sex;
-    await user.save();
+    try {
+        let user = await User.findOne({ _id: id });
+        user.sex = sex;
+        await user.save();
 
-    return user;
+        return user;
+    } catch (e) {
+        throw new Error(`Error in <setSex> func of <scenes/setters/sex> file --> ${e.message}`);
+    }
 }
 
 const getNextScene = async user => {
-    let sceneID = null;
-    
-    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
-    else sceneID = scenes.id.setter.height;
+    try {
+        let sceneID = null;
+        
+        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else sceneID = scenes.id.setter.height;
 
-    return sceneID;
+        return sceneID;
+    } catch (e) {
+        throw new Error(`Error in <getNextScene> func of <scenes/setters/sex> file --> ${e.message}`);
+    }
 };
 
 scene.hears(Sex.male, async ctx => {
-    let user = await setSex(ctx.from.id, Sex.male);
-    return ctx.scene.enter(await getNextScene(user));
+    try {
+        let user = await setSex(ctx.from.id, Sex.male);
+        return ctx.scene.enter(await getNextScene(user));
+    } catch (e) {
+        throw new Error(`Error in <hears_male> middleware of <scenes/setters/sex> file --> ${e.message}`);
+    }
 });
 
 scene.hears(Sex.female, async ctx => {
-    let user = await setSex(ctx.from.id, Sex.female);
-    return ctx.scene.enter(await getNextScene(user));
+    try {
+        let user = await setSex(ctx.from.id, Sex.female);
+        return ctx.scene.enter(await getNextScene(user));
+    } catch (e) {
+        throw new Error(`Error in <hears_female> middleware of <scenes/setters/sex> file --> ${e.message}`);
+    }
 });
 
 module.exports = scene;

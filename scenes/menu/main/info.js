@@ -50,48 +50,84 @@ module.exports.inlineKeyboard = inlineInfo;
 const info = new Composer();
 
 info.action(action.one, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline one');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline one');
+    } catch (e) {
+        throw new Error(`Error in <action_one> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.two, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline two');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline two');
+    } catch (e) {
+        throw new Error(`Error in <action_two> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.three, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline three');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline three');
+    } catch (e) {
+        throw new Error(`Error in <action_three> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.four, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline four');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline four');
+    } catch(e) {
+        throw new Error(`Error in <action_four> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.five, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline five');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline five');
+    } catch (e) {
+        throw new Error(`Error in <action_five> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.six, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline six');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline six');
+    } catch (e) {
+        throw new Error(`Error in <action_six> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.seven, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline seven');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline seven');
+    } catch (e) {
+        throw new Error(`Error in <action_seven> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.eight, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline eight');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline eight');
+    } catch (e) {
+        throw new Error(`Error in <action_eight> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 info.action(action.nine, ctx => {
-    ctx.answerCbQuery();
-    return ctx.reply('inline nine');
+    try {
+        ctx.answerCbQuery();
+        return ctx.reply('inline nine');
+    } catch(e) {
+        throw new Error(`Error in <action_nine> middleware of <scenes/menu/main/info> file --> ${e.message}`);
+    }
 });
 
 module.exports.composer = info;

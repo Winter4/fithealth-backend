@@ -53,10 +53,14 @@ const stage = new Scenes.Stage([
 ]);
 
 stage.command('home', async ctx => {
-    if (await db.userRegisteredByID(ctx.from.id))
-        return ctx.scene.enter(scenes.id.menu.main);
-    else
-        return ctx.reply('Вы не завершили регистрацию');
+    try {
+        if (await db.userRegisteredByID(ctx.from.id))
+            return ctx.scene.enter(scenes.id.menu.main);
+        else
+            return ctx.reply('Вы не завершили регистрацию');
+    } catch (e) {
+        throw new Error(`Error in <stage.command_home> of <index> file --> ${e.message}`);
+    }
 });
 
 bot.use(stage.middleware());
@@ -71,11 +75,11 @@ bot.context.logObject = object => {
     console.log(object);
 }
 
-bot.context.logError = (ctx, err, dirname) => {
-    console.log(`${Date()}  |  Error in ${dirname} 
+bot.context.logError = (ctx, err) => {
+    console.log(`\n${Date()}  |  ↓↓↓↓ ERROR CATCHED ↓↓↓↓ 
         Update type: ${ctx.updateType} 
         Chat ID: ${ctx.chat.id}
-        Message: ${err.message}`
+        Message: ${err.message} \n${Date()}  |  ↑↑↑↑ ERROR CATCHED ↑↑↑↑ \n`
     );
 };
 
@@ -84,7 +88,7 @@ bot.context.handleRecovery = async (scene, ctx) => {
         const handler = await scene.middleware();
         return await handler(ctx, Promise.resolve());
     } catch (e) {
-        ctx.logError(ctx, e, __dirname);
+        throw new Error(`Error in <bot.context.handleRecovery> of <index> file --> ${e.message}`);
     }
 };
 
@@ -122,7 +126,7 @@ bot.start(async ctx => {
             return ctx.scene.enter(scenes.id.setter.name);
         }
     } catch (e) {
-        ctx.logError(ctx, e, __dirname);
+        throw new Error(`Error in <bot.start> of <index.js> file --> ${e.message}`);
     }
 });
 
@@ -140,7 +144,7 @@ bot.on('text', async (ctx, next) => {
         ctx.log(`\t\tRecovery mode: ${ctx.session.recoveryMode}`);
         return next();
     } catch (e) {
-        ctx.logError(ctx, e, __dirname);
+        throw new Error(`Error in <bot.on_text> of <index> file --> ${e.message}`);
     }
 });
 
@@ -158,34 +162,47 @@ bot.on('callback_query', async (ctx, next) => {
         ctx.log(`\t\tRecovery mode: ${ctx.session.recoveryMode}`);
         return next();
     } catch (e) {
-        ctx.logError(ctx, e, __dirname);
+        throw new Error(`Error in <bot.on_callback_query> of <index> file --> ${e.message}`);
     }
 });
 
 bot.on('my_chat_member', ctx => {
-    const upd = ctx.update.my_chat_member;
-    ctx.log(`Chat_member status mdlwre was triggered by ${ctx.chat.id}  [${upd.old_chat_member.status} -> ${upd.new_chat_member.status}]`);
-    return;
+    try {
+        const upd = ctx.update.my_chat_member;
+        ctx.log(`Chat_member status mdlwre was triggered by ${ctx.chat.id}  [${upd.old_chat_member.status} -> ${upd.new_chat_member.status}]`);
+        return;
+    } catch (e) {
+        throw new Error(`Error in <bot.on_my_chat_member> of <index> file --> ${e.message}`);
+    }
 });
 
 bot.on('message', async ctx => {
-    await ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user`);
-    ctx.logObject(ctx.update);
-    return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /home');
+    try {
+        await ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user`);
+        ctx.logObject(ctx.update);
+        return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /home');
+    } catch (e) {
+        throw new Error(`Error in <bot.on_message> of <index> file --> ${e.message}`);
+    }
 });
 
 bot.use(ctx => {
-    ctx.log(`Junkyard triggered by ${ctx.chat.id} user with update: `);
-    ctx.logObject(ctx.update);
+    try {
+        ctx.log(`Junkyard triggered by ${ctx.chat.id} user with update: `);
+        ctx.logObject(ctx.update);
 
-    return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, 
-        `Junkyard triggered by ${ctx.chat.id} user`);
+        return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, 
+            `Junkyard triggered by ${ctx.chat.id} user`);
+    } catch (e) {
+        throw new Error(`Error in <bot.use> of <index> file --> ${e.message}`);
+    }
 });
 
 // _________________________________________________________
 
 bot.catch((err, ctx) => {
-    ctx.log('^^^ Error catched in index ^^^');
+    
+    ctx.logError(ctx, err);
     return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
         `Ошибка 
         Update type: ${ctx.updateType} 

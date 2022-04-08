@@ -47,9 +47,7 @@ scene.enter(ctx => {
             activityKeyboard);
         
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/activity> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/activity> file --> ${e.message}`);
     }
 });
 
@@ -62,9 +60,8 @@ const setRate = async (id, rate) => {
         await user.save();
 
         return user;
-
     } catch (e) {
-        throw new Error(`Error in <setRate> func of <setters/activity> scene: ${e.message} \n`);
+        throw new Error(`Error in <setRate> func of <scenes/setters/activity> file --> ${e.message}`);
     }
 }
 
@@ -77,7 +74,7 @@ const getNextScene = async user => {
         return sceneID;
 
     } catch (e) {
-        throw new Error(`Error in <getNextScene> func of <setters/activity> scene: ${e.message} \n`);
+        throw new Error(`Error in <getNextScene> func of <scenes/setters/activity> file --> ${e.message}`);
     }
 };
 
@@ -86,9 +83,7 @@ scene.hears(Activity.zero, async ctx => {
         const user = await setRate(ctx.from.id, 1.2);
         return ctx.scene.enter(await getNextScene(user));
     } catch (e) {
-        let newErr = new Error(`Error in <hears Activity.zero> middleware of <setters/activity> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <hears_zero> middleware of <scenes/setters/activity> file --> ${e.message}`);
     }
     
 });
@@ -98,9 +93,7 @@ scene.hears(Activity.low, async ctx => {
         const user = await setRate(ctx.from.id, 1.375);
         return ctx.scene.enter(await getNextScene(user));
     } catch (e) {
-        let newErr = new Error(`Error in <hears Activity.low> middleware of <setters/activity> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <hears_low> middleware of <scenes/setters/activity> file --> ${e.message}`);
     }
 });
 
@@ -109,9 +102,7 @@ scene.hears(Activity.middle, async ctx => {
         const user = await setRate(ctx.from.id, 1.55);
         return ctx.scene.enter(await getNextScene(user));
     } catch (e) {
-        let newErr = new Error(`Error in <hears Activity.middle> middleware of <setters/activity> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <hears_middle> middleware of <scenes/setters/activity> file --> ${e.message}`);
     }
 });
 
@@ -120,9 +111,7 @@ scene.hears(Activity.high, async ctx => {
         const user = await setRate(ctx.from.id, 1.95);
         return ctx.scene.enter(await getNextScene(user));
     } catch (e) {
-        let newErr = new Error(`Error in <hears Activity.high> middleware of <setters/activity> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <hears_high> middleware of <scenes/setters/activity> file --> ${e.message}`);
     }
 });
 

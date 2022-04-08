@@ -24,22 +24,24 @@ scene.enter(ctx => {
         ctx.reply('Введите своё имя: ', Markup.removeKeyboard());
         
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <setters/name> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/setters/name> file --> ${e.message}`);
     }
 });
 
 scene.on('text', async ctx => {
-    let user = await User.findOne({ _id: ctx.from.id });
-    user.name = ctx.message.text;
-    await user.save();
+    try {
+        let user = await User.findOne({ _id: ctx.from.id });
+        user.name = ctx.message.text;
+        await user.save();
 
-    let sceneID = null;
-    if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
-    else sceneID = scenes.id.setter.sex;
+        let sceneID = null;
+        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else sceneID = scenes.id.setter.sex;
 
-    return ctx.scene.enter(sceneID);
+        return ctx.scene.enter(sceneID);
+    } catch (e) {
+        throw new Error(`Error in <on_text> middleware of <scenes/setters/name> file --> ${e.message}`);
+    }
 });
 
 scene.on('message', ctx => ctx.reply('Пожалуйста, введите своё имя'));

@@ -44,15 +44,8 @@ changeDataScene.enter(async ctx => {
             return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
         }
     } catch (e) {
-        let newErr = new Error(`Error in <enter> middleware of <changeData/home> scene: ${e.message} \n`);
-        ctx.logError(ctx, newErr, __dirname);
-        throw newErr;
+        throw new Error(`Error in <enter> middleware of <scenes/menu/changeData/home> file --> ${e.message}`);
     }
-});
-
-changeDataScene.use(async (ctx, next) => {
-    ctx.session.registered = await db.userRegisteredByID(ctx.from.id);
-    return next();
 });
 
 // ____________________ SETTERS _______________________
