@@ -115,6 +115,6 @@ scene.hears(Activity.high, async ctx => {
     }
 });
 
-scene.on('message', ctx => ctx.reply('Пожалуйста, используйте клавиатуру'));
+scene.on('message', ctx => ctx.reply('Пожалуйста, выберите свою активность'));
 
 module.exports = scene;

@@ -89,4 +89,6 @@ scene.hears(Sex.female, async ctx => {
     }
 });
 
+scene.on('message', ctx => ctx.reply('Пожалуйста, выберите свой пол'));
+
 module.exports = scene;

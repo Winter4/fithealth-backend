@@ -99,4 +99,6 @@ scene.hears(Meals.five, async ctx => {
     }
 });
 
+scene.on('message', ctx => ctx.reply('Пожалуйста, выберите свой режим питания'));
+
 module.exports = scene;
