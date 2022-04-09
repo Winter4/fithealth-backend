@@ -18,8 +18,8 @@ const Sex = {
 
 const sexKeyboard = Markup.keyboard(
     [
-        Sex.male,
-        Sex.female,
+        [Sex.male,
+        Sex.female],
     ]
 ).resize();
 

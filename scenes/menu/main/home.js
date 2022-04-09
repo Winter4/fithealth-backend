@@ -65,13 +65,14 @@ mainMenuScene.enter(async ctx => {
         text += `\nВаш возраст: ${user.age}`; 
         text += `\nВаш рост: ${user.height}`;
 
-        text += '\n\nМы верим, что у тебя всё получится! \nВсё твоих в руках, не сдавайся!';
+        text += '\n\nМы верим, что у Вас всё получится! \nВсё в Ваших руках, не сдавайтесь!\n';
 
         text += `\nНачальный вес: ${user.startWeight} кг`;
         text += `\nТекущий вес: ${user.currentWeight} кг`;
         text += `\nЖелаемый вес: ${user.targetWeight} кг`;
 
         text += `\nЗамеры (Г/Т/Б): ${user.chestMeasure}/${user.waistMeasure}/${user.hipMeasure} см`;
+        text += `\nРежим питания: ${user.mealsPerDay} р/день`;
 
         return ctx.replyWithPhoto(
             { source: 'images/main-menu.jpg' },

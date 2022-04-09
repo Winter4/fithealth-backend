@@ -89,6 +89,7 @@ const userSchema = new mongoose.Schema({
 
     state: String,
     registered: Boolean,
+    mealsPerDay: Number,
 
 }, {versionKey: false, collection: 'users'} );
 

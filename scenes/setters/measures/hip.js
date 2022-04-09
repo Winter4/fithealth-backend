@@ -62,10 +62,13 @@ scene.on('text', async ctx => {
 
         let user = await User.findOne({ _id: ctx.from.id });
         user.hipMeasure = length;
-        user.registered = true;
         await user.save();
 
-        return ctx.scene.enter(scenes.id.menu.main);
+        let sceneID = null;
+        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else sceneID = scenes.id.setter.meals;
+
+        return ctx.scene.enter(sceneID);
     } catch (e) {
         throw new Error(`Error in <on_text> middleware of <scenes/setters/measures/hip> file --> ${e.message}`);
     }

@@ -15,10 +15,8 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
  * 1. scenes/scenes.js > ib & object
  * 2. complete necessary new_scene.js file (don't forget to handle recovery mode)
  * 3. index.js > stage
- * 4. index.js > empty user in bot.start (new user init, else branch)
- * 5. models/user.js > user model
- * 6. database/database.js > saveUserFromContext function
- * 7. ..menu/changeData > add necessary buttons & its middleware
+ * 4. models/user.js > user model
+ * 5. ..menu/changeData > add necessary buttons & its middleware
  * 
  * in some time, this sttructure may turn out to be bad & unproffesional,
  * but in the moment I'm writing it - this is the best of my skills :)
@@ -47,6 +45,8 @@ const stage = new Scenes.Stage([
     scenes.object.setter.measure.chest,
     scenes.object.setter.measure.waist,
     scenes.object.setter.measure.hip,
+
+    scenes.object.setter.meals,
 
     scenes.object.menu.main,
     scenes.object.menu.changeData.home,

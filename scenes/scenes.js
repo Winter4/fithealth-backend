@@ -16,7 +16,9 @@ module.exports.id = {
             chest: 'SET_CHEST_MEASURE_SCENE',
             waist: 'SET_WAIST_MEASURE_SCENE',
             hip: 'SET_HIP_MEASURE_SCENE',
-        }
+        },
+
+        meals: 'SET_MEALS_SCENE',
     },
 
     menu: {
@@ -46,7 +48,9 @@ module.exports.object = {
             chest: require('./setters/measures/chest').scene,
             waist: require('./setters/measures/waist').scene,
             hip: require('./setters/measures/hip').scene,
-        }
+        },
+
+        meals: require('./setters/meals'),
     },
 
     menu: {
