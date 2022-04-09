@@ -9,6 +9,7 @@ const keys = {
     makeReport: 'Сделать отчёт',
     mealPlan: 'План питания',
     info: 'Справка',
+    meals: 'Изменить режим питания',
     data: 'Изменить данные',
 };
 
@@ -16,7 +17,7 @@ const keyboard = Markup.keyboard(
     [
         [ keys.makeReport ],
         [ keys.mealPlan, keys.info ],
-        [ keys.data ],
+        [ keys.meals, keys.data ],
     ]
 ).resize();
 
@@ -146,6 +147,10 @@ mainMenuScene.hears(keys.info, ctx => {
         throw new Error(`Error in <hears_info> middleware of <scenes/menu/main/home> file --> ${e.message}`);
     }
 });
+
+mainMenuScene.hears(keys.meals, ctx => {
+    return ctx.scene.enter(scenes.id.setter.meals);
+})
 
 mainMenuScene.hears(keys.data, ctx => {
     return ctx.scene.enter(scenes.id.menu.changeData.home);
