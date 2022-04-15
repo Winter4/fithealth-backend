@@ -176,7 +176,7 @@ bot.on('my_chat_member', ctx => {
 
 bot.on('message', async ctx => {
     try {
-        await ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user`);
+        await ctx.telegram.sendMessage(require('./env').ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user`);
         ctx.logObject(ctx.update);
         return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /home');
     } catch (e) {
@@ -189,7 +189,7 @@ bot.use(ctx => {
         ctx.log(`Junkyard triggered by ${ctx.chat.id} user with update: `);
         ctx.logObject(ctx.update);
 
-        return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, 
+        return ctx.telegram.sendMessage(require('./env').ADMIN_CHAT_ID, 
             `Junkyard triggered by ${ctx.chat.id} user`);
     } catch (e) {
         throw new Error(`Error in <bot.use> of <index> file --> ${e.message}`);
