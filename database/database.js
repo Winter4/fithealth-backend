@@ -13,7 +13,7 @@ module.exports.connect = async () => {
 module.exports.userRegisteredByID = async id => {
     try {
         const user = await User.findById(id);
-        return Boolean(user.registered);
+        return Boolean(user && user.registered);
     } catch (e) {
         throw new Error(`Error in <userRegisteredByID> of <database> file --> ${e.message}`);
     }
