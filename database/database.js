@@ -4,7 +4,7 @@ const User = require('../models/user');
 // ____________________________________________________________________________________
 
 module.exports.connect = async () => {
-    await mongoose.connect(process.env.MONGO_URL, () => console.log('Connected to DB'));
+    await mongoose.connect(require('../env').MONGO_URL, () => console.log('Connected to DB'));
 }
 
 // __________________________________________________________________

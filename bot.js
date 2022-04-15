@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const User = require('./models/user');
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(require('./env').BOT_TOKEN);
 
 // ______________________________________
 
@@ -203,7 +203,7 @@ bot.use(ctx => {
 bot.catch((err, ctx) => {
     
     ctx.logError(ctx, err);
-    return ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID,
+    return ctx.telegram.sendMessage(require('./env').ADMIN_CHAT_ID,
         `Ошибка 
         Update type: ${ctx.updateType} 
         Chat ID: ${ctx.chat.id}
