@@ -23,12 +23,6 @@ const keyboard = Markup.keyboard(
 
 const infoKeyboard = require('./info').inlineKeyboard;
 
-const reportKeybord = Markup.inlineKeyboard(
-    [
-        Markup.button.url('Перейти в калькулятор', 'google.com'),
-    ],
-);
-
 // ____________________________________________________________
 
 const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
@@ -90,6 +84,12 @@ mainMenuScene.enter(async ctx => {
 // ______________________________________________________________
 
 mainMenuScene.hears(keys.makeReport, ctx => {
+    const reportKeybord = Markup.inlineKeyboard(
+        [
+            Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?id=${ctx.from.id}`),
+        ],
+    );
+    
     try {
         return ctx.reply('Чтобы узнать, сколько калорий вы потребили, сколько нужно и сколько осталось - воспользуйтесь нашим калькулятором', 
         reportKeybord);
