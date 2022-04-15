@@ -1,8 +1,6 @@
 const {Telegraf, Scenes, Stage, session} = require('telegraf');
 const db = require('./database/database');
 
-require('dotenv').config();
-
 const User = require('./models/user');
 
 const bot = new Telegraf(require('./env').BOT_TOKEN);
