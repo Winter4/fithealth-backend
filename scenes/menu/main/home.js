@@ -86,7 +86,7 @@ mainMenuScene.enter(async ctx => {
 mainMenuScene.hears(keys.makeReport, ctx => {
     const reportKeybord = Markup.inlineKeyboard(
         [
-            Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?id=${ctx.from.id}`),
+            Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?user=${ctx.from.id}`),
         ],
     );
     
