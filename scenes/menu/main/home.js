@@ -3,6 +3,8 @@ const { Scenes, Markup, session } = require("telegraf");
 const scenes = require('../../scenes');
 const db = require('../../../database/database');
 
+const User = require('../../../models/user');
+
 // ______________________________________________
 
 const keys = {
@@ -25,15 +27,46 @@ const infoKeyboard = require('./info').inlineKeyboard;
 
 // ____________________________________________________________
 
-const mainMenuScene = new Scenes.BaseScene(scenes.id.menu.main);
+const scene = new Scenes.BaseScene(scenes.id.menu.main);
 
-mainMenuScene.enter(async ctx => {
+scene.hears(keys.meals, ctx => {
+    return ctx.scene.enter(scenes.id.setter.meals);
+})
+
+scene.hears(keys.data, ctx => {
+    return ctx.scene.enter(scenes.id.menu.changeData.home);
+});
+
+// - - - - - - - - - - - - - - - - - - - - -
+
+// sending checkIn request if it's time
+scene.use(async (ctx, next) => {
+
+    const user = await User.findById(ctx.from.id);
+
+    const markup = Markup.inlineKeyboard(
+        [
+            Markup.button.callback('Обновить данные', `CHECK_IN_ACTION`),
+        ],
+    );
+
+    if (!(user.checkedIn)) {
+        setTimeout(() => ctx.reply('Пришло время обновить Ваши данные! Это необходимо делать регулярно для поддержания актуальности индивидуальной программы.',
+            markup), 800);
+    }
+
+    return next();
+});
+
+// - - - - - - - - - - - - - - - - - - - - -
+
+scene.enter(async ctx => {
 
     try {
         if (ctx.session.recoveryMode == true) {
             try {
                 ctx.session.recoveryMode = false;
-                return ctx.handleRecovery(mainMenuScene, ctx);
+                return ctx.handleRecovery(scene, ctx);
             } catch (e) {
                 throw new Error(`Error on handling recovery: ${e.message} \n`);
             }
@@ -83,7 +116,7 @@ mainMenuScene.enter(async ctx => {
 
 // ______________________________________________________________
 
-mainMenuScene.hears(keys.makeReport, ctx => {
+scene.hears(keys.makeReport, ctx => {
     const reportKeybord = Markup.inlineKeyboard(
         [
             Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?user=${ctx.from.id}`),
@@ -98,7 +131,7 @@ mainMenuScene.hears(keys.makeReport, ctx => {
     }
 });
 
-mainMenuScene.hears(keys.mealPlan, async ctx => {
+scene.hears(keys.mealPlan, async ctx => {
 
     try {
         const user = await db.getUserByID(ctx.from.id);
@@ -127,8 +160,8 @@ mainMenuScene.hears(keys.mealPlan, async ctx => {
     }
 });
 
-mainMenuScene.use(require('./info').composer);
-mainMenuScene.hears(keys.info, ctx => {
+scene.use(require('./info').composer);
+scene.hears(keys.info, ctx => {
 
     try {
         let text = '';
@@ -148,18 +181,10 @@ mainMenuScene.hears(keys.info, ctx => {
     }
 });
 
-mainMenuScene.hears(keys.meals, ctx => {
-    return ctx.scene.enter(scenes.id.setter.meals);
-})
-
-mainMenuScene.hears(keys.data, ctx => {
-    return ctx.scene.enter(scenes.id.menu.changeData.home);
-});
-
-mainMenuScene.on('message', ctx => {
+scene.on('message', ctx => {
     return ctx.reply('Используйте клавиаутуру меню');
 });
 
 // __________________________________________________
 
-module.exports = mainMenuScene;
+module.exports = scene;

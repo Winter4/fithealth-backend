@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const { log } = require('../logger');
 
 // ____________________________________________________________________________________
 
 module.exports.connect = async () => {
-    await mongoose.connect(require('../env').MONGO_URL, () => console.log('Connected to DB'));
+    await mongoose.connect(process.env.MONGO_URL, () => log.info('Connected to DB'));
 }
 
 // __________________________________________________________________
@@ -49,4 +50,4 @@ module.exports.userExists = async id => {
     } catch (e) {
         throw new Error(`Error in <userExists> of <database> file --> ${e.message}`);
     }
-}
+};

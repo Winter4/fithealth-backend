@@ -62,6 +62,7 @@ scene.on('text', async ctx => {
 
         let user = await User.findOne({ _id: ctx.from.id });
         user.hipMeasure = length;
+        user.checkedIn = true;
         await user.save();
 
         let sceneID = null;

@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    tgUsername: {
+        type: String,
+    },
     name: {
         type: String,
     },
@@ -89,9 +92,14 @@ const userSchema = new mongoose.Schema({
 
     state: String,
     registered: Boolean,
+    checkedIn: Boolean,
     mealsPerDay: Number,
 
 }, {versionKey: false, collection: 'users'} );
+
+userSchema.pre('save', function() {
+    this.updated = Date.now();
+});
 
 userSchema.methods.calcCalories = function() {
     try {

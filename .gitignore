@@ -1,4 +1,4 @@
 .env
 /node_modules
 Thumbs.db
-env.js
+/logs

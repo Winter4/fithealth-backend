@@ -58,10 +58,15 @@ scene.on('text', async ctx => {
         if (!(registered)) user.startWeight = user.currentWeight;
 
         user.calcCalories();
+        if (user.checkedIn == false) { 
+            user.caloriesToLose *= 0.9;
+            user.caloriesToLose = (user.caloriesToLose).toFixed();
+        }
         await user.save();
 
         let sceneID = null;
-        if (registered) sceneID = scenes.id.menu.main;
+        if (user.checkedIn == false) sceneID = scenes.id.setter.measure.chest;
+        else if (registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.weight.target;
 
         return ctx.scene.enter(sceneID);
