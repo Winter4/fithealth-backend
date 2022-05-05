@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const { log } = require('../logger');
 
+require('dotenv').config({ path: '../../.env' });
+
 // ____________________________________________________________________________________
 
 module.exports.connect = async () => {
@@ -49,5 +51,22 @@ module.exports.userExists = async id => {
         return Boolean(await User.exists({_id: id}));
     } catch (e) {
         throw new Error(`Error in <userExists> of <database> file --> ${e.message}`);
+    }
+};
+
+module.exports.userCheckedIn = async id => {
+    try {
+        const user = await User.findById(id);
+        if (!user) return;
+
+        let interval = process.env.CHECKIN_INTERVAL;
+        // statement is false means it's the time to checkIn and user isn't checked -> return false
+        console.log(Date.now() - user.checked.date);
+        if (Date.now() - user.checked.date > interval) 
+            user.checked.bool = false;
+
+        await user.save();
+    } catch (e) {
+        throw new Error(`Error in <userCheckedIn> of <database> file --> ${e.message}`);
     }
 };

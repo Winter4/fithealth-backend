@@ -2,6 +2,8 @@ const {Telegraf, Scenes, Stage, Markup, session} = require('telegraf');
 const db = require('./database/database');
 require('dotenv').config({ path: '../.env' });
 
+const User = require('./models/user');
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const { log } = require('./logger');
 
@@ -64,6 +66,11 @@ bot.use((ctx, next) => {
     return next();
 });
 
+bot.use(async (ctx, next) => {
+    await db.userCheckedIn(ctx.from.id);
+    return next();
+});
+
 // _____________________________________
 
 bot.use(session());
@@ -123,7 +130,7 @@ bot.start(async ctx => {
                 return ctx.scene.enter(user.state);
         }
         else {
-            user = new User({ _id: ctx.from.id, tgUsername: ctx.from.username, checkedIn: true, });
+            user = new User({ _id: ctx.from.id, tgUsername: ctx.from.username, checked: { date: Date.now(), bool: true, }, });
             await user.save();
             
             ctx.log(`New ${ctx.chat.id} user`);

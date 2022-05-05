@@ -40,7 +40,7 @@ scene.hears(keys.data, ctx => {
 // - - - - - - - - - - - - - - - - - - - - -
 
 // sending checkIn request if it's time
-scene.use(async (ctx, next) => {
+scene.on('message', async (ctx, next) => {
 
     const user = await User.findById(ctx.from.id);
 
@@ -50,7 +50,7 @@ scene.use(async (ctx, next) => {
         ],
     );
 
-    if (!(user.checkedIn)) {
+    if (!(user.checked.bool)) {
         setTimeout(() => ctx.reply('Пришло время обновить Ваши данные! Это необходимо делать регулярно для поддержания актуальности индивидуальной программы.',
             markup), 800);
     }

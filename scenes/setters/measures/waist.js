@@ -65,7 +65,7 @@ scene.on('text', async ctx => {
         await user.save();
 
         let sceneID = null;
-        if (user.checkedIn == false) sceneID = scenes.id.setter.measure.hip;
+        if (user.checked.bool == false) sceneID = scenes.id.setter.measure.hip;
         else if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.measure.hip;
 

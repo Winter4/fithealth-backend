@@ -92,7 +92,10 @@ const userSchema = new mongoose.Schema({
 
     state: String,
     registered: Boolean,
-    checkedIn: Boolean,
+    checked: {
+        date: Number,
+        bool: Boolean,
+    },
     mealsPerDay: Number,
 
 }, {versionKey: false, collection: 'users'} );
