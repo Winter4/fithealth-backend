@@ -21,8 +21,10 @@ const scene = new Scenes.BaseScene(scenes.id.setter.measure.chest);
 
 scene.enter(async ctx => {
     try {
+        // if the bot was rebooted and the session is now empty
         if (ctx.session.recoveryMode) {
             try {
+                // handles the update according to scene mdlwres
                 ctx.session.recoveryMode = false;
                 return ctx.handleRecovery(scene, ctx);
             } catch (e) {
@@ -60,10 +62,12 @@ scene.on('text', async ctx => {
             return;
         }
 
+        // saving new data
         let user = await User.findOne({ _id: ctx.from.id });
         user.chestMeasure = length;
         await user.save();
 
+        // choosing new scene to enter
         let sceneID = null;
         if (user.checked.bool == false) sceneID = scenes.id.setter.measure.waist;
         else if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;

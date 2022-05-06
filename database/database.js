@@ -22,6 +22,7 @@ module.exports.userRegisteredByID = async id => {
     }
 };
 
+// returns false, if db-record doesn't have all the necessary data
 module.exports.userRegisteredByObject = user => {
     try {
         return Boolean(user.registered);
@@ -30,6 +31,7 @@ module.exports.userRegisteredByObject = user => {
     }
 };
 
+// set user state (scene)
 module.exports.setUserState = async (id, state) => {
     try {
         await User.updateOne({ _id: id}, { state: state });
@@ -54,6 +56,8 @@ module.exports.userExists = async id => {
     }
 };
 
+// updates the user 'checked' field, if it's the time
+// to update his data 
 module.exports.userCheckedIn = async id => {
     try {
         const user = await User.findById(id);

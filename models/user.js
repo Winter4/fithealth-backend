@@ -104,6 +104,8 @@ userSchema.pre('save', function() {
     this.updated = Date.now();
 });
 
+// calcs the calories number the user should eat
+// per day to loose his weight
 userSchema.methods.calcCalories = function() {
     try {
         const sexParam = this.sex == 'Мужской' ? 5 : -161;

@@ -4,6 +4,7 @@ const db = require('../../../database/database');
 
 // ________________________________
 
+// Markup keyboard keys text
 const keys = {
     name: 'Имя',
     sex: 'Пол',
@@ -16,6 +17,7 @@ const keys = {
 
 // ___________________________________________
 
+// Markup keyboard keys iselves
 const changeDataKeyboard = Markup.keyboard(
     [
         [ keys.name, keys.sex, keys.activity ],
@@ -31,15 +33,18 @@ const changeDataScene = new Scenes.BaseScene(scenes.id.menu.changeData.home);
 changeDataScene.enter(async ctx => {
 
     try {
+        // if the bot was rebooted and the session is now empty
         if (ctx.session.recoveryMode == true) {
             try {
                 ctx.session.recoveryMode = false;
+                // handles the update according to scene mdlwres
                 return ctx.handleRecovery(changeDataScene, ctx);
             } catch (e) {
                 throw new Error(`Error on handling recovery: ${e.message} \n`);
             }
         }
         else {
+            // updates the user state
             db.setUserState(ctx.message.from.id, scenes.id.menu.changeData.home);
             return ctx.reply('Выберите параметр, который хотите изменить:', changeDataKeyboard);
         }

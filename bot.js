@@ -15,36 +15,37 @@ const { log } = require('./logger');
  * 1. scenes/scenes.js > ib & object
  * 2. complete necessary new_scene.js file (don't forget to handle recovery mode)
  * 3. index.js > stage
- * 4. models/user.js > user model
- * 5. ..menu/changeData > add necessary buttons & its middleware
+ * 4. ..menu/changeData > add necessary buttons & its middleware
  * 
  * in some time, this sttructure may turn out to be bad & unproffesional,
  * but in the moment I'm writing it - this is the best of my skills :)
  */
 
-// to be think of: wizards-setters, bas imports, saveUser refactor
-// TODO: Beauify (comments, ">', straight the rows, Composers (changeData menu))
-// TODO: mealPlan import Sex type
-// TODO: !!!!! REFACTOR SAVEUSERFROMCONEXT !!!!!!
-
 // _______________________________________________________________________
 
+// bot context extend for logging
 bot.context.log = msg => {
     log.info(msg);
 };
 
+// bot context extend for logging objects
 bot.context.logObject = object => {
     log.info(object);
 }
 
+// default update logger
 bot.context.logUpdate = (upd) => {
     log.info('New Upd', { update: upd });
 };
 
+// default error logger
 bot.context.logError = (ctx, err) => {
     log.error(err.message, { updType: ctx.updateType, updID: ctx.update.update_id, chatID: ctx.chat.id, username: ctx.chat.username});
 };
 
+// according to local-sessions, which die on bot restart,
+// this func takes persistant-sessions role and handles
+// updates without session after bot restart
 bot.context.handleRecovery = async (scene, ctx) => {
     try {
         const handler = await scene.middleware();
@@ -66,6 +67,7 @@ bot.use((ctx, next) => {
     return next();
 });
 
+// checking if the user should update his data
 bot.use(async (ctx, next) => {
     await db.userCheckedIn(ctx.from.id);
     return next();
@@ -96,6 +98,7 @@ const stage = new Scenes.Stage([
     scenes.object.menu.changeData.home,
 ]);
 
+// command takes the user to main menu
 stage.command('home', async ctx => {
     try {
         if (await db.userRegisteredByID(ctx.from.id))
@@ -118,7 +121,6 @@ bot.action('CHECK_IN_ACTION', ctx => {
 
 
 bot.start(async ctx => {
-
     try {
         let user = await User.findOne({ _id: ctx.from.id });
 

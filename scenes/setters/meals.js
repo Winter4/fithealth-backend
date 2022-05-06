@@ -29,9 +29,11 @@ const scene = new Scenes.BaseScene(scenes.id.setter.meals);
 
 scene.enter(ctx => {
     try {
+        // if the bot was rebooted and the session is now empty
         if (ctx.session.recoveryMode) {
             try {
                 ctx.session.recoveryMode = false;
+                // handles the update according to scene mdlwres
                 return ctx.handleRecovery(scene, ctx);
             } catch (e) {
                 throw new Error(`Error on handling recovery: ${e.message} \n`);
@@ -46,6 +48,7 @@ scene.enter(ctx => {
     }
 });
 
+// sets new mealsPerDay value
 const setMeals = async (id, meals) => {
     try {
         let user = await User.findOne({ _id: id });
@@ -59,6 +62,7 @@ const setMeals = async (id, meals) => {
     }
 }
 
+// choose new scene to enter
 const getNextScene = async user => {
     try {
         let sceneID = null;

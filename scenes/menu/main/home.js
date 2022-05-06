@@ -7,6 +7,7 @@ const User = require('../../../models/user');
 
 // ______________________________________________
 
+// Markup keyboard keys text
 const keys = {
     makeReport: 'Сделать отчёт',
     mealPlan: 'План питания',
@@ -15,6 +16,7 @@ const keys = {
     data: 'Изменить данные',
 };
 
+// Markup keyboard keys iselves
 const keyboard = Markup.keyboard(
     [
         [ keys.makeReport ],
@@ -63,8 +65,10 @@ scene.on('message', async (ctx, next) => {
 scene.enter(async ctx => {
 
     try {
+        // if the bot was rebooted and the session is now empty
         if (ctx.session.recoveryMode == true) {
             try {
+                // handles the update according to scene mdlwres
                 ctx.session.recoveryMode = false;
                 return ctx.handleRecovery(scene, ctx);
             } catch (e) {

@@ -1,4 +1,4 @@
-
+// scenes id
 module.exports.id = {
     setter: {
         name: "SET_NAME_SCENE",
@@ -31,6 +31,7 @@ module.exports.id = {
 
 // ______________________________________________
 
+// scenes instances
 module.exports.object = {
     setter: {
         name: require('./setters/name'),
