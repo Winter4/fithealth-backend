@@ -224,6 +224,10 @@ bot.launch().then(async () => {
     try {
         log.info('Bot started');
         console.log('Bot started');
+        
+        console.log('Logging...');
+        log.info('Logging...');
+
         await db.connect();
     } catch (e) {
         ctx.log('Failed to connect to MongoDB: ' + e.message);
