@@ -4,6 +4,7 @@ const scenes = require('../../scenes');
 const db = require('../../../database/database');
 
 const User = require('../../../models/user');
+const Meal = require('../../../models/meal');
 
 // ______________________________________________
 
@@ -136,27 +137,41 @@ scene.hears(keys.makeReport, ctx => {
 });
 
 scene.hears(keys.mealPlan, async ctx => {
-
     try {
-        const user = await db.getUserByID(ctx.from.id);
+        // get all the meals from DB
+        const data = await Meal.find({ $or: [ { group: 'proteins' }, { group: 'fats' }, { group: 'carbons' } ] });
 
-        const sexParam = user.sex == 'Мужской' ? 5 : -161;
-        let basicCaloricIntake = 
-            10 * user.startWeight + 
-            6.25 * user.height -
-            5 * user.age +
-            sexParam
-        ;
-        basicCaloricIntake *= user.activity;
-        basicCaloricIntake = basicCaloricIntake.toFixed();
+        // init objects 
+        let meals = { 'proteins': [], 'fats': [], 'carbons': [] };
 
-        const lessCaloricIntake = (basicCaloricIntake * 0.8).toFixed();
-        const moreCaloricIntake = (basicCaloricIntake * 1.2).toFixed();
+        // get the data to the object by its groups
+        for (let food of data) {
+            meals[food.group].push(food);
+        }
 
-        let text = 'Ваша дневная норма калорий в зависимости от желаемого результата: \n'
-        text += `- <b><i>Поддержание</i></b> веса: ${basicCaloricIntake} \n`;
-        text += `- <b><i>Снижение</i></b> веса: ${lessCaloricIntake} \n`;
-        text += `- <b><i>Набора</i></b> веса: ${moreCaloricIntake} \n`;
+        // generate text
+        let text = 'Продукты, рекомендованные к потреблению. Содержание калорий и нутриентов на 100г пищи';
+
+        // proteins
+        text += '\n\n    <b>Белки:</b> \n';
+        for (let food of meals.proteins) {
+            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
+                `Б/Ж/У  ${(food.proteins * 100).toFixed()}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        }
+
+        // fats
+        text += '\n\n    <b>Жиры</b>: \n';
+        for (let food of meals.fats) {
+            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
+                `Б/Ж/У  ${(food.proteins * 100).toFixed(1)}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        }
+
+        // carbons
+        text += '\n\n    <b>Углеводы</b>: \n';
+        for (let food of meals.carbons) {
+            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
+                `Б/Ж/У  ${(food.proteins * 100).toFixed(1)}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        }
 
         return ctx.replyWithHTML(text);
     } catch (e) {

@@ -65,7 +65,6 @@ module.exports.userCheckedIn = async id => {
 
         let interval = process.env.CHECKIN_INTERVAL;
         // statement is false means it's the time to checkIn and user isn't checked -> return false
-        console.log(Date.now() - user.checked.date);
         if (Date.now() - user.checked.date > interval) 
             user.checked.bool = false;
 
