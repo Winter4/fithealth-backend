@@ -7,7 +7,7 @@ require('dotenv').config({ path: '../../.env' });
 // ____________________________________________________________________________________
 
 module.exports.connect = async () => {
-    await mongoose.connect(process.env.MONGO_URL, () => log.info('Connected to DB'));
+    await mongoose.connect(process.env.MONGO_URL, () => { console.log('Connected to DB'); log.info('Connected to DB') });
 }
 
 // __________________________________________________________________
