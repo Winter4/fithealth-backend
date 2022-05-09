@@ -54,7 +54,7 @@ scene.on('message', async (ctx, next) => {
     );
 
     if (!(user.checked.bool)) {
-        setTimeout(() => ctx.reply('Мы хотим проверить ваши результаты за неделю. Обновите свой текущий вес и замеры.',
+        setTimeout(() => ctx.reply('Мы хотим проверить Ваши результаты за неделю. Укажите свой текущий вес и замеры',
             markup), 800);
     }
 
@@ -64,7 +64,6 @@ scene.on('message', async (ctx, next) => {
 // - - - - - - - - - - - - - - - - - - - - -
 
 scene.enter(async ctx => {
-
     try {
         // if the bot was rebooted and the session is now empty
         if (ctx.session.recoveryMode == true) {
@@ -122,6 +121,7 @@ scene.enter(async ctx => {
 // ______________________________________________________________
 
 scene.hears(keys.makeReport, ctx => {
+
     const reportKeybord = Markup.inlineKeyboard(
         [
             Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?user=${ctx.from.id}`),
@@ -136,41 +136,71 @@ scene.hears(keys.makeReport, ctx => {
     }
 });
 
+const axios = require('axios').default;
+const groupAtoi = {
+    'proteins': 0,
+    'fats': 1,
+    'carbons': 2
+};
 scene.hears(keys.mealPlan, async ctx => {
     try {
+
+        // get the report object from web-app
+        const response = await axios.get(`http://localhost:8080?user=${ctx.from.id}&bot=1`);
+        if (response.status !== 200) throw new Error(`Error on fetching report from web-app: ${response.statusText}`);
+        const report = response.data;
+
         // get all the meals from DB
-        const data = await Meal.find({ $or: [ { group: 'proteins' }, { group: 'fats' }, { group: 'carbons' } ] });
-
-        // init objects 
-        let meals = { 'proteins': [], 'fats': [], 'carbons': [] };
-
-        // get the data to the object by its groups
-        for (let food of data) {
-            meals[food.group].push(food);
-        }
+        const mealsData = await Meal.find({ $or: [ { group: 'proteins' }, { group: 'fats' }, { group: 'carbons' } ] });
 
         // generate text
-        let text = 'Продукты, рекомендованные к потреблению. Содержание калорий и нутриентов на 100г пищи';
+        let text = 'Примерный план питания показывает определённый набор продуктов, в которых содержится сбалансированное количество нутриентов (БЖУ). '
+            + 'При подборе рациона используйте данный перечень как образец; в каждом из продуктов указана порция в граммах, рассчитанная на основании Ваших показателей. \n\n';
 
-        // proteins
-        text += '\n\n    <b>Белки:</b> \n';
-        for (let food of meals.proteins) {
-            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
-                `Б/Ж/У  ${(food.proteins * 100).toFixed()}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        // if mealsPerDay !== 3, we have to add lunch to plan
+        // otherway, we don't need it
+        let tabs = [report.tabs[0]];
+        if (report.mealsPerDay > 3) {
+            tabs.push(report.tabs[1]);
         }
-
-        // fats
-        text += '\n\n    <b>Жиры</b>: \n';
-        for (let food of meals.fats) {
-            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
-                `Б/Ж/У  ${(food.proteins * 100).toFixed(1)}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        else {
+            tabs.push(null);
         }
+        tabs.push(report.tabs[2]);
+        tabs.push(report.tabs[4]);
 
-        // carbons
-        text += '\n\n    <b>Углеводы</b>: \n';
-        for (let food of meals.carbons) {
-            text += `<i>${food.name}</i> - ${(food.calories * 100).toFixed(1)} кал |  ` +
-                `Б/Ж/У  ${(food.proteins * 100).toFixed(1)}г / ${(food.fats * 100).toFixed(1)}г / ${(food.carbons * 100).toFixed(1)}г` + '\n';
+        const tabNames = ['Завтрак', 'Перекус', 'Обед', 'Ужин'];
+        for (let i in tabs) {
+            // skip the empty tab
+            if (!(tabs[i])) continue;
+
+            // header
+            text += `  <b>${tabNames[i]}:</b>` + '\n';
+
+            // for all the meals
+            for (let food of mealsData) {
+                // if this food included to tab, calc and add
+                if (food.plan[i]) {
+                    // this food's nutrient object
+                    const nutrient = tabs[i].nutrients[ groupAtoi[food.group] ];
+                    // weight to be eaten
+                    const weight = nutrient.calories.target / food.calories;
+
+                    text += `<i>${food.name}</i> - `;
+
+                    // EGGS EGGS: if this food is egg, should be added count but not weight
+                    // count 1 egg equal 100g
+                    if (`${food._id.toString()}` == '62698bacaec76b49a8b91712') {
+                        text += `${(weight / 100).toFixed()} шт | ${(food.calories * 100).toFixed()} кал на 1 шт`;
+                    }
+                    else {
+                        text += `${(weight).toFixed()}г | ${(food.calories * 100).toFixed()} кал на 100г`;
+                    }
+
+                    text += '\n';
+                }
+            }
+            text += '\n';
         }
 
         return ctx.replyWithHTML(text);

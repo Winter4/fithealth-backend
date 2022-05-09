@@ -32,7 +32,9 @@ const mealSchema = new mongoose.Schema({
     title: {
         type: String,
         immutable: true,
-    }
+    },
+    plan: [Boolean]
+    
 }, { collection: 'meals', versionKey: false });
 
 module.exports = mongoose.model('meal', mealSchema);
