@@ -190,7 +190,7 @@ bot.on('my_chat_member', ctx => {
 bot.on('message', async ctx => {
     try {
         await ctx.telegram.sendMessage(process.env.ADMIN_CHAT_ID, `Corruptive message by ${ctx.chat.id} user (upd_id:#${ctx.update.update_id})`);        
-        return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /home');
+        return ctx.reply('Пожалуйста, используйте текстовые команды. В случае нарушения работы Вы можете перезапустить бота /start');
     } catch (e) {
         throw new Error(`Error in <bot.on_message> of <index> file --> ${e.message}`);
     }

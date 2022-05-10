@@ -10,11 +10,11 @@ const Meal = require('../../../models/meal');
 
 // Markup keyboard keys text
 const keys = {
-    makeReport: 'Сделать отчёт',
-    mealPlan: 'План питания',
-    info: 'Справка',
-    meals: 'Изменить режим питания',
-    data: 'Изменить данные',
+    makeReport: '📅 Сделать отчёт',
+    mealPlan: '🥑 План питания',
+    info: '❔ Справка',
+    meals: '✏️ Изменить режим питания',
+    data: '📃 Изменить данные',
 };
 
 // Markup keyboard keys iselves
@@ -146,7 +146,7 @@ scene.hears(keys.mealPlan, async ctx => {
     try {
 
         // get the report object from web-app
-        const response = await axios.get(`http://localhost:8080?user=${ctx.from.id}&bot=1`);
+        const response = await axios.get(`http://coldysuit.xyz?user=${ctx.from.id}&bot=1`);
         if (response.status !== 200) throw new Error(`Error on fetching report from web-app: ${response.statusText}`);
         const report = response.data;
 
