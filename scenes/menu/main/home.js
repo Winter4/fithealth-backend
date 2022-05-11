@@ -53,6 +53,7 @@ scene.on('message', async (ctx, next) => {
         ],
     );
 
+    if (!user) return next();
     if (!(user.checked.bool)) {
         setTimeout(() => ctx.reply('Мы хотим проверить Ваши результаты за неделю. Укажите свой текущий вес и замеры',
             markup), 800);
@@ -229,8 +230,10 @@ scene.hears(keys.info, ctx => {
     }
 });
 
-scene.on('message', ctx => {
-    return ctx.reply('Используйте клавиаутуру меню');
+scene.on('message', (ctx, next) => {
+    // if it's a command
+    if (ctx.message.text[0] == '/') return next(); 
+    else return ctx.reply('Используйте клавиаутуру меню');
 });
 
 // __________________________________________________
