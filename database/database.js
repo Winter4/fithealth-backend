@@ -62,6 +62,7 @@ module.exports.userCheckedIn = async id => {
     try {
         const user = await User.findById(id);
         if (!user) return;
+        if (!user.registered) return;
 
         let interval = process.env.CHECKIN_INTERVAL;
         // statement is false means it's the time to checkIn and user isn't checked -> return false
