@@ -78,7 +78,8 @@ module.exports.userCheckedIn = async id => {
 module.exports.userPaid = async id => {
     try {
         const user = await User.findById(id);
-        return user.paid;
+        if (user && user.registered) return user.paid || false;
+        else return true;
     } catch (e) {
         throw new Error(`Error in <userPaid> of <database> file --> ${e.message}`);
     }
