@@ -67,6 +67,23 @@ bot.use((ctx, next) => {
     return next();
 });
 
+bot.action('PAY_ACTION', async (ctx) => {
+    ctx.answerCbQuery();
+    await db.setUserPaid(ctx.from.id, true);
+    return ctx.reply('Успешно оплачено!');
+});
+
+// checking if the user payed
+bot.use(async (ctx, next) => {
+    if (!(await db.userPaid(ctx.from.id))) {
+        const keyboard = Markup.inlineKeyboard([ Markup.button.callback('Оплатить', 'PAY_ACTION') ]);
+        return ctx.reply('Для доступа к боту произведите оплату', keyboard);
+    }
+    else {
+        return next();
+    }
+});
+
 // checking if the user should update his data
 bot.use(async (ctx, next) => {
     await db.userCheckedIn(ctx.from.id);

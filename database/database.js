@@ -74,3 +74,20 @@ module.exports.userCheckedIn = async id => {
         throw new Error(`Error in <userCheckedIn> of <database> file --> ${e.message}`);
     }
 };
+
+module.exports.userPaid = async id => {
+    try {
+        const user = await User.findById(id);
+        return user.paid;
+    } catch (e) {
+        throw new Error(`Error in <userPaid> of <database> file --> ${e.message}`);
+    }
+};
+
+module.exports.setUserPaid = async (id, value) => {
+    try {
+        await User.updateOne({ _id: id }, { paid: value });
+    } catch (e) {
+        throw new Error(`Error in <setUserPaid> of <database> file --> ${e.message}`);
+    }
+};

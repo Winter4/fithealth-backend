@@ -92,6 +92,7 @@ const userSchema = new mongoose.Schema({
 
     state: String,
     registered: Boolean,
+    paid: Boolean,
     checked: {
         date: Number,
         bool: Boolean,
