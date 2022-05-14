@@ -125,7 +125,7 @@ scene.hears(keys.makeReport, ctx => {
 
     const reportKeybord = Markup.inlineKeyboard(
         [
-            Markup.button.url('Перейти в калькулятор', `coldysuit.xyz?user=${ctx.from.id}`),
+            Markup.button.url('Перейти в калькулятор', `${process.env.WEB_APP_URL}?user=${ctx.from.id}`),
         ],
     );
     
@@ -147,7 +147,7 @@ scene.hears(keys.mealPlan, async ctx => {
     try {
 
         // get the report object from web-app
-        const response = await axios.get(`http://coldysuit.xyz?user=${ctx.from.id}&bot=1`);
+        const response = await axios.get(`http://${process.env.WEB_APP_URL}?user=${ctx.from.id}&bot=1`);
         if (response.status !== 200) throw new Error(`Error on fetching report from web-app: ${response.statusText}`);
         const report = response.data;
 
