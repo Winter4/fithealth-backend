@@ -1,6 +1,8 @@
 const {Telegraf, Scenes, Stage, Markup, session} = require('telegraf');
 const db = require('./database/database');
-require('dotenv').config({ path: '../.env' });
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const User = require('./models/user');
 
