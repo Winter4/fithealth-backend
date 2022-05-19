@@ -7,7 +7,33 @@ require('dotenv').config({ path: '../../.env' });
 // ____________________________________________________________________________________
 
 module.exports.connect = async () => {
-    await mongoose.connect(process.env.MONGO_URL, () => { console.log('Connected to DB'); log.info('Connected to DB') });
+
+    mongoose.connection.on('connecting', () => { 
+        console.log('Connecting to MongoDB...');
+        log.info('Connecting to MongoDB...');
+    });
+    mongoose.connection.on('error', err => { 
+        console.log('Error on connecting to MongoDB', err);
+        log.error('Connecting to MongoDB failed', { err });
+    });
+    mongoose.connection.on('connected', () => { 
+        console.log('Connected to MongoDB');
+        log.info('Connected to MongoDB');
+    });
+
+    const user = process.env.MONGO_USER;
+    const pwd = process.env.MONGO_PWD;
+    const host = process.env.MONGO_HOST;
+    const db = process.env.MONGO_DB;
+    const authSource = process.env.MONGO_AUTH_SOURCE;
+
+    await mongoose.connect(`mongodb://${host}/${db}`, {
+        authSource: authSource,
+        user: user,
+        pass: pwd,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 }
 
 // __________________________________________________________________
