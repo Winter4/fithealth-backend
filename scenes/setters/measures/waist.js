@@ -36,7 +36,9 @@ scene.enter(async ctx => {
 
         const user = await db.getUserByID(ctx.from.id);
 
-        const photoSource = user.sex == 'Мужской' ? './images/man-measures.jpg' : './images/woman-measures.jpg';
+        const photo = user.sex == 'Мужской' ? 'man-measures.jpg' : 'woman-measures.jpg';
+        const photoSource = process.env.IMAGES_DIR + photo;
+
         await ctx.replyWithPhoto({ source: photoSource });
 
         return ctx.reply(`Введите обхват талии (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());     

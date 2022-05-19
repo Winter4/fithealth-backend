@@ -1,4 +1,5 @@
 const { Scenes, Markup, session } = require("telegraf");
+const path = require('path');
 
 const scenes = require('../../scenes');
 const db = require('../../../database/database');
@@ -107,8 +108,10 @@ scene.enter(async ctx => {
         text += `\nЗамеры (Г/Т/Б): ${user.chestMeasure}/${user.waistMeasure}/${user.hipMeasure} см`;
         text += `\nРежим питания: ${user.mealsPerDay} р/день`;
 
+        const photoSource = path.join(process.env.IMAGES_DIR, 'main-menu.jpg'); 
+
         return ctx.replyWithPhoto(
-            { source: 'images/main-menu.jpg' },
+            { source: photoSource },
             {
                 caption: text,
                 ...keyboard,

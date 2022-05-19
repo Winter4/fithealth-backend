@@ -35,8 +35,10 @@ scene.enter(async ctx => {
         db.setUserState(ctx.from.id, scenes.id.setter.measure.hip);
 
         const user = await db.getUserByID(ctx.from.id);
+        
+        const photo = user.sex == 'Мужской' ? 'man-measures.jpg' : 'woman-measures.jpg';
+        const photoSource = process.env.IMAGES_DIR + photo;
 
-        const photoSource = user.sex == 'Мужской' ? './images/man-measures.jpg' : './images/woman-measures.jpg';
         await ctx.replyWithPhoto({ source: photoSource });
 
         return ctx.reply(`Введите обхват бёдер (${limits.min}-${limits.max} см):`, Markup.removeKeyboard());     
