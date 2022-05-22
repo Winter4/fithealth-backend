@@ -58,10 +58,6 @@ scene.on('text', async ctx => {
         if (!(registered)) user.startWeight = user.currentWeight;
 
         user.calcCalories();
-        if (user.checked.bool == false) { 
-            user.caloriesToLose *= 0.9;
-            user.caloriesToLose = (user.caloriesToLose).toFixed();
-        }
         await user.save();
 
         let sceneID = null;

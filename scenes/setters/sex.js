@@ -53,6 +53,7 @@ const setSex = async (id, sex) => {
     try {
         let user = await User.findOne({ _id: id });
         user.sex = sex;
+        user.calcCalories();
         await user.save();
 
         return user;

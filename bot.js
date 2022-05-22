@@ -131,8 +131,12 @@ stage.command('home', async ctx => {
 
 bot.use(stage.middleware());
 
-bot.action('CHECK_IN_ACTION', ctx => {
+bot.action('CHECK_IN_ACTION', async ctx => {
     ctx.answerCbQuery();
+
+    // increment number of decreasings
+    await db.incrementWeeksCount(ctx.from.id);
+
     return ctx.scene.enter(scenes.id.setter.weight.current);
 });
 
@@ -151,7 +155,12 @@ bot.start(async ctx => {
                 return ctx.scene.enter(user.state);
         }
         else {
-            user = new User({ _id: ctx.from.id, tgUsername: ctx.from.username, checked: { date: Date.now(), bool: true, }, });
+            user = new User({ 
+                _id: ctx.from.id, 
+                tgUsername: ctx.from.username, 
+                checked: { date: Date.now(), bool: true, }, 
+                weeksCount: 0,
+            });
             await user.save();
             
             ctx.log(`New ${ctx.chat.id} user`);

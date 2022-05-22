@@ -55,6 +55,7 @@ scene.on('text', async ctx => {
         // saving new data
         let user = await User.findOne({ _id: ctx.from.id });
         user.height = height;
+        user.calcCalories();
         await user.save();
 
         // choosing new scene to enter

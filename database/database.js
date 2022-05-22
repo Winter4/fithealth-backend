@@ -118,3 +118,13 @@ module.exports.setUserPaid = async (id, value) => {
         throw new Error(`Error in <setUserPaid> of <database> file --> ${e.message}`);
     }
 };
+
+module.exports.incrementWeeksCount = async id => {
+    try {
+        const user = await User.findById(id);
+        user.weeksCount += 1;
+        await user.save();
+    } catch (e) {
+        throw new Error(`Error in <incrementWeeksCount> of <database> file --> ${e.message}`);
+    }
+};
