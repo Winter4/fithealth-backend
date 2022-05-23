@@ -162,25 +162,40 @@ scene.hears(keys.mealPlan, async ctx => {
         text += 'Примерный план питания показывает определённый набор продуктов, в которых содержится сбалансированное количество нутриентов (БЖУ). '
             + 'При подборе рациона используйте данный перечень как образец; в каждом из продуктов указана порция в граммах, рассчитанная на основании Ваших показателей. \n\n';
 
-        // if mealsPerDay !== 3, we have to add lunch to plan
-        // otherway, we don't need it
+        
+        // push tabs to array    
+        // we always have breakfadt
         let tabs = [report.tabs[0]];
-        if (report.mealsPerDay > 3) {
-            tabs.push(report.tabs[1]);
-        }
-        else {
-            tabs.push(null);
-        }
+
+        // if mealsPerDay == 4, we have to add lunch 1 to plan
+        if (report.mealsPerDay > 3) tabs.push(report.tabs[1]);
+        else tabs.push(null);
+
+        // we always have dinner
         tabs.push(report.tabs[2]);
+
+        // if mealsPerDay == 5, we have to add lunch 2 to plan
+        if (report.mealsPerDay == 5) tabs.push(report.tabs[3]);
+        else tabs.push(null);
+
+        // we always have supper
         tabs.push(report.tabs[4]);
 
-        const tabNames = ['Завтрак', 'Перекус', 'Обед', 'Ужин'];
+        // generating tabs text
+        const tabNames = ['Завтрак', 'Перекус 1', 'Обед', 'Перекус 2', 'Ужин'];
         for (let i in tabs) {
             // skip the empty tab
             if (!(tabs[i])) continue;
 
             // header
-            text += `  <b>${tabNames[i]}:</b>` + '\n';
+            text += `\n<b><u>${tabNames[i]}</u></b>` + '\n';
+
+            // these arrays will be later added to tab text
+            const groupsText = {
+                proteins: [],
+                fats: [],
+                carbons: [],
+            };
 
             // for all the meals
             for (let food of mealsData) {
@@ -191,20 +206,33 @@ scene.hears(keys.mealPlan, async ctx => {
                     // weight to be eaten
                     const weight = nutrient.calories.target / food.calories;
 
-                    text += `• <i>${food.name}</i> - `;
+                    let tmpText = `• <i>${food.name}</i> — `;
 
                     // EGGS EGGS: if this food is egg, should be added count but not weight
                     // count 1 egg equal 100g
                     if (`${food._id.toString()}` == '62698bacaec76b49a8b91712') {
-                        text += `${(weight / 100).toFixed()} шт | ${(food.calories * 100).toFixed()} кал на 1 шт`;
+                        tmpText += `${(weight / 100).toFixed()} шт | ${(food.calories * 100).toFixed()} кал на 1 шт`;
                     }
                     else {
-                        text += `${(weight).toFixed()}г | ${(food.calories * 100).toFixed()} кал на 100г`;
+                        tmpText += `${(weight).toFixed()}г | ${(food.calories * 100).toFixed()} кал на 100г`;
                     }
 
-                    text += '\n';
+                    tmpText += '\n';
+
+                    // pushing new group string to its group array
+                    groupsText[food.group].push(tmpText);
                 }
             }
+
+            text += '   <b>Белки:</b> \n';
+            text += groupsText.proteins.join('');
+
+            text += '\n   <b>Жиры:</b> \n';
+            text += groupsText.fats.join('');
+
+            text += '\n   <b>Углеводы:</b> \n';
+            text += groupsText.carbons.join('');
+
             text += '\n';
         }
 
