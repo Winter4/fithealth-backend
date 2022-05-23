@@ -7,6 +7,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const User = require('./models/user');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+module.exports.bot = bot;
+
 const { log } = require('./logger');
 
 // ______________________________________
@@ -250,6 +252,7 @@ bot.catch((err, ctx) => {
     );
 });  
 
+const notifyer = require('./cron');
 bot.launch().then(async () => {
     try {
         log.info('Bot started');
@@ -259,7 +262,14 @@ bot.launch().then(async () => {
         log.info('Logging...');
 
         await db.connect();
+
+        console.log('Setting up cron..')
+        log.info('Setting up cron..');
+        notifyer.start();
+        console.log('Cron is set up');
+        log.info('Cron is set up');
+
     } catch (e) {
-        ctx.log('Failed to connect to MongoDB: ' + e.message);
+        ctx.log('Error in bot.launch' + e.message);
     }
 });
