@@ -128,7 +128,7 @@ scene.hears(keys.makeReport, ctx => {
 
     const reportKeybord = Markup.inlineKeyboard(
         [
-            Markup.button.url('Перейти в калькулятор', `${process.env.WEB_APP_URL}?user=${ctx.from.id}`),
+            Markup.button.url('Перейти в отчёт по питанию', `${process.env.WEB_APP_URL}?user=${ctx.from.id}`),
         ],
     );
     
