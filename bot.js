@@ -151,7 +151,7 @@ bot.start(async ctx => {
 
         if (user !== null) {
             // if user hadn't registered before stopping the bot
-            if (await db.userRegisteredByObject(user)) 
+            if (user.registered) 
                 return ctx.scene.enter(scenes.id.menu.main);
             else 
                 return ctx.scene.enter(user.state);

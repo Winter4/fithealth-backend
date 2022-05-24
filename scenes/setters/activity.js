@@ -59,7 +59,7 @@ const setRate = async (id, rate) => {
         let user = await User.findOne({ _id: id });
         user.activity = rate;
 
-        if (db.userRegisteredByObject(user)) user.calcCalories();
+        if (user.registered) user.calcCalories();
         await user.save();
 
         return user;
@@ -72,7 +72,7 @@ const setRate = async (id, rate) => {
 const getNextScene = async user => {
     try {
         let sceneID = null;
-        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        if (user.registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.weight.current;
 
         return sceneID;

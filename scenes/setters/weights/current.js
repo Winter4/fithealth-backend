@@ -50,19 +50,22 @@ scene.on('text', async ctx => {
         else if (weight < limits.min || weight > limits.max) 
             return ctx.reply('Пожалуйста, введите корректный вес');
 
-
+        // get the user
         let user = await User.findOne({ _id: ctx.from.id });
+        // reassign user
         user.currentWeight = weight;
 
-        const registered = await db.userRegisteredByObject(user);
-        if (!(registered)) user.startWeight = user.currentWeight;
+        // assign startWeight
+        if (!(user.registered)) user.startWeight = user.currentWeight;
 
+        // calc calories
         user.calcCalories();
         await user.save();
 
+        // choose the next scene
         let sceneID = null;
         if (user.checked.bool == false) sceneID = scenes.id.setter.measure.chest;
-        else if (registered) sceneID = scenes.id.menu.main;
+        else if (user.registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.weight.target;
 
         return ctx.scene.enter(sceneID);

@@ -72,7 +72,7 @@ scene.on('text', async ctx => {
         // choosing new scene to enter
         let sceneID = null;
         if (user.checked.bool == false) sceneID = scenes.id.setter.measure.hip;
-        else if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        else if (user.registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.measure.hip;
 
         return ctx.scene.enter(sceneID);

@@ -55,7 +55,7 @@ scene.on('text', async ctx => {
         await user.save();
 
         let sceneID = null;
-        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        if (user.registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.measure.chest;
 
         return ctx.scene.enter(sceneID);

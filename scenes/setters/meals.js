@@ -67,7 +67,7 @@ const getNextScene = async user => {
     try {
         let sceneID = null;
         
-        if (await db.userRegisteredByObject(user)) sceneID = scenes.id.menu.main;
+        if (user.registered) sceneID = scenes.id.menu.main;
         else sceneID = scenes.id.setter.height;
 
         return sceneID;

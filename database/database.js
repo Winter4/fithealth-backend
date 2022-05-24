@@ -48,15 +48,6 @@ module.exports.userRegisteredByID = async id => {
     }
 };
 
-// returns false, if db-record doesn't have all the necessary data
-module.exports.userRegisteredByObject = user => {
-    try {
-        return Boolean(user.registered);
-    } catch (e) {
-        throw new Error(`Error in <userRegisteredByObject> of <database> file --> ${e.message}`);
-    }
-};
-
 // set user state (scene)
 module.exports.setUserState = async (id, state) => {
     try {
