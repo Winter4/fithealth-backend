@@ -269,6 +269,9 @@ bot.launch().then(async () => {
         console.log('Cron is set up');
         log.info('Cron is set up');
 
+        console.log('Cron status:', notifyer.running);
+        log.info('Cron status: ' + notifyer.running);
+
     } catch (e) {
         ctx.log('Error in bot.launch' + e.message);
     }

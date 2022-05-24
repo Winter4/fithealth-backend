@@ -11,14 +11,20 @@ const daysMonth = process.env.CRON_DAYS_MONTH;
 const month = process.env.CRON_MONTH;
 const daysWeek = process.env.CRON_DAYS_WEEK;
 
-module.exports = new CronJob(`${sec} ${min} ${hours} ${daysMonth} ${month} ${daysWeek}`, async function() {
-	log.info('Cron: notifying users..', { source: 'cron' });
+module.exports = new CronJob(
+	`${sec} ${min} ${hours} ${daysMonth} ${month} ${daysWeek}`, 
+	async function() {
+		log.info('Cron: notifying users..', { source: 'cron' });
 
-	const users = await User.find({});
+		const users = await User.find({});
 
-	users.forEach(user => {
-		bot.telegram.sendMessage(user._id, 'Не забудьте отправить отчёт по питанию! Удачного дня :)');
-	});
+		users.forEach(user => {
+			bot.telegram.sendMessage(user._id, 'Не забудьте отправить отчёт по питанию! Удачного дня :)');
+		});
 
-	log.info('Cron: users notified', { source: 'cron' });
-});
+		log.info('Cron: users notified', { source: 'cron' });
+	},
+	null,
+	false,
+	'Europe/Minsk'
+);
