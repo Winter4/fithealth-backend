@@ -19,6 +19,7 @@ module.exports.id = {
         },
 
         meals: 'SET_MEALS_SCENE',
+        steps: 'SET_STEPS_SCENE',
     },
 
     menu: {
@@ -52,6 +53,7 @@ module.exports.object = {
         },
 
         meals: require('./setters/meals'),
+        steps: require('./setters/steps'),
     },
 
     menu: {

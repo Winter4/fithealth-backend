@@ -126,18 +126,26 @@ scene.enter(async ctx => {
 
 scene.hears(keys.makeReport, ctx => {
 
-    const reportKeybord = Markup.inlineKeyboard(
+    const reportKeybord = Markup.inlineKeyboard([
         [
-            Markup.button.url('Перейти в отчёт по питанию', `${process.env.WEB_APP_URL}?user=${ctx.from.id}`),
+            Markup.button.url('Отчёт по питанию', `${process.env.WEB_APP_URL}?user=${ctx.from.id}`),
         ],
-    );
+        [
+            Markup.button.callback('Отчёт по количеству шагов', 'STEPS_ACTION'),
+        ]
+    ]);
     
     try {
-        return ctx.reply('Чтобы узнать, сколько калорий вы потребили, сколько нужно и сколько осталось - воспользуйтесь нашим калькулятором', 
+        return ctx.reply('Ежедневный контроль Вашего питания и физический активности неминуемо приведёт к достижению поставленных целей!', 
         reportKeybord);
     } catch (e) {
         throw new Error(`Error in <hears_makeReport> middleware of <scenes/menu/main/home> file --> ${e.message}`);
     }
+});
+
+scene.action('STEPS_ACTION', ctx => {
+    ctx.answerCbQuery();
+    return ctx.scene.enter(scenes.id.setter.steps);
 });
 
 const axios = require('axios').default;

@@ -16,7 +16,7 @@ const { log } = require('./logger');
 // if u want to add a parameter and create a scene for its setting,
 // u should update these:
 /**
- * 1. scenes/scenes.js > ib & object
+ * 1. scenes/scenes.js > id & object
  * 2. complete necessary new_scene.js file (don't forget to handle recovery mode)
  * 3. index.js > stage
  * 4. ..menu/changeData > add necessary buttons & its middleware
@@ -114,6 +114,7 @@ const stage = new Scenes.Stage([
     scenes.object.setter.measure.hip,
 
     scenes.object.setter.meals,
+    scenes.object.setter.steps,
 
     scenes.object.menu.main,
     scenes.object.menu.changeData.home,
