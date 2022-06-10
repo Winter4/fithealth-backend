@@ -1,31 +1,27 @@
 {
-  "name": "tg-fitness-bot",
+  "name": "fitness-tg-bot",
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
   "scripts": {
-    "dev": "nodemon bot.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Winter4/tg-fitness-bot.git"
+    "url": "git+https://github.com/Winter4/fitness-tg-bot.git"
   },
-  "author": "",
+  "author": "Volodymyr Karpovych <tg @januarycoming>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Winter4/tg-fitness-bot/issues"
+    "url": "https://github.com/Winter4/fitness-tg-bot/issues"
   },
-  "homepage": "https://github.com/Winter4/tg-fitness-bot#readme",
+  "homepage": "https://github.com/Winter4/fitness-tg-bot#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "cron": "^2.0.0",
-    "dotenv": "^16.0.0",
-    "mongoose": "^6.2.6",
-    "telegraf": "^4.7.0",
+    "dotenv": "^16.0.1",
+    "mongoose": "^6.3.6",
+    "telegraf": "^4.8.5",
     "winston": "^3.7.2",
-    "winston-daily-rotate-file": "^4.6.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.16"
+    "winston-daily-rotate-file": "^4.7.1"
   }
 }
