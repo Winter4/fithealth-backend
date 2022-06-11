@@ -1,35 +1,50 @@
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
-const { Telegraf } = require('telegraf');
+const { Telegraf } = require("telegraf");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const log = require('./logger');
+const log = require("./logger");
+const User = require("./services/user.service");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 // extend bot context
-bot.context.log = msg => log.info(msg);
+bot.context.log = (msg) => log.info(msg);
 
 // log every new update
 bot.use((ctx, next) => {
-    log.info('New Update', { upd: ctx.update });
-    return next();
+  log.info("New Update", { upd: ctx.update });
+  return next();
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - //
+// - - - - - - - - - middlewares - - - - - - - - - - //
 
-bot.on('message', ctx => {
-  console.log('test');
-  return ctx.reply(ctx.message.text, { reply_to_message_id: ctx.message.message_id });
+// extending context with user data
+bot.use(async (ctx, next) => {
+  ctx.user = await User.findOne(ctx.chat.id);
+  return next();
 });
+
+// commands
+bot.use(require("./commands/commands").middleware);
+
+// scenes
+bot.use(require("./scenes/scenes").middleware);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 // set bot commands list
 bot.telegram.setMyCommands([
-    { command: '/home', description: 'takes you to the main menu'},
+  { command: "/home", description: "takes you to the main menu" },
 ]);
 
-bot.launch();
-console.log('Bot started');
+const db = require("./database/mongoose");
+async function start() {
+  await db.connect();
+
+  bot.launch();
+  console.log("Bot started");
+}
+
+start();
