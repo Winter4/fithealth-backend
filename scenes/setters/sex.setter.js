@@ -3,26 +3,34 @@ const User = require("../../services/user.service");
 
 const scene = new Composer();
 
-const setSex = require("./sex.setter");
+const setHeight = require("./height.setter");
 const mainMenu = require("../menus/main/home.menu.main");
+const SCENE_ID = "SET_SEX";
 
-const SCENE_ID = "SET_NAME";
+// - - - - - - - - - - - - - - - - - - - - - - - - //
+
+const Sex = {
+  male: "Мужской",
+  female: "Женский",
+};
+
+const keyboard = Markup.keyboard([[Sex.male, Sex.female]]).resize();
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 async function enter(ctx) {
   try {
     await User.set.state(ctx.chat.id, SCENE_ID);
-    return ctx.reply("Введите своё имя: ", Markup.removeKeyboard());
+    return ctx.reply("Выберите свой пол: ", keyboard);
   } catch (e) {
     throw new Error(
-      `Error in <enter> middleware of <name.setter> scene --> ${e.message}`
+      `Error in <enter> middleware of <sex.setter> scene --> ${e.message}`
     );
   }
 }
 
-scene.on(
-  "text",
+scene.hears(
+  [Sex.male, Sex.female],
 
   // update data
   async (ctx, next) => {
@@ -31,12 +39,12 @@ scene.on(
       const userID = ctx.chat.id;
 
       // save new data
-      await User.set.name(userID, ctx.message.text);
+      await User.set.sex(userID, ctx.message.text);
 
       return next();
     } catch (e) {
       throw new Error(
-        `Error in update_data of <on_text> middleware of <name.setter> scene --> ${e.message}`
+        `Error in data_update of <hears> middleware of <sex.setter> scene --> ${e.message}`
       );
     }
   },
@@ -47,19 +55,20 @@ scene.on(
       // choose new scene to enter
       const enterNextScene = (await User.get.registered(ctx.chat.id))
         ? mainMenu.enter
-        : setSex.enter;
+        : setHeight.enter;
 
+      // push to next scene
       return enterNextScene(ctx);
     } catch (e) {
       throw new Error(
-        `Error in scene_push of <on_text> middleware of <name.setter> scene --> ${e.message}`
+        `Error in scene_push of <hears> middleware of <sex.setter> scene --> ${e.message}`
       );
     }
   }
 );
 
 scene.on("message", (ctx) => {
-  return ctx.reply("Пожалуйста, введите имя буквами");
+  return ctx.reply("Пожалуйста, используйте клавиатуру");
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //

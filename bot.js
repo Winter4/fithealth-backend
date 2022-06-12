@@ -22,7 +22,7 @@ bot.use((ctx, next) => {
 
 // extending context with user data
 bot.use(async (ctx, next) => {
-  ctx.user = await User.findOne(ctx.chat.id);
+  ctx.user = await User.get.object(ctx.chat.id);
   return next();
 });
 
