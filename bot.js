@@ -34,6 +34,28 @@ bot.use(require("./scenes/scenes").middleware);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
+bot.catch((err, ctx) => {
+  log.error(err.message, {
+    updType: ctx.updateType,
+    updID: ctx.update.update_id,
+    chatID: ctx.chat.id,
+    username: ctx.chat.username,
+  });
+
+  return ctx.telegram.sendMessage(
+    process.env.ADMIN_CHAT_ID,
+    `Ошибка 
+        Update type: ${ctx.updateType} 
+        Update ID: ${ctx.update.update_id}
+        Chat ID: ${ctx.chat.id}
+        Username: ${ctx.chat.username}
+        Message: ${err.message} 
+        Время: ${Date()}`
+  );
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - //
+
 // set bot commands list
 bot.telegram.setMyCommands([
   { command: "/home", description: "takes you to the main menu" },
