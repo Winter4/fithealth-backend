@@ -2,6 +2,7 @@ const { Composer, Markup } = require("telegraf");
 const path = require("path");
 
 const User = require("../../../services/user.service");
+const { getToday } = require("../../../utils/utils");
 
 const scene = new Composer();
 
@@ -27,17 +28,38 @@ const SCENE_ID = "MAIN_MENU";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
+function generateText(user) {
+  let text = "";
+
+  text += `Приветствую, ${user.name}! \n`;
+  text += `Сегодня ${getToday()} \n`;
+  text += `\nВаш пол: ${user.sex.toLowerCase()}`;
+  text += `\nВаш возраст: ${user.age}`;
+  text += `\nВаш рост: ${user.height} см`;
+
+  text +=
+    "\n\nМы верим, что у Вас всё получится! \nВсё в Ваших руках, не сдавайтесь!\n";
+
+  text += `\nНачальный вес: ${user.startWeight} кг`;
+  text += `\nТекущий вес: ${user.currentWeight} кг`;
+  text += `\nЖелаемый вес: ${user.targetWeight} кг`;
+
+  text += `\nЗамеры (Г/Т/Б): ${user.chestMeasure}/${user.waistMeasure}/${user.hipMeasure} см`;
+  text += `\nРежим питания: ${user.mealsPerDay} р/день`;
+
+  return text;
+}
+
 async function enter(ctx) {
   try {
+    // update state
     await User.set.state(ctx.chat.id, SCENE_ID);
-
-    const text = "Welcome to awesome MENU !";
 
     const photoSource = path.join(process.env.IMAGES_DIR, "main-menu.jpg");
     return ctx.replyWithPhoto(
       { source: photoSource },
       {
-        caption: text,
+        caption: generateText(await User.get.object(ctx.chat.id)),
         ...keyboard,
       }
     );
@@ -48,9 +70,32 @@ async function enter(ctx) {
   }
 }
 
-scene.on("message", (ctx) => {
-  return ctx.reply("This is Main Menu");
+scene.use(require("./info.handler.menu.main").middleware);
+const { infoKeyboard } = require("./info.handler.menu.main");
+scene.hears(keys.info, (ctx) => {
+  try {
+    let text = "";
+    text += "1️⃣ Как работать с приложением? \n\n";
+    text += "2️⃣ Как составить завтрак? \n\n";
+    text += "3️⃣ Как составить обед? \n\n";
+    text += "4️⃣ Как составить ужин? \n\n";
+    text += "5️⃣ Как составить перекус? \n\n";
+    text += "6️⃣ Когда есть и как готовить? \n\n";
+    text += "7️⃣ Как пить и что с овощами? \n\n";
+
+    return ctx.reply(text, infoKeyboard);
+  } catch (e) {
+    throw new Error(
+      `Error in <hears_info> middleware of <main.menu> scene --> ${e.message}`
+    );
+  }
 });
+
+scene.on("message", (ctx) => {
+  return ctx.reply("Возможно, вы хотели использовать клавиатуру?");
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - //
 
 module.exports = {
   id: SCENE_ID,
