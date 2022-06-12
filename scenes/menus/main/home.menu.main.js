@@ -3,6 +3,7 @@ const path = require("path");
 
 const User = require("../../../services/user.service");
 const { getToday } = require("../../../utils/utils");
+const stepsCounter = require("../../setters/steps.counter");
 
 const scene = new Composer();
 
@@ -69,6 +70,33 @@ async function enter(ctx) {
     );
   }
 }
+
+scene.hears(keys.makeReport, (ctx) => {
+  const reportKeyboard = Markup.inlineKeyboard([
+    [
+      Markup.button.url(
+        "Отчёт по питанию",
+        `${process.env.WEB_APP_URL}?user=${ctx.from.id}`
+      ),
+    ],
+    [Markup.button.callback("Отчёт по количеству шагов", "STEPS_ACTION")],
+  ]);
+
+  try {
+    return ctx.reply(
+      "Ежедневный контроль Вашего питания и физический активности неминуемо приведёт к достижению поставленных целей!",
+      reportKeyboard
+    );
+  } catch (e) {
+    throw new Error(
+      `Error in <hears_makeReport> middleware of <main.menu> scene --> ${e.message}`
+    );
+  }
+});
+scene.action("STEPS_ACTION", (ctx) => {
+  ctx.answerCbQuery();
+  return stepsCounter.enter(ctx);
+});
 
 scene.use(require("./info.handler.menu.main").middleware);
 const { infoKeyboard } = require("./info.handler.menu.main");

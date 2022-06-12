@@ -1,7 +1,5 @@
 const { Composer } = require("telegraf");
 
-const mainMenu = require("./menus/main/home.menu.main");
-
 const setName = require("./setters/name.setter");
 const setSex = require("./setters/sex.setter");
 const setHeight = require("./setters/height.setter");
@@ -16,6 +14,10 @@ const setWaistMeasure = require("./setters/measures/waist.measure.setter");
 const setHipMeasure = require("./setters/measures/hip.measure.setter");
 
 const setMeals = require("./setters/meals.setter");
+
+const mainMenu = require("./menus/main/home.menu.main");
+
+const stepsCounter = require("./setters/steps.counter");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
@@ -91,6 +93,14 @@ scenes.use(
 // main menu middleware
 scenes.use(
   Composer.optional((ctx) => route(ctx, mainMenu.id), mainMenu.middleware)
+);
+
+// steps counter middleware
+scenes.use(
+  Composer.optional(
+    (ctx) => route(ctx, stepsCounter.id),
+    stepsCounter.middleware
+  )
 );
 
 module.exports.middleware = scenes;
