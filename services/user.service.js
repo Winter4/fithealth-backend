@@ -24,6 +24,18 @@ async function save(user) {
   }
 }
 
+// delete user from db
+async function del(id) {
+  try {
+    log.info("Deleting user", { user: id });
+    await User.deleteOne({ _id: id });
+  } catch (e) {
+    throw new Error(
+      `Error in <delete> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 async function findOne(id) {
@@ -42,7 +54,7 @@ async function create(id, username) {
       _id: id,
       tgUsername: username,
       checked: Date.now(),
-      weeksCount: 0,
+      weeksCount: -1,
       paid: false,
     });
 
@@ -50,6 +62,19 @@ async function create(id, username) {
   } catch (e) {
     throw new Error(
       `Error in <create> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function erase(id) {
+  try {
+    const userData = await get(id);
+    log.info("User object to be erased:", { object: userData });
+
+    await del(id);
+  } catch (e) {
+    throw new Error(
+      `Error in <erase> method of <User> service --> ${e.message}`
     );
   }
 }
@@ -389,6 +414,7 @@ async function setMeals(id, meals) {
 
 module.exports = {
   create,
+  erase,
   updateCheck,
 
   get: {

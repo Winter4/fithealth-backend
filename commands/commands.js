@@ -4,12 +4,22 @@ const finishScene = require("../scenes/finish.scene");
 
 const commands = new Composer();
 
-commands.on("message", (ctx, next) => {
-  if (ctx.user.state === finishScene.id) {
-    return finishScene.enter(ctx);
-  }
+commands.command(["start", "home"], (ctx, next) => {
+  try {
+    if (ctx.user && ctx.user.state === finishScene.id) {
+      return finishScene.enter(ctx);
+    }
 
-  return next();
+    if (ctx.user && !ctx.user.registered) {
+      return ctx.reply("Вы не завершили регистрацию");
+    }
+
+    return next();
+  } catch (e) {
+    throw new Error(
+      `Error in <command_*> middleware of <commands> --> ${e.message}`
+    );
+  }
 });
 
 commands.use(require("./start.command"));

@@ -24,7 +24,11 @@ middleware.action(ACTION, async (ctx) => {
 middleware.on("message", async (ctx, next) => {
   await next();
 
-  if (ctx.user.registered && !(await User.get.checkedIn(ctx.chat.id))) {
+  if (
+    ctx.user &&
+    ctx.user.registered &&
+    !(await User.get.checkedIn(ctx.chat.id))
+  ) {
     if ((await User.get.state(ctx.chat.id)) === mainMenu.id) {
       return ctx.reply(
         "Мы хотим проверить Ваши результаты за неделю. Укажите свой текущий вес и замеры",

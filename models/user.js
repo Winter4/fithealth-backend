@@ -63,7 +63,7 @@ userSchema.methods.calcCalories = function () {
 
     basicCaloricIntake *= this.activity;
 
-    this.caloriesToLose *= 1 - this.weeksCount * 0.1;
+    this.caloriesToLose = basicCaloricIntake * (1 - this.weeksCount * 0.1);
     this.caloriesToLose = this.caloriesToLose.toFixed();
   } catch (e) {
     throw new Error(

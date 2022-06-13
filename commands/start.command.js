@@ -14,7 +14,7 @@ command.start(async (ctx) => {
     // if new user, push him to auth chain
     if (!ctx.user) {
       // insert a record
-      await User.create(ctx.chat.id, ctx.chat.username);
+      await User.create(ctx.chat.id, ctx.from.username);
 
       // send greet msg
       await ctx.reply(

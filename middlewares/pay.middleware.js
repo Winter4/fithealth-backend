@@ -22,8 +22,8 @@ middleware.action(ACTION, async (ctx) => {
 });
 
 // checking if the user paid (after register)
-middleware.use(async (ctx, next) => {
-  if (!ctx.user.paid && ctx.user.registered) {
+middleware.on("message", async (ctx, next) => {
+  if (ctx.user && !ctx.user.paid && ctx.user.registered) {
     return ctx.reply("Для доступа к боту произведите оплату", keyboard);
   }
 

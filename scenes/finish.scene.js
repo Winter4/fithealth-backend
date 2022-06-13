@@ -1,6 +1,7 @@
 const { Composer, Markup } = require("telegraf");
 
 const User = require("../services/user.service");
+const setName = require("./setters/name.setter");
 
 const scene = new Composer();
 
@@ -25,7 +26,7 @@ async function enter(ctx) {
       text = `${name}, Вы показали стремление и силу воли, однако этого оказалось недостаточно для достижения результата! Мы уверены, что в следующем цикле у Вас точно всё получится!`;
     } else if (dif >= 3) {
       text =
-        `${name}, поздравляем, вы похудели на ${dif} кг! Это отличный результат, мы гордимся Вами!` +
+        `${name}, поздравляем, вы похудели на ${dif} кг! Это отличный результат, мы гордимся Вами! ` +
         `Мы будем очень рады поработать с вами в следующем 4х-недельном цикле трансформации Вашего тела. Мы уверены, что Вы можете ещё лучше, у Вас отличная самоорганизации и вы чётко выполняете все рекомендации!`;
     } else {
       text = `${name}, поздравляем Вас с завершением 4х-недельного цикла! Ждём Вас в следующем цикле трансформации Вашего тела!`;
@@ -39,10 +40,15 @@ async function enter(ctx) {
   }
 }
 
-scene.action(ACTION, (ctx) => {
+scene.action(ACTION, async (ctx) => {
   ctx.answerCbQuery();
 
-  return ctx.reply("new cycle");
+  // recreate user
+  await User.erase(ctx.chat.id);
+  await User.create(ctx.chat.id, ctx.from.username);
+
+  // push to name setter
+  return setName.enter(ctx);
 });
 
 scene.on("message", (ctx) => {

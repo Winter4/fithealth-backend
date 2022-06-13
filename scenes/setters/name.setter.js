@@ -7,10 +7,11 @@ const setSex = require("./sex.setter");
 const mainMenu = require("../menus/main/home.menu.main");
 
 const SCENE_ID = "SET_NAME";
+module.exports.id = SCENE_ID;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
-async function enter(ctx) {
+module.exports.enter = async (ctx) => {
   try {
     await User.set.state(ctx.chat.id, SCENE_ID);
     return ctx.reply("Введите своё имя: ", Markup.removeKeyboard());
@@ -19,7 +20,7 @@ async function enter(ctx) {
       `Error in <enter> middleware of <name.setter> scene --> ${e.message}`
     );
   }
-}
+};
 
 scene.on(
   "text",
@@ -64,8 +65,4 @@ scene.on("message", (ctx) => {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
-module.exports = {
-  id: SCENE_ID,
-  enter,
-  middleware: scene,
-};
+module.exports.middleware = scene;
