@@ -3,6 +3,7 @@ const log = require("../logger");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
+// common get func for all methods here
 async function get(id) {
   try {
     return await User.findById(id);
@@ -11,6 +12,7 @@ async function get(id) {
   }
 }
 
+// common save func for all methods here
 async function save(user) {
   try {
     log.info("Saving user", { userID: user._id });
@@ -41,6 +43,7 @@ async function create(id, username) {
       tgUsername: username,
       checked: Date.now(),
       weeksCount: 0,
+      paid: false,
     });
 
     await save(user);
@@ -64,6 +67,19 @@ async function getRegistered(id) {
   }
 }
 
+async function getPaid(id) {
+  try {
+    log.info("Getting user paid", { user: id });
+
+    const user = await get(id);
+    return Boolean(user.paid);
+  } catch (e) {
+    throw new Error(
+      `Error in <getPaid> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 async function setRegistered(id, value) {
@@ -76,6 +92,20 @@ async function setRegistered(id, value) {
   } catch (e) {
     throw new Error(
       `Error in <setRegistered> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function setPaid(id, value) {
+  try {
+    log.info("Updating user paid", { user: id, value });
+
+    const user = await get(id);
+    user.paid = value;
+    await save(user);
+  } catch (e) {
+    throw new Error(
+      `Error in <setPaid> method of <User> service --> ${e.message}`
     );
   }
 }
@@ -306,10 +336,12 @@ module.exports = {
   get: {
     object: findOne,
     registered: getRegistered,
+    paid: getPaid,
   },
 
   set: {
     registered: setRegistered,
+    paid: setPaid,
     state: setState,
 
     name: setName,

@@ -1,11 +1,13 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const log = require("./logger");
 const User = require("./services/user.service");
+
+const mainMenu = require("./scenes/menus/main/home.menu.main");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
@@ -25,6 +27,11 @@ bot.use(async (ctx, next) => {
   ctx.user = await User.get.object(ctx.chat.id);
   return next();
 });
+
+// pay middleware
+bot.use(require("./middlewares/pay.middleware"));
+
+// - - - - - - - - - - - - - - - - - - - - - - - - //
 
 // commands
 bot.use(require("./commands/commands").middleware);
