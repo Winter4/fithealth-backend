@@ -134,6 +134,17 @@ scene.hears(keys.mealPlan, async (ctx) => {
   }
 });
 
+const setMeals = require("../../setters/meals.setter");
+scene.hears(keys.meals, async (ctx) => {
+  try {
+    return setMeals.enter(ctx);
+  } catch (e) {
+    throw new Error(
+      `Error in <hears_meals> middleware of <main.menu> scene --> ${e.message}`
+    );
+  }
+});
+
 scene.on("message", (ctx) => {
   return ctx.reply("Возможно, вы хотели использовать клавиатуру?");
 });
