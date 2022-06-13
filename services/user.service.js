@@ -118,6 +118,11 @@ async function setSex(id, sex) {
     // check for changed value
     if (user.sex !== sex) {
       user.sex = sex;
+
+      if (user.registered) {
+        user.calcCalories();
+      }
+
       await save(user);
     }
   } catch (e) {
@@ -133,6 +138,11 @@ async function setHeight(id, height) {
 
     const user = await get(id);
     user.height = height;
+
+    if (user.registered) {
+      user.calcCalories();
+    }
+
     await save(user);
   } catch (e) {
     throw new Error(
@@ -147,6 +157,11 @@ async function setAge(id, age) {
 
     const user = await get(id);
     user.age = age;
+
+    if (user.registered) {
+      user.calcCalories();
+    }
+
     await save(user);
   } catch (e) {
     throw new Error(
