@@ -96,7 +96,7 @@ scene.on(
       const enterNextScene = mainMenu.enter;
 
       // push to next scene
-      return enterNextScene(ctx);
+      return setTimeout(() => enterNextScene(ctx), 1000);
     } catch (e) {
       throw new Error(
         `Error in scene_push of <on_text> middleware of <steps.counter> scene --> ${e.message}`

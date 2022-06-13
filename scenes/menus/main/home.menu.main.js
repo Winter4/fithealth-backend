@@ -3,9 +3,11 @@ const path = require("path");
 
 const User = require("../../../services/user.service");
 const { getToday } = require("../../../utils/utils");
-const stepsCounter = require("../../setters/steps.counter");
 
 const scene = new Composer();
+
+const SCENE_ID = "MAIN_MENU";
+module.exports.id = SCENE_ID;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
@@ -24,8 +26,6 @@ const keyboard = Markup.keyboard([
   [keys.mealPlan, keys.info],
   [keys.meals, keys.data],
 ]).resize();
-
-const SCENE_ID = "MAIN_MENU";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
@@ -51,7 +51,7 @@ function generateText(user) {
   return text;
 }
 
-async function enter(ctx) {
+module.exports.enter = async (ctx) => {
   try {
     // update state
     await User.set.state(ctx.chat.id, SCENE_ID);
@@ -69,7 +69,7 @@ async function enter(ctx) {
       `Error in <enter> middleware of <main.menu> scene --> ${e.message}`
     );
   }
-}
+};
 
 scene.hears(keys.makeReport, (ctx) => {
   const reportKeyboard = Markup.inlineKeyboard([
@@ -93,6 +93,8 @@ scene.hears(keys.makeReport, (ctx) => {
     );
   }
 });
+
+const stepsCounter = require("../../setters/steps.counter");
 scene.action("STEPS_ACTION", (ctx) => {
   ctx.answerCbQuery();
   return stepsCounter.enter(ctx);
@@ -138,8 +140,5 @@ scene.on("message", (ctx) => {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
-module.exports = {
-  id: SCENE_ID,
-  enter,
-  middleware: scene,
-};
+// exported separately to avoid bad importing
+module.exports.middleware = scene;
