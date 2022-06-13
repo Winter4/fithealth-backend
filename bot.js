@@ -58,7 +58,7 @@ bot.catch((err, ctx) => {
 
 // set bot commands list
 bot.telegram.setMyCommands([
-  { command: "/home", description: "takes you to the main menu" },
+  { command: "/home", description: "вернуться в главное меню" },
 ]);
 
 const db = require("./database/mongoose");
