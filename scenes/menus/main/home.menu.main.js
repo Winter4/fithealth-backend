@@ -119,6 +119,19 @@ scene.hears(keys.info, (ctx) => {
   }
 });
 
+const { generateMealPlan } = require("../../../utils/utils");
+scene.hears(keys.mealPlan, async (ctx) => {
+  try {
+    const text = await generateMealPlan(ctx.chat.id);
+
+    return ctx.replyWithHTML(text);
+  } catch (e) {
+    throw new Error(
+      `Error in <hears_mealPlan> middleware of <main.menu> scene --> ${e.message}`
+    );
+  }
+});
+
 scene.on("message", (ctx) => {
   return ctx.reply("Возможно, вы хотели использовать клавиатуру?");
 });
