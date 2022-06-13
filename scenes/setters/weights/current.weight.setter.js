@@ -4,6 +4,7 @@ const User = require("../../../services/user.service");
 const scene = new Composer();
 
 const setTargetWeight = require("./target.weight.setter");
+const setChestMeasure = require("../measures/chest.measure.setter");
 const mainMenu = require("../../menus/main/home.menu.main");
 
 const SCENE_ID = "SET_CURRENT_WEIGHT";
@@ -85,9 +86,14 @@ scene.on(
   async (ctx) => {
     try {
       // choose new scene to enter
-      const enterNextScene = (await User.get.registered(ctx.chat.id))
+      let enterNextScene = (await User.get.registered(ctx.chat.id))
         ? mainMenu.enter
         : setTargetWeight.enter;
+
+      // if it is checking in
+      if (ctx.user.registered && !(await User.get.checkedIn(ctx.chat.id))) {
+        enterNextScene = setChestMeasure.enter;
+      }
 
       // push to next scene
       return enterNextScene(ctx);

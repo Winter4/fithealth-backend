@@ -9,6 +9,10 @@ const middleware = new Composer();
 
 const ACTION = "PAY_ACTION";
 
+const keyboard = Markup.inlineKeyboard([
+  Markup.button.callback("Оплатить", ACTION),
+]);
+
 // handling pay action
 middleware.action(ACTION, async (ctx) => {
   ctx.answerCbQuery();
@@ -19,14 +23,7 @@ middleware.action(ACTION, async (ctx) => {
 
 // checking if the user paid (after register)
 middleware.use(async (ctx, next) => {
-  if (
-    !(await User.get.paid(ctx.chat.id)) &&
-    (await User.get.registered(ctx.chat.id))
-  ) {
-    const keyboard = Markup.inlineKeyboard([
-      Markup.button.callback("Оплатить", ACTION),
-    ]);
-
+  if (!ctx.user.paid && ctx.user.registered) {
     return ctx.reply("Для доступа к боту произведите оплату", keyboard);
   }
 

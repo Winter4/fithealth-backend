@@ -94,9 +94,14 @@ scene.on(
   async (ctx) => {
     try {
       // choose new scene to enter
-      const enterNextScene = (await User.get.registered(ctx.chat.id))
+      let enterNextScene = (await User.get.registered(ctx.chat.id))
         ? mainMenu.enter
         : setWaistMeasure.enter;
+
+      // if it is checking in
+      if (ctx.user.registered && !(await User.get.checkedIn(ctx.chat.id))) {
+        enterNextScene = setWaistMeasure.enter;
+      }
 
       // push to next scene
       return enterNextScene(ctx);

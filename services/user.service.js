@@ -54,6 +54,20 @@ async function create(id, username) {
   }
 }
 
+async function updateCheck(id) {
+  try {
+    log.info("Updating user checkin", { user: id });
+
+    const user = await get(id);
+    user.checked = Date.now();
+    await save(user);
+  } catch (e) {
+    throw new Error(
+      `Error in <registered> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
 async function getRegistered(id) {
   try {
     log.info("Getting user registered", { user: id });
@@ -76,6 +90,35 @@ async function getPaid(id) {
   } catch (e) {
     throw new Error(
       `Error in <getPaid> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function getState(id) {
+  try {
+    log.info("Getting user state", { user: id });
+
+    const user = await get(id);
+    return user.state;
+  } catch (e) {
+    throw new Error(
+      `Error in <getState> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function getCheckedIn(id) {
+  try {
+    log.info("Getting user checked in", { user: id });
+
+    const user = await get(id);
+    const interval = process.env.CHECKIN_INTERVAL;
+
+    // statement is false means it's the time to checkIn and user isn't checked -> return false
+    return !(Date.now() - user.checked > interval);
+  } catch (e) {
+    throw new Error(
+      `Error in <getCheckedIn> method of <User> service --> ${e.message}`
     );
   }
 }
@@ -332,11 +375,14 @@ async function setMeals(id, meals) {
 
 module.exports = {
   create,
+  updateCheck,
 
   get: {
     object: findOne,
     registered: getRegistered,
     paid: getPaid,
+    state: getState,
+    checkedIn: getCheckedIn,
   },
 
   set: {

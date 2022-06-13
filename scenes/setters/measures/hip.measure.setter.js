@@ -81,6 +81,10 @@ scene.on(
     try {
       // update data
       await User.set.measure.hip(ctx.chat.id, ctx.message.text);
+      // refresh checkin
+      console.log("update check");
+      await User.updateCheck(ctx.chat.id);
+      console.log("updated");
 
       return next();
     } catch (e) {

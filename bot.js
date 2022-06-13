@@ -7,8 +7,6 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const log = require("./logger");
 const User = require("./services/user.service");
 
-const mainMenu = require("./scenes/menus/main/home.menu.main");
-
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 // extend bot context
@@ -30,6 +28,9 @@ bot.use(async (ctx, next) => {
 
 // pay middleware
 bot.use(require("./middlewares/pay.middleware"));
+
+// checkin middleware
+bot.use(require("./middlewares/checkin.middleware"));
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
