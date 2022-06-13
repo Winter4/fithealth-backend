@@ -60,6 +60,7 @@ async function updateCheck(id) {
 
     const user = await get(id);
     user.checked = Date.now();
+    user.weeksCount += 1;
     await save(user);
   } catch (e) {
     throw new Error(
@@ -119,6 +120,19 @@ async function getCheckedIn(id) {
   } catch (e) {
     throw new Error(
       `Error in <getCheckedIn> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function getWeeksCount(id) {
+  try {
+    log.info("Getting user weeks count", { user: id });
+
+    const user = await get(id);
+    return user.weeksCount;
+  } catch (e) {
+    throw new Error(
+      `Error in <getWeeksCount> method of <User> service --> ${e.message}`
     );
   }
 }
@@ -383,6 +397,7 @@ module.exports = {
     paid: getPaid,
     state: getState,
     checkedIn: getCheckedIn,
+    weeks: getWeeksCount,
   },
 
   set: {

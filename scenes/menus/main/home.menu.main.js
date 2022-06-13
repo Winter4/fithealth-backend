@@ -53,12 +53,10 @@ function generateText(user) {
 
 module.exports.enter = async (ctx) => {
   try {
-    console.log("menu 1");
     // update state
     await User.set.state(ctx.chat.id, SCENE_ID);
 
     const photoSource = path.join(process.env.IMAGES_DIR, "main-menu.jpg");
-    console.log("menu 2");
     return ctx.replyWithPhoto(
       { source: photoSource },
       {

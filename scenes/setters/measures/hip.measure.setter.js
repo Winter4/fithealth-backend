@@ -5,6 +5,7 @@ const scene = new Composer();
 
 const setMeals = require("../meals.setter");
 const mainMenu = require("../../menus/main/home.menu.main");
+const finish = require("../../finish.scene");
 
 const SCENE_ID = "SET_HIP_MEASURE";
 
@@ -82,9 +83,7 @@ scene.on(
       // update data
       await User.set.measure.hip(ctx.chat.id, ctx.message.text);
       // refresh checkin
-      console.log("update check");
       await User.updateCheck(ctx.chat.id);
-      console.log("updated");
 
       return next();
     } catch (e) {
@@ -98,9 +97,13 @@ scene.on(
   async (ctx) => {
     try {
       // choose new scene to enter
-      const enterNextScene = (await User.get.registered(ctx.chat.id))
+      let enterNextScene = (await User.get.registered(ctx.chat.id))
         ? mainMenu.enter
         : setMeals.enter;
+
+      if ((await User.get.weeks(ctx.chat.id)) >= 4) {
+        enterNextScene = finish.enter;
+      }
 
       // push to next scene
       return enterNextScene(ctx);

@@ -20,6 +20,8 @@ const stepsCounter = require("./setters/steps.counter");
 
 const changeDataMenu = require("./menus/change-data/home.menu.change-data");
 
+const finish = require("./finish.scene");
+
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 function route(ctx, state) {
@@ -110,6 +112,11 @@ scenes.use(
     (ctx) => route(ctx, changeDataMenu.id),
     changeDataMenu.middleware
   )
+);
+
+// finish scene middleware
+scenes.use(
+  Composer.optional((ctx) => route(ctx, finish.id), finish.middleware)
 );
 
 module.exports.middleware = scenes;
