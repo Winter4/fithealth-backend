@@ -71,6 +71,8 @@ module.exports.enter = async (ctx) => {
   }
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - //
+
 scene.hears(keys.makeReport, (ctx) => {
   const reportKeyboard = Markup.inlineKeyboard([
     [
@@ -141,6 +143,17 @@ scene.hears(keys.meals, async (ctx) => {
   } catch (e) {
     throw new Error(
       `Error in <hears_meals> middleware of <main.menu> scene --> ${e.message}`
+    );
+  }
+});
+
+const changeDataMenu = require("../change-data/home.menu.change-data");
+scene.hears(keys.data, async (ctx) => {
+  try {
+    return changeDataMenu.enter(ctx);
+  } catch (e) {
+    throw new Error(
+      `Error in <hears_changeData> middleware of <main.menu> scene --> ${e.message}`
     );
   }
 });

@@ -16,14 +16,17 @@ const setHipMeasure = require("./setters/measures/hip.measure.setter");
 const setMeals = require("./setters/meals.setter");
 
 const mainMenu = require("./menus/main/home.menu.main");
-
 const stepsCounter = require("./setters/steps.counter");
+
+const changeDataMenu = require("./menus/change-data/home.menu.change-data");
 
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 function route(ctx, state) {
   return ctx.user.state === state;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - //
 
 const scenes = new Composer();
 
@@ -84,7 +87,6 @@ scenes.use(
     setHipMeasure.middleware
   )
 );
-
 // meals per day setter middleware
 scenes.use(
   Composer.optional((ctx) => route(ctx, setMeals.id), setMeals.middleware)
@@ -94,12 +96,19 @@ scenes.use(
 scenes.use(
   Composer.optional((ctx) => route(ctx, mainMenu.id), mainMenu.middleware)
 );
-
 // steps counter middleware
 scenes.use(
   Composer.optional(
     (ctx) => route(ctx, stepsCounter.id),
     stepsCounter.middleware
+  )
+);
+
+// change data menu middleware
+scenes.use(
+  Composer.optional(
+    (ctx) => route(ctx, changeDataMenu.id),
+    changeDataMenu.middleware
   )
 );
 
