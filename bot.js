@@ -3,6 +3,7 @@ require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { Telegraf, Markup } = require("telegraf");
 const bot = new Telegraf(process.env.BOT_TOKEN);
+module.exports.bot = bot;
 
 const log = require("./logger");
 const User = require("./services/user.service");
@@ -67,6 +68,10 @@ bot.catch((err, ctx) => {
 // set bot commands list
 bot.telegram.setMyCommands([
   { command: "/home", description: "вернуться в главное меню" },
+  {
+    command: "/notify",
+    description: "включить\\выключить ежедневные уведомления",
+  },
 ]);
 
 const db = require("./database/mongoose");

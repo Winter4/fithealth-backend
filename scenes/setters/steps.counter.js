@@ -91,7 +91,6 @@ scene.on(
   // push to next scene
   async (ctx) => {
     try {
-      console.log(mainMenu);
       // choose new scene to enter
       const enterNextScene = mainMenu.enter;
 

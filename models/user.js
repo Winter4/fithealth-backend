@@ -45,6 +45,8 @@ const userSchema = new mongoose.Schema(
 
     mealsPerDay: Number,
     weeksCount: Number,
+
+    notify: Boolean,
   },
   { versionKey: false, collection: "users" }
 );
@@ -63,8 +65,10 @@ userSchema.methods.calcCalories = function () {
 
     basicCaloricIntake *= this.activity;
 
-    this.caloriesToLose = basicCaloricIntake * (1 - this.weeksCount * 0.1);
-    this.caloriesToLose = this.caloriesToLose.toFixed();
+    this.caloriesToLose = (
+      basicCaloricIntake *
+      (1 - this.weeksCount * 0.1)
+    ).toFixed();
   } catch (e) {
     throw new Error(
       `Error in <userSchema.calcCalories> of <models/user> file --> ${e.message}`

@@ -56,6 +56,7 @@ async function create(id, username) {
       checked: Date.now(),
       weeksCount: -1,
       paid: false,
+      notify: true,
     });
 
     await save(user);
@@ -86,10 +87,28 @@ async function updateCheck(id) {
     const user = await get(id);
     user.checked = Date.now();
     user.weeksCount += 1;
+    user.calcCalories();
     await save(user);
   } catch (e) {
     throw new Error(
       `Error in <registered> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
+async function notify(id) {
+  try {
+    log.info("Switching user notifys", { user: id });
+
+    const user = await get(id);
+    user.notify = !user.notify;
+    log.info("Current user notify: " + user.notify, { user: id });
+    await save(user);
+
+    return user.notify;
+  } catch (e) {
+    throw new Error(
+      `Error in <notify> method of <User> service --> ${e.message}`
     );
   }
 }
@@ -416,6 +435,7 @@ module.exports = {
   create,
   erase,
   updateCheck,
+  notify,
 
   get: {
     object: findOne,

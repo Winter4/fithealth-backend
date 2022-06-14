@@ -4,7 +4,7 @@ const finishScene = require("../scenes/finish.scene");
 
 const commands = new Composer();
 
-commands.command(["start", "home"], (ctx, next) => {
+commands.command(["start", "home", "notify"], (ctx, next) => {
   try {
     if (ctx.user && ctx.user.state === finishScene.id) {
       return finishScene.enter(ctx);
@@ -24,5 +24,6 @@ commands.command(["start", "home"], (ctx, next) => {
 
 commands.use(require("./start.command"));
 commands.use(require("./home.command"));
+commands.use(require("./notify.command"));
 
 module.exports.middleware = commands;
