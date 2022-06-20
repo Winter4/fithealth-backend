@@ -18,6 +18,9 @@ async function enter(ctx) {
   try {
     await User.set.state(ctx.chat.id, SCENE_ID);
 
+    // turn notify off
+    await User.set.notify(ctx.chat.id, false);
+
     let text = null;
     const name = ctx.user.name;
 

@@ -19,7 +19,7 @@ module.exports = new CronJob(
     const users = await User.find({});
 
     users.forEach((user) => {
-      if (user.notify) {
+      if (user.registered && user.notify) {
         bot.telegram.sendMessage(
           user._id,
           "Не забудьте отправить отчёт по питанию! Удачного дня :)"

@@ -252,6 +252,20 @@ async function setState(id, state) {
   }
 }
 
+async function setNotify(id, value) {
+  try {
+    log.info("Updating user notify", { user: id, value });
+
+    const user = await get(id);
+    user.notify = value;
+    await save(user);
+  } catch (e) {
+    throw new Error(
+      `Error in <setNotify> method of <User> service --> ${e.message}`
+    );
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 async function setName(id, name) {
@@ -477,6 +491,7 @@ module.exports = {
     registered: setRegistered,
     paid: setPaid,
     state: setState,
+    notify: setNotify,
 
     name: setName,
     sex: setSex,

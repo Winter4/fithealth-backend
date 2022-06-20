@@ -25,6 +25,17 @@ const userSchema = new mongoose.Schema(
     waistMeasure: Number,
     hipMeasure: Number,
 
+    state: String,
+    registered: Boolean,
+
+    paid: Boolean,
+    checked: Number,
+
+    mealsPerDay: Number,
+    weeksCount: Number,
+
+    notify: Boolean,
+
     created: {
       type: Date,
       required: true,
@@ -36,17 +47,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: () => Date.now(),
     },
-
-    state: String,
-    registered: Boolean,
-
-    paid: Boolean,
-    checked: Number,
-
-    mealsPerDay: Number,
-    weeksCount: Number,
-
-    notify: Boolean,
   },
   { versionKey: false, collection: "users" }
 );
