@@ -1,12 +1,29 @@
 const User = require("../models/User");
 const log = require("../logger");
 
+const appCache = require("../caches/app.cache");
+
 // - - - - - - - - - - - - - - - - - - - - - - - - //
 
 // common get func for all methods here
 async function get(id) {
   try {
-    return await User.findById(id);
+    log.info("Getting user", { userID: id });
+
+    let user = null;
+
+    // check the cache
+    user = appCache.get(id);
+    // if the cache doesn't have that value
+    if (!user) {
+      // get data from DB
+      user = await User.findById(id);
+    }
+
+    // cache the result anyway
+    appCache.set(id, user);
+
+    return user;
   } catch (e) {
     throw new Error(`Error in <get> method of <User> service --> ${e.message}`);
   }
@@ -16,7 +33,12 @@ async function get(id) {
 async function save(user) {
   try {
     log.info("Saving user", { userID: user._id });
+
+    // saving to DB
     await user.save();
+
+    // caching result
+    appCache.set(user._id, user);
   } catch (e) {
     throw new Error(
       `Error in <save> method of <User> service --> ${e.message}`
@@ -28,7 +50,12 @@ async function save(user) {
 async function del(id) {
   try {
     log.info("Deleting user", { user: id });
+
+    // deleting from db
     await User.deleteOne({ _id: id });
+
+    // deleting from cache
+    appCache.del(id);
   } catch (e) {
     throw new Error(
       `Error in <delete> method of <User> service --> ${e.message}`
