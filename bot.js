@@ -12,6 +12,7 @@ const User = require("./services/user.service");
 
 // extend bot context
 bot.context.log = (msg) => log.info(msg);
+bot.context.logError = (err) => log.error(err.message, { err });
 
 // log every new update
 bot.use((ctx, next) => {

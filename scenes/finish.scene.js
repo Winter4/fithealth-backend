@@ -1,5 +1,7 @@
 const { Composer, Markup } = require("telegraf");
 
+const axios = require("axios");
+
 const User = require("../services/user.service");
 const setName = require("./setters/name.setter");
 
@@ -20,6 +22,16 @@ async function enter(ctx) {
 
     // turn notify off
     await User.set.notify(ctx.chat.id, false);
+
+    // delete reports for user
+    let response;
+    try {
+      response = await axios.delete(
+        `http://${process.env.WEB_APP_URL}/delete-report/${ctx.chat.id}`
+      );
+    } catch (e) {
+      ctx.logError(e);
+    }
 
     let text = null;
     const name = ctx.user.name;
