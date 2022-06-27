@@ -84,8 +84,6 @@ async function start() {
 
   bot.launch();
   console.log("Bot started");
-
-
 }
 
 start();

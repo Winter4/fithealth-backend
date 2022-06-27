@@ -1,5 +1,5 @@
 const { CronJob } = require("cron");
-const User = require("./models/user");
+const User = require("./models/User");
 
 const { log } = require("./logger");
 const { bot } = require("./bot");
