@@ -76,11 +76,16 @@ bot.telegram.setMyCommands([
 ]);
 
 const db = require("./database/mongoose");
+const cron = require('./cron');
 async function start() {
   await db.connect();
 
+  cron.start();
+
   bot.launch();
   console.log("Bot started");
+
+
 }
 
 start();
