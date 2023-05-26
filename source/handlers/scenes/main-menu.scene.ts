@@ -1,5 +1,5 @@
 import { Composer, Keyboard } from "grammy";
-import { CustomContext } from "../../types";
+import type { CustomContext } from "../../context";
 
 // alias = value
 enum mainMenuKeys {
@@ -21,6 +21,7 @@ const mainMenuMarkup = {
 // - - - - - - - //
 
 export async function enter(ctx: CustomContext) {
+  //await ctx.db.state.update({ where: {  }})
   return ctx.reply("Главное меню", { reply_markup: mainMenuMarkup.keyboard });
 }
 

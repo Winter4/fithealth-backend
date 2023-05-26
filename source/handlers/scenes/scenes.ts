@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 import mainMenu from "./main-menu.scene";
-import { CustomContext } from "../../types";
+import type { CustomContext } from "../../context";
 
 const scenes = new Composer<CustomContext>();
 

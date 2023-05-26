@@ -1,5 +1,5 @@
 import type { Context } from "grammy";
-import type { BotClients } from "./clients";
+import type { BotClients } from "./settings/clients";
 import type { PrismaClient } from "@prisma/client";
 
 // declare custom context type

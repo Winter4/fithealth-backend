@@ -2,13 +2,12 @@
 import "dotenv/config";
 import { Bot } from "grammy";
 
-import { getConfig } from "./config";
-import { BotClients, getClients } from "./clients";
+import { getConfig } from "./settings/config";
+import { getClients } from "./settings/clients";
 
-import { CustomContext } from "./types";
+import type { CustomContext } from "./context";
 
-import middlewares from "./middlewares";
-import errorHandler from "./error-handler";
+import { preMiddlewares, errorHandler } from "./middlewares";
 
 import commands from "./handlers/commands";
 import scenes from "./handlers/scenes/scenes";
@@ -23,7 +22,7 @@ async function main() {
   const bot = new Bot<CustomContext>(config.telegram.botToken);
 
   // apply pre-scenes middlewares
-  bot.use(...middlewares(clients));
+  bot.use(...preMiddlewares(clients));
 
   bot.use(commands);
   bot.use(scenes);

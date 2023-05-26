@@ -1,6 +1,6 @@
-import type { Bot, NextFunction } from "grammy";
-import type { CustomContext } from "./types";
-import type { BotClients } from "./clients";
+import type { BotError, NextFunction } from "grammy";
+import type { CustomContext } from "./context";
+import type { BotClients } from "./settings/clients";
 
 function extendContext(clients: BotClients) {
   return (ctx: CustomContext, next: NextFunction) => {
@@ -11,11 +11,21 @@ function extendContext(clients: BotClients) {
   };
 }
 
+function cache(ctx: CustomContext, next: NextFunction) {
+  return next();
+}
+
 function logUpdates(ctx: CustomContext, next: NextFunction) {
   ctx.logger.info(ctx.update);
   return next();
 }
 
-export default function middlewares(clients: BotClients) {
-  return [extendContext(clients), logUpdates];
+export function preMiddlewares(clients: BotClients) {
+  return [extendContext(clients), cache, logUpdates];
+}
+
+export function errorHandler(logger: BotClients["logger"]) {
+  return (error: BotError) => {
+    logger.error(error.error);
+  };
 }
