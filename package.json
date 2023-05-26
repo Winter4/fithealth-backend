@@ -1,0 +1,37 @@
+{
+  "name": "rehearsal-bot",
+  "version": "1.0.0",
+  "description": "A telegram bot for booking a rehearsal",
+  "main": "bot.js",
+  "scripts": {
+    "dev": "npx nodemon source/bot.ts | pino-pretty --translateTime",
+    "dev:up": "docker compose -f environment/docker-compose.yml up -d",
+    "dev:down": "docker compose -f environment/docker-compose.yml down",
+    "dev:db:migrate": "npx prisma migrate dev"
+  },
+  "prisma": {
+    "schema": "source/prisma/schema.prisma"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx tsc"
+    }
+  },
+  "author": "Winter4 <mywinter4@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.10.1",
+    "dotenv": "^16.0.3",
+    "grammy": "^1.14.1",
+    "pino": "^8.11.0",
+    "pino-pretty": "^9.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.1",
+    "husky": "^8.0.3",
+    "nodemon": "^2.0.20",
+    "prisma": "^4.10.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  }
+}
