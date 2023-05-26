@@ -37,8 +37,6 @@ async function main() {
   // run bot
   bot.start();
   clients.logger.info("🍟 Bot is ready to handle some calories");
-
-  awa;
 }
 
 main();

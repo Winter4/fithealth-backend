@@ -7,15 +7,11 @@
     "dev": "npx nodemon source/bot.ts | pino-pretty --translateTime",
     "dev:up": "docker compose -f environment/docker-compose.yml up -d",
     "dev:down": "docker compose -f environment/docker-compose.yml down",
-    "dev:db:migrate": "npx prisma migrate dev"
+    "dev:db:migrate": "npx prisma migrate dev",
+    "prepare": "husky install"
   },
   "prisma": {
     "schema": "source/prisma/schema.prisma"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npx tsc"
-    }
   },
   "author": "Winter4 <mywinter4@gmail.com>",
   "license": "ISC",
