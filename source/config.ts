@@ -33,13 +33,32 @@ function getDatabaseConfig(): DatabaseConfig {
 
 // - - - - - - - //
 
+type RedisConfig = {
+  url: string;
+  prefix?: string;
+};
+function getRedisConfig(): RedisConfig {
+  const config: RedisConfig = {
+    url: process.env.REDIS_URL ?? "",
+    prefix: process.env.PROJECT_NAME,
+  };
+
+  if (!config.url) throw new Error("Empty Redis URL");
+
+  return config;
+}
+
+// - - - - - - - //
+
 export type BotConfig = {
   telegram: TelegramConfig;
   database: DatabaseConfig;
+  redis: RedisConfig;
 };
 export function getConfig(): BotConfig {
   return {
     telegram: getTelegramConfig(),
     database: getDatabaseConfig(),
+    redis: getRedisConfig(),
   };
 }
