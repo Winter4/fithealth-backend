@@ -27,8 +27,8 @@ enum Target {
 
 model User {
   id             Int      @id @default(autoincrement())
-  tg_id          String
-  uuid           String   @default(uuid())
+  tg_id          String   @unique
+  uuid           String   @unique @default(uuid())
   sex            Gender
   weight         Float
   height         Int
@@ -42,9 +42,8 @@ model User {
 }
 
 model State {
-  //id         Int     @id @default(autoincrement())
-  user_id    Int     @id
-  user       User    @relation(fields: [user_id], references: [id])
+  user_tg_id String  @id
+  user       User    @relation(fields: [user_tg_id], references: [tg_id])
   scene      String
   registered Boolean @default(false)
 }
