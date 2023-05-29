@@ -11,6 +11,7 @@ import { preMiddlewares, errorHandler } from "./middlewares";
 
 import commands from "./handlers/commands";
 import scenes from "./handlers/scenes/scenes";
+import { UserCache } from "./cache";
 
 async function main() {
   // global app config
@@ -21,8 +22,11 @@ async function main() {
   // init bot instance
   const bot = new Bot<CustomContext>(config.telegram.botToken);
 
+  // init UserCache instance
+  const userCache = new UserCache(clients.redis, clients.database);
+
   // apply pre-scenes middlewares
-  bot.use(...preMiddlewares(clients));
+  bot.use(...preMiddlewares(clients, userCache));
 
   bot.use(commands);
   bot.use(scenes);

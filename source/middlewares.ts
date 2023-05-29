@@ -1,6 +1,7 @@
 import type { BotError, NextFunction } from "grammy";
 import type { CustomContext } from "./context";
 import type { BotClients } from "./settings/clients";
+import { UserCache } from "./cache";
 
 function extendContext(clients: BotClients) {
   return (ctx: CustomContext, next: NextFunction) => {
@@ -11,8 +12,15 @@ function extendContext(clients: BotClients) {
   };
 }
 
-function cache(ctx: CustomContext, next: NextFunction) {
-  return next();
+function cache(userCache: UserCache) {
+  return async (ctx: CustomContext, next: NextFunction) => {
+    if (!ctx.from?.id)
+      throw new Error(
+        `Empty <ctx.from?.id>; update ID = ${ctx.update.update_id}`
+      );
+    ctx.state = await userCache.pull(ctx.from.id.toString());
+    return next();
+  };
 }
 
 function logUpdates(ctx: CustomContext, next: NextFunction) {
@@ -20,8 +28,8 @@ function logUpdates(ctx: CustomContext, next: NextFunction) {
   return next();
 }
 
-export function preMiddlewares(clients: BotClients) {
-  return [extendContext(clients), cache, logUpdates];
+export function preMiddlewares(clients: BotClients, userCache: UserCache) {
+  return [extendContext(clients), cache(userCache), logUpdates];
 }
 
 export function errorHandler(logger: BotClients["logger"]) {

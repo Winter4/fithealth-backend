@@ -1,29 +1,36 @@
 import { BotClients } from "./settings/clients";
 
-class UserCache {
+export class UserCache {
   constructor(
     private redisClient: BotClients["redis"],
     private dbClient: BotClients["database"]
   ) {}
 
-  public async refresh(tgId: string) {
-    const key = `user:${tgId}`;
+  private generateKey(tgId: string) {
+    return `user:${tgId}`;
+  }
 
-    const data = await this.redisClient.get(key);
-    if (data) {
-      await this.redisClient.expire(key, 90);
-    } else {
+  public async pull(tgId: string) {
+    const key = this.generateKey(tgId);
+
+    let cache = await this.redisClient.get(key);
+    if (!cache) {
       // database query
-      const query = await this.dbClient.state.findFirst({
+      const state = await this.dbClient.state.findFirst({
         where: { user_tg_id: { equals: tgId } },
       });
-      if (!query) {
-        throw new Error(`Can't find State object for user; TG ID = ${tgId}`);
+      if (!state) {
+        return null;
+      }
+      if (!state.scene) {
+        throw new Error(`Can't find State.scene for user; TG ID = ${tgId}`);
       }
 
-      const json = JSON.stringify({ scene: query.scene });
-      await this.redisClient.set(key, json);
-      await this.redisClient.expire(key, 90);
+      cache = JSON.stringify({ scene: state.scene });
+      await this.redisClient.set(key, cache);
     }
+
+    await this.redisClient.expire(key, 45);
+    return JSON.parse(cache);
   }
 }
