@@ -10,7 +10,7 @@ export class UserCache {
     return `user:${tgId}`;
   }
 
-  public async pull(tgId: string) {
+  public async pull(tgId: string): Promise<{ scene: string } | null> {
     const key = this.generateKey(tgId);
 
     let cache = await this.redisClient.get(key);

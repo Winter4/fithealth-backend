@@ -14,17 +14,19 @@ function extendContext(clients: BotClients) {
 
 function cache(userCache: UserCache) {
   return async (ctx: CustomContext, next: NextFunction) => {
-    if (!ctx.from?.id)
+    if (!ctx.from?.id) {
       throw new Error(
         `Empty <ctx.from?.id>; update ID = ${ctx.update.update_id}`
       );
-    ctx.state = await userCache.pull(ctx.from.id.toString());
+    }
+    const cache = await userCache.pull(ctx.from.id.toString());
+    ctx.state = cache ? cache : { scene: "EMPTY" };
     return next();
   };
 }
 
 function logUpdates(ctx: CustomContext, next: NextFunction) {
-  ctx.logger.info(ctx.update);
+  ctx.logger.info({ ...ctx.update, state: { ...ctx.state } });
   return next();
 }
 
