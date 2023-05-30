@@ -1,6 +1,8 @@
 import { Composer, Keyboard } from "grammy";
 import type { CustomContext } from "../../context";
 
+export const sceneId = "MAIN_MENU";
+
 // alias = value
 enum mainMenuKeys {
   "Моё питание" = "🥦 Моё питание",

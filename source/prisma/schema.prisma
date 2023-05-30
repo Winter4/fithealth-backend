@@ -44,6 +44,6 @@ model User {
 model State {
   user_tg_id String  @id
   user       User    @relation(fields: [user_tg_id], references: [tg_id])
-  scene      String
+  scene      String  @default("NONE")
   registered Boolean @default(false)
 }
