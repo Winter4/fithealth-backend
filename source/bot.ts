@@ -26,13 +26,18 @@ async function main() {
   const userCache = new UserCache(clients.redis, clients.database);
 
   // apply pre-scenes middlewares
-  bot.use(...preMiddlewares(clients, userCache));
+  bot.use(
+    ...preMiddlewares(clients, userCache, {
+      errorChatId: config.telegram.errorChatId,
+      adminChatId: config.telegram.adminChatId,
+    })
+  );
 
   bot.use(commands);
   bot.use(scenes);
 
   // error handler
-  bot.catch(errorHandler(clients.logger));
+  bot.catch(errorHandler);
 
   // await is ommited, why not lol
   bot.api.setMyCommands([{ command: "start", description: "Главное меню" }]);
