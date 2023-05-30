@@ -1,5 +1,5 @@
 import { Composer, Keyboard } from "grammy";
-import type { CustomContext } from "../../context";
+import type { CustomContext } from "@src/context";
 
 export const sceneId = "MAIN_MENU";
 
