@@ -26,19 +26,19 @@ enum Target {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  tg_id          String   @unique
-  uuid           String   @unique @default(uuid())
-  sex            Gender
-  weight         Float
-  height         Int
-  age            Int
-  activity       Activity
-  target         Target
-  calories_limit Int
+  id             Int       @id @default(autoincrement())
+  tg_id          String    @unique
+  uuid           String    @unique @default(uuid())
+  sex            Gender?
+  weight         Float?
+  height         Int?
+  age            Int?
+  activity       Activity?
+  target         Target?
+  calories_limit Int?
   state          State?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 }
 
 model State {
