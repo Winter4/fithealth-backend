@@ -6,5 +6,5 @@ import type { PrismaClient } from "@prisma/client";
 export type CustomContext = Context & {
   logger: BotClients["logger"];
   db: BotClients["database"];
-  state: { scene: string };
+  state: { scene: string; registered: boolean };
 };

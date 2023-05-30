@@ -1,12 +1,19 @@
 import { Composer } from "grammy";
 import type { CustomContext } from "../context";
 
-import { enter } from "./scenes/main-menu.scene";
+import { enter as enterMainMenu } from "./scenes/main-menu.scene";
 
 const commands = new Composer<CustomContext>();
 
 commands.command("start", async (ctx: CustomContext) => {
-  return enter(ctx);
+  if (ctx.state.registered) {
+    return enterMainMenu(ctx);
+  } else {
+    await ctx.reply(
+      `Приветствую! Я - бот FitHealth, и я помогу Вам контроллировать и анализировать ваше питание!
+      \nПожалуйста, введите свои данные для регистрации ✍️`
+    );
+  }
 });
 
 export default commands;

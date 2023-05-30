@@ -10,7 +10,9 @@ export class UserCache {
     return `user:${tgId}`;
   }
 
-  public async pull(tgId: string): Promise<{ scene: string } | null> {
+  public async pull(
+    tgId: string
+  ): Promise<{ scene: string; registered: boolean } | null> {
     const key = this.generateKey(tgId);
 
     let cache = await this.redisClient.get(key);
@@ -25,8 +27,16 @@ export class UserCache {
       if (!state.scene) {
         throw new Error(`Can't find State.scene for user; TG ID = ${tgId}`);
       }
+      if (!state.registered) {
+        throw new Error(
+          `Can't find State.registered for user; TG ID = ${tgId}`
+        );
+      }
 
-      cache = JSON.stringify({ scene: state.scene });
+      cache = JSON.stringify({
+        scene: state.scene,
+        registered: state.registered,
+      });
       await this.redisClient.set(key, cache);
     }
 

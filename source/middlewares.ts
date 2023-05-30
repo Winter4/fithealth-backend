@@ -2,6 +2,7 @@ import type { BotError, NextFunction } from "grammy";
 import type { CustomContext } from "./context";
 import type { BotClients } from "./settings/clients";
 import { UserCache } from "./cache";
+import { sceneIds } from "./handlers/scenes/scenes";
 
 function extendContext(clients: BotClients) {
   return (ctx: CustomContext, next: NextFunction) => {
@@ -20,7 +21,7 @@ function cache(userCache: UserCache) {
       );
     }
     const cache = await userCache.pull(ctx.from.id.toString());
-    ctx.state = cache ? cache : { scene: "EMPTY" };
+    ctx.state = cache ? cache : { scene: sceneIds.none, registered: false };
     return next();
   };
 }
