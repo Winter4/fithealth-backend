@@ -60,12 +60,17 @@ export function preMiddlewares(
 
 // - - - - - - - //
 
-export function errorHandler(error: BotError<CustomContext>) {
-  const { ctx, message, stack } = error;
-  ctx.logger.error(error.error);
+export async function errorHandler(err: BotError<CustomContext>) {
+  let { ctx, message, stack } = err;
+
+  ctx.logger.error(`Update ${ctx.update.update_id} error \n` + stack);
+  ctx.logger.error({ ...ctx.update, state: { ...ctx.state } });
+  if (!stack) stack = "Stack is empty";
+
   return ctx.api.sendMessage(
     ctx.config.errorChatId,
-    `Message: \n<code>${message}</code> \n\n\nStack: \n<code>${stack}</code>`,
+    `❌ Error: \n<code>${message}</code> \n\n` +
+      `🔄 Update: \n<code>${JSON.stringify(ctx.update)}</code>`,
     { parse_mode: "HTML" }
   );
 }
