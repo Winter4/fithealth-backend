@@ -69,8 +69,6 @@ export async function errorHandler(err: BotError<CustomContext>) {
 
   return ctx.api.sendMessage(
     ctx.config.errorChatId,
-    `❌ Error: \n<code>${message}</code> \n\n` +
-      `🔄 Update: \n<code>${JSON.stringify(ctx.update)}</code>`,
-    { parse_mode: "HTML" }
+    `❌ Error: \n${message} \n\n` + `🔄 Update: \n${JSON.stringify(ctx.update)}`
   );
 }
