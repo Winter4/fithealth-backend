@@ -1,5 +1,6 @@
 import { Composer, Keyboard } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterWeightSetter } from "./weight.setter.scene";
 
 export const sceneId = "SET_SEX";
 
@@ -20,10 +21,7 @@ const markup = {
 // - - - - - - - //
 
 export async function enter(ctx: CustomContext) {
-  await ctx.db.state.update({
-    where: { user_tg_id: ctx.from!.id.toString() },
-    data: { scene: sceneId },
-  });
+  await ctx.cache.update(ctx.from!.id.toString(), { scene: sceneId });
   return ctx.reply("Выберите Ваш пол", {
     reply_markup: markup.keyboard,
   });
@@ -34,11 +32,21 @@ export async function enter(ctx: CustomContext) {
 const setSex = new Composer<CustomContext>();
 
 setSex.hears(setSexKeys["Мужской"], async (ctx: CustomContext) => {
-  return ctx.reply("Мужской");
+  await ctx.db.user.update({
+    where: { tg_id: ctx.from!.id.toString() },
+    data: { sex: "M" },
+  });
+
+  return enterWeightSetter(ctx);
 });
 
 setSex.hears(setSexKeys["Женский"], async (ctx: CustomContext) => {
-  return ctx.reply("Женский");
+  await ctx.db.user.update({
+    where: { tg_id: ctx.from!.id.toString() },
+    data: { sex: "F" },
+  });
+
+  return enterWeightSetter(ctx);
 });
 
 /*

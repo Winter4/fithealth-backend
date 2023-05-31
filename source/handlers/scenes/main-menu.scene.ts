@@ -23,7 +23,7 @@ const mainMenuMarkup = {
 // - - - - - - - //
 
 export async function enter(ctx: CustomContext) {
-  //await ctx.db.state.update({ where: {  }})
+  await ctx.cache.update(ctx.from!.id.toString(), { scene: sceneId });
   return ctx.reply("Главное меню", { reply_markup: mainMenuMarkup.keyboard });
 }
 
