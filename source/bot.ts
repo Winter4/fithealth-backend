@@ -39,8 +39,10 @@ async function main() {
   // error handler
   bot.catch(errorHandler);
 
-  // await is ommited, why not lol
-  bot.api.setMyCommands([{ command: "start", description: "Главное меню" }]);
+  // set menu
+  await bot.api.setMyCommands([
+    { command: "start", description: "Главное меню" },
+  ]);
 
   // run bot
   bot.start();
