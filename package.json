@@ -21,7 +21,8 @@
     "grammy": "^1.14.1",
     "ioredis": "^5.3.2",
     "pino": "^8.11.0",
-    "pino-pretty": "^9.3.0"
+    "pino-pretty": "^9.3.0",
+    "prettier": "^2.8.8"
   },
   "devDependencies": {
     "@types/node": "^18.14.1",
