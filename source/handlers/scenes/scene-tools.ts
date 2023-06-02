@@ -48,3 +48,63 @@ export async function calcCaloriesMiddleware(ctx: CustomContext, next: NextFunct
 // - - - - - - - //
 
 export const backButton = "⬅️ Назад";
+
+// - - - - - - - //
+
+export async function getUserInfo(ctx: CustomContext) {
+  const userInfo = await ctx.db.user.findUnique({
+    where: { tg_id: ctx.from!.id.toString() },
+    select: {
+      sex: true,
+      weight: true,
+      height: true,
+      age: true,
+      activity: true,
+      target: true,
+      calories_limit: true,
+    },
+  });
+  if (!userInfo) throw new Error(`Can't find User object; TG ID = ${ctx.from!.id}`);
+
+  const sexText = userInfo.sex === "M" ? "🚻 Пол: мужской" : "🚻 Пол: женский";
+
+  let activityText = "🏸 Активность: ";
+  switch (userInfo.activity) {
+    case "ZERO":
+      activityText += "нулевая";
+      break;
+    case "LOW":
+      activityText += "маленькая";
+      break;
+    case "MIDDLE":
+      activityText += "средняя";
+      break;
+    case "HIGH":
+      activityText += "высокая";
+      break;
+  }
+
+  let targetText = "✴️ Цель: ";
+  switch (userInfo.target) {
+    case "LOSE":
+      targetText += "похудение";
+      break;
+    case "KEEP":
+      targetText += "удержание веса";
+      break;
+    case "GAIN":
+      targetText += "набор веса";
+      break;
+  }
+
+  const text =
+    `${sexText}\n` +
+    `⚖️ Вес: ${userInfo.weight} кг\n` +
+    `⏫ Рост: ${userInfo.height} см\n` +
+    `🍼 Возраст: ${userInfo.age} лет\n` +
+    `${activityText}\n` +
+    `${targetText}\n\n` +
+    `🦑 Суточная норма потребления: ${userInfo.calories_limit} ккал`;
+
+  return text;
+}
