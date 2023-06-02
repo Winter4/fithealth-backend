@@ -108,3 +108,11 @@ export async function getUserInfo(ctx: CustomContext) {
 
   return text;
 }
+
+// - - - - - - - //
+
+export const infoText = `
+⭐️ Добро пожаловать в FitHealth - Ваш личный дневник питания. Этот бот поможет Вам отследить и улучшить свой рацион без труда.
+
+В будущем здесь будет больше текста
+`;

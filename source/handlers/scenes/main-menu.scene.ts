@@ -1,7 +1,7 @@
 import { Composer, Keyboard } from "grammy";
 import type { CustomContext } from "@src/context";
 import { enter as enterEditMenu } from "./edit-menu.scene";
-import { getUserInfo } from "./scene-tools";
+import { getUserInfo, infoText } from "./scene-tools";
 
 export const sceneId = "MAIN_MENU";
 
@@ -47,7 +47,7 @@ mainMenu.hears(mainMenuKeys["Изменить данные"], async (ctx: Custom
 });
 
 mainMenu.hears(mainMenuKeys["Справка"], async (ctx: CustomContext) => {
-  return ctx.reply("Справка");
+  return ctx.reply(infoText);
 });
 
 export default mainMenu;
