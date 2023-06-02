@@ -1,6 +1,9 @@
-import { Composer, Keyboard } from "grammy";
+import { Composer, Keyboard, NextFunction } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterTargetSetter } from "./target.setter.scene";
+import { Activity } from "@prisma/client";
+import { calcCaloriesMiddleware } from "../scene-tools";
 
 export const sceneId = "SET_ACTIVITY";
 
@@ -35,41 +38,34 @@ export async function enter(ctx: CustomContext) {
 
 const setActivity = new Composer<CustomContext>();
 
-setActivity.hears(setActivityKeys.Нулевая, async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { activity: "ZERO" },
-  });
+function body(activity: Activity) {
+  return async (ctx: CustomContext, next: NextFunction) => {
+    await ctx.db.user.update({
+      where: { tg_id: ctx.from!.id.toString() },
+      data: { activity },
+    });
 
-  return enterTargetSetter(ctx);
-});
+    return next();
+  };
+}
 
-setActivity.hears(setActivityKeys.Маленькая, async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { activity: "LOW" },
-  });
+function router(ctx: CustomContext) {
+  if (ctx.state.registered) return enterEditMenu(ctx);
+  else return enterTargetSetter(ctx);
+}
 
-  return enterTargetSetter(ctx);
-});
+setActivity.hears(setActivityKeys.Нулевая, body("ZERO"), calcCaloriesMiddleware, router);
 
-setActivity.hears(setActivityKeys.Средняя, async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { activity: "MIDDLE" },
-  });
+setActivity.hears(setActivityKeys.Маленькая, body("LOW"), calcCaloriesMiddleware, router);
 
-  return enterTargetSetter(ctx);
-});
+setActivity.hears(
+  setActivityKeys.Средняя,
+  body("MIDDLE"),
+  calcCaloriesMiddleware,
+  router
+);
 
-setActivity.hears(setActivityKeys.Высокая, async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { activity: "HIGH" },
-  });
-
-  return enterTargetSetter(ctx);
-});
+setActivity.hears(setActivityKeys.Высокая, body("HIGH"), calcCaloriesMiddleware, router);
 
 /*
 setSex.hears(backKey, async (ctx: CustomContext) => {

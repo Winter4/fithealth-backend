@@ -1,6 +1,8 @@
-import { Composer, Keyboard } from "grammy";
+import { Composer, NextFunction } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterHeightSetter } from "./height.setter.scene";
+import { calcCaloriesMiddleware } from "../scene-tools";
 
 export const sceneId = "SET_WEIGHT";
 
@@ -22,22 +24,29 @@ export async function enter(ctx: CustomContext) {
 
 const setWeight = new Composer<CustomContext>();
 
-setWeight.on("message:text", async (ctx: CustomContext) => {
+async function body(ctx: CustomContext, next: NextFunction) {
   const received = parseFloat(ctx.msg!.text!);
-  ctx.logger.warn("received " + received);
 
   // validation
   if (isNaN(received)) return ctx.reply("Пожалуйста, введите число");
   if (received < limits.min || received > limits.max)
     return ctx.reply("Пожалуйста, введите корректное число");
 
+  // update db
   await ctx.db.user.update({
     where: { tg_id: ctx.from!.id.toString() },
     data: { weight: received },
   });
 
-  return enterHeightSetter(ctx);
-});
+  return next();
+}
+
+function router(ctx: CustomContext) {
+  if (ctx.state.registered) return enterEditMenu(ctx);
+  else return enterHeightSetter(ctx);
+}
+
+setWeight.on("message:text", body, calcCaloriesMiddleware, router);
 
 /*
 setSex.hears(backKey, async (ctx: CustomContext) => {

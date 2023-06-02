@@ -1,6 +1,9 @@
-import { Composer, Keyboard } from "grammy";
+import { Composer, Keyboard, NextFunction } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterMainMenu } from "../main-menu.scene";
+import { Target } from "@prisma/client";
+import { calcCaloriesMiddleware } from "../scene-tools";
 
 export const sceneId = "SET_TARGET";
 
@@ -33,32 +36,40 @@ export async function enter(ctx: CustomContext) {
 
 const setTarget = new Composer<CustomContext>();
 
-setTarget.hears(setTargetKeys.Похудение, async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { target: "LOSE" },
-  });
+function body(target: Target) {
+  return async (ctx: CustomContext, next: NextFunction) => {
+    await ctx.db.user.update({
+      where: { tg_id: ctx.from!.id.toString() },
+      data: { target },
+    });
 
-  return enterMainMenu(ctx);
-});
+    // update state
+    await ctx.cache.update(ctx.from!.id.toString(), { registered: true });
 
-setTarget.hears(setTargetKeys["Удержание веса"], async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { target: "KEEP" },
-  });
+    return next();
+  };
+}
 
-  return enterMainMenu(ctx);
-});
+function router(ctx: CustomContext) {
+  if (ctx.state.registered) return enterEditMenu(ctx);
+  else return enterMainMenu(ctx);
+}
 
-setTarget.hears(setTargetKeys["Набор веса"], async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { target: "GAIN" },
-  });
+setTarget.hears(setTargetKeys.Похудение, body("LOSE"), calcCaloriesMiddleware, router);
 
-  return enterMainMenu(ctx);
-});
+setTarget.hears(
+  setTargetKeys["Удержание веса"],
+  body("KEEP"),
+  calcCaloriesMiddleware,
+  router
+);
+
+setTarget.hears(
+  setTargetKeys["Набор веса"],
+  body("GAIN"),
+  calcCaloriesMiddleware,
+  router
+);
 
 /*
 setSex.hears(backKey, async (ctx: CustomContext) => {

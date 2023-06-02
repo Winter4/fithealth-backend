@@ -1,6 +1,9 @@
-import { Composer, Keyboard } from "grammy";
+import { Composer, Keyboard, NextFunction } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterWeightSetter } from "./weight.setter.scene";
+import { Gender } from "@prisma/client";
+import { calcCaloriesMiddleware } from "../scene-tools";
 
 export const sceneId = "SET_SEX";
 
@@ -31,23 +34,26 @@ export async function enter(ctx: CustomContext) {
 
 const setSex = new Composer<CustomContext>();
 
-setSex.hears(setSexKeys["Мужской"], async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { sex: "M" },
-  });
+function body(sex: Gender) {
+  return async (ctx: CustomContext, next: NextFunction) => {
+    // update db
+    await ctx.db.user.update({
+      where: { tg_id: ctx.from!.id.toString() },
+      data: { sex },
+    });
 
-  return enterWeightSetter(ctx);
-});
+    return next();
+  };
+}
 
-setSex.hears(setSexKeys["Женский"], async (ctx: CustomContext) => {
-  await ctx.db.user.update({
-    where: { tg_id: ctx.from!.id.toString() },
-    data: { sex: "F" },
-  });
+function router(ctx: CustomContext) {
+  if (ctx.state.registered) return enterEditMenu(ctx);
+  else return enterWeightSetter(ctx);
+}
 
-  return enterWeightSetter(ctx);
-});
+setSex.hears(setSexKeys["Мужской"], body("M"), calcCaloriesMiddleware, router);
+
+setSex.hears(setSexKeys["Женский"], body("F"), calcCaloriesMiddleware, router);
 
 /*
 setSex.hears(backKey, async (ctx: CustomContext) => {
