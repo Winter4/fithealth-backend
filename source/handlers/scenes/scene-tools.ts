@@ -44,3 +44,7 @@ export async function calcCaloriesMiddleware(ctx: CustomContext, next: NextFunct
 
   return next();
 }
+
+// - - - - - - - //
+
+export const backButton = "⬅️ Назад";

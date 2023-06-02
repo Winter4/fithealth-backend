@@ -1,5 +1,6 @@
 import { Composer, Keyboard } from "grammy";
 import type { CustomContext } from "@src/context";
+import { enter as enterEditMenu } from "./edit-menu.scene";
 
 export const sceneId = "MAIN_MENU";
 
@@ -24,7 +25,7 @@ const mainMenuMarkup = {
 
 export async function enter(ctx: CustomContext) {
   await ctx.cache.update(ctx.from!.id.toString(), { scene: sceneId });
-  return ctx.reply("Главное меню", { reply_markup: mainMenuMarkup.keyboard });
+  return ctx.reply("⛩ Главное меню", { reply_markup: mainMenuMarkup.keyboard });
 }
 
 // - - - - - - - //
@@ -36,7 +37,7 @@ mainMenu.hears(mainMenuKeys["Моё питание"], async (ctx: CustomContext)
 });
 
 mainMenu.hears(mainMenuKeys["Изменить данные"], async (ctx: CustomContext) => {
-  return ctx.reply("Изменение данных");
+  return enterEditMenu(ctx);
 });
 
 mainMenu.hears(mainMenuKeys["Справка"], async (ctx: CustomContext) => {
