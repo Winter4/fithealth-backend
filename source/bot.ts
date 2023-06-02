@@ -40,9 +40,7 @@ async function main() {
   bot.catch(errorHandler);
 
   // set menu
-  await bot.api.setMyCommands([
-    { command: "start", description: "Главное меню" },
-  ]);
+  await bot.api.setMyCommands([{ command: "start", description: "Главное меню" }]);
 
   // run bot
   bot.start();

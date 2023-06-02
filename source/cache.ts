@@ -38,9 +38,7 @@ export class UserCache {
         throw new Error(`Can't find State.scene for user; TG ID = ${tgId}`);
       }
       if (typeof state.registered !== "boolean") {
-        throw new Error(
-          `Can't find State.registered for user; TG ID = ${tgId}`
-        );
+        throw new Error(`Can't find State.registered for user; TG ID = ${tgId}`);
       }
 
       cache = JSON.stringify({
@@ -54,10 +52,7 @@ export class UserCache {
     return JSON.parse(cache);
   }
 
-  public async push(
-    tgId: string,
-    state: { scene?: string; registered?: boolean }
-  ) {
+  public async push(tgId: string, state: { scene?: string; registered?: boolean }) {
     // update data in DB
     await this.dbClient.state.update({
       where: { user_tg_id: tgId },
@@ -66,6 +61,5 @@ export class UserCache {
 
     const key = this.generateKey(tgId);
     await this.redisClient.del(key); // clear the cache (its data is no more valuable)
-    await this.pull(tgId); // refresh the cache
   }
 }

@@ -26,9 +26,7 @@ function extendContext(
 function cache(refreshCache: refreshCacheFunction) {
   return async (ctx: CustomContext, next: NextFunction) => {
     if (!ctx.from?.id) {
-      throw new Error(
-        `Empty <ctx.from?.id>; update ID = ${ctx.update.update_id}`
-      );
+      throw new Error(`Empty <ctx.from?.id>; update ID = ${ctx.update.update_id}`);
     }
     const cache = await refreshCache(ctx.from.id.toString());
     ctx.state = cache ? cache : { scene: sceneIds.none, registered: false };

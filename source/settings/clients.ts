@@ -51,9 +51,7 @@ export async function getClients(config: BotConfig): Promise<BotClients> {
     clients.logger.info("✅ Logger client is ready");
   }
   if (await clients.database.$executeRaw`SELECT version()`) {
-    clients.logger.info(
-      "✅ DB client is ready. Get a sunbeam through your prisma!"
-    );
+    clients.logger.info("✅ DB client is ready. Get a sunbeam through your prisma!");
   }
 
   // redis checks
