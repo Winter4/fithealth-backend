@@ -27,7 +27,7 @@ const markup = {
 
 export async function enter(ctx: CustomContext) {
   await ctx.cache.update(ctx.from!.id.toString(), { scene: sceneId });
-  return ctx.reply("Выберите Вашу цель", {
+  return ctx.reply("✴️ Выберите Вашу цель", {
     reply_markup: markup.keyboard,
   });
 }

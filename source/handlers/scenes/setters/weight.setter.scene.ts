@@ -15,7 +15,7 @@ const limits = {
 
 export async function enter(ctx: CustomContext) {
   await ctx.cache.update(ctx.from!.id.toString(), { scene: sceneId });
-  return ctx.reply(`Введите Ваш вес; ${limits.min}-${limits.max}кг`, {
+  return ctx.reply(`⚖️ Введите Ваш вес; ${limits.min}-${limits.max}кг; формат XX.YY`, {
     reply_markup: { remove_keyboard: true },
   });
 }
@@ -28,9 +28,9 @@ async function body(ctx: CustomContext, next: NextFunction) {
   const received = parseFloat(ctx.msg!.text!);
 
   // validation
-  if (isNaN(received)) return ctx.reply("Пожалуйста, введите число");
+  if (isNaN(received)) return ctx.reply("❌ Пожалуйста, введите число");
   if (received < limits.min || received > limits.max)
-    return ctx.reply("Пожалуйста, введите корректное число");
+    return ctx.reply("❌ Пожалуйста, введите корректное число");
 
   // update db
   await ctx.db.user.update({
