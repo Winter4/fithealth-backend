@@ -6,6 +6,11 @@ import mainMenu, {
   enter as enterMainMenu,
 } from "./main-menu.scene";
 
+import editMenu, {
+  sceneId as editMenuId,
+  enter as enterEditMenu,
+} from "./edit-menu.scene";
+
 import setSex, {
   sceneId as setSexId,
   enter as enterSexSetter,
@@ -41,6 +46,7 @@ import setTarget, {
 export const sceneIds = {
   none: "NONE",
   mainMenu: mainMenuId,
+  editMenu: editMenuId,
   setSex: setSexId,
   setWeight: setWeightId,
   setHeight: setHeightId,
@@ -50,25 +56,19 @@ export const sceneIds = {
 };
 
 export function getSceneEntrance(sceneId: string) {
+  // prettier-ignore
   switch (sceneId) {
-    case "NONE":
-      throw new Error(
-        "Detected 'NONE' scene ID in 'getSceneEntrance(sceneId: string)' "
-      );
-    case sceneIds.mainMenu:
-      return enterMainMenu;
-    case sceneIds.setSex:
-      return enterSexSetter;
-    case sceneIds.setWeight:
-      return enterWeightSetter;
-    case sceneIds.setHeight:
-      return enterHeightSetter;
-    case sceneIds.setAge:
-      return enterAgeSetter;
-    case sceneIds.setActivity:
-      return enterActivitySetter;
-    case sceneIds.setTarget:
-      return enterTargetSetter;
+    case "NONE": throw new Error("Detected 'NONE' scene ID in 'getSceneEntrance(sceneId: string)' ");
+
+    case sceneIds.mainMenu:    return enterMainMenu;
+    case sceneIds.editMenu:    return enterEditMenu;
+
+    case sceneIds.setSex:      return enterSexSetter;
+    case sceneIds.setWeight:   return enterWeightSetter;
+    case sceneIds.setHeight:   return enterHeightSetter;
+    case sceneIds.setAge:      return enterAgeSetter;
+    case sceneIds.setActivity: return enterActivitySetter;
+    case sceneIds.setTarget:   return enterTargetSetter;
   }
 
   throw new Error("Unknown scene ID in 'getSceneEntrance(sceneId: string)' ");
@@ -83,6 +83,8 @@ function route(ctx: CustomContext, sceneToCheck: string) {
 const scenes = new Composer<CustomContext>();
 
 scenes.filter((ctx: CustomContext) => route(ctx, mainMenuId), mainMenu);
+scenes.filter((ctx: CustomContext) => route(ctx, editMenuId), editMenu);
+
 scenes.filter((ctx: CustomContext) => route(ctx, setSexId), setSex);
 scenes.filter((ctx: CustomContext) => route(ctx, setWeightId), setWeight);
 scenes.filter((ctx: CustomContext) => route(ctx, setHeightId), setHeight);
