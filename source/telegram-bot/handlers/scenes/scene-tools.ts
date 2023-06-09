@@ -1,5 +1,5 @@
 import { Activity, Target } from "@prisma/client";
-import { CustomContext } from "@src/context";
+import { CustomContext } from "@bot/types";
 import { NextFunction } from "grammy";
 
 function matchActivity(activity: Activity) {

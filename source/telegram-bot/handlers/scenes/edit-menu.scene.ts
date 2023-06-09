@@ -1,5 +1,5 @@
 import { Composer, Keyboard } from "grammy";
-import type { CustomContext } from "@src/context";
+import type { CustomContext } from "@bot/types";
 
 import { enter as enterSexSetter } from "./setters/sex.setter.scene";
 import { enter as enterActivitySetter } from "./setters/activity.setter.scene";

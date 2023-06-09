@@ -2,7 +2,7 @@ import pino from "pino";
 import { PrismaClient } from "@prisma/client";
 import { Redis } from "ioredis";
 
-import type { BotConfig } from "./config";
+import type { AppConfig } from "./config";
 
 // - - - - - - - //
 
@@ -14,7 +14,7 @@ function getLoggerClient(): LoggerClient {
 // - - - - - - - //
 
 type DatabaseClient = ReturnType<typeof getDatabaseClient>;
-function getDatabaseClient(config: BotConfig["database"]) {
+function getDatabaseClient(config: AppConfig["database"]) {
   const client = config.logging
     ? new PrismaClient({ log: ["query"] })
     : new PrismaClient();
@@ -25,7 +25,7 @@ function getDatabaseClient(config: BotConfig["database"]) {
 // - - - - - - - //
 
 type RedisClient = ReturnType<typeof getRedisClient>;
-function getRedisClient(config: BotConfig["redis"]) {
+function getRedisClient(config: AppConfig["redis"]) {
   const client = config.prefix
     ? new Redis(config.url, { keyPrefix: config.prefix })
     : new Redis(config.url);
@@ -35,21 +35,18 @@ function getRedisClient(config: BotConfig["redis"]) {
 
 // - - - - - - - //
 
-export type BotClients = {
+export type AppClients = {
   logger: LoggerClient;
   database: DatabaseClient;
   redis: RedisClient;
 };
-export async function getClients(config: BotConfig): Promise<BotClients> {
-  const clients: BotClients = {
+export async function getClients(config: AppConfig): Promise<AppClients> {
+  const clients: AppClients = {
     logger: getLoggerClient(),
     database: getDatabaseClient(config.database),
     redis: getRedisClient(config.redis),
   };
 
-  if (clients.logger) {
-    clients.logger.info("✅ Logger client is ready");
-  }
   if (await clients.database.$executeRaw`SELECT version()`) {
     clients.logger.info("✅ DB client is ready. Get a sunbeam through your prisma!");
   }

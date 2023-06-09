@@ -1,24 +1,13 @@
-// environment variables
-import "dotenv/config";
 import { Bot } from "grammy";
 
-import { getConfig } from "./settings/config";
-import { getClients } from "./settings/clients";
-
-import type { CustomContext } from "./context";
-
+import type { CustomContext, BotClients, BotConfig } from "./types";
 import { preMiddlewares, errorHandler } from "./middlewares";
 
 import commands from "./handlers/commands";
 import scenes from "./handlers/scenes/scenes";
 import { UserCache } from "./cache";
 
-async function main() {
-  // global app config
-  const config = getConfig();
-  // 3rd party clients, that should be inited
-  const clients = await getClients(config);
-
+async function startBot(clients: BotClients, config: BotConfig) {
   // init bot instance
   const bot = new Bot<CustomContext>(config.telegram.botToken);
 
@@ -47,4 +36,4 @@ async function main() {
   clients.logger.info("🍟 Bot is ready to handle some calories");
 }
 
-main();
+export default startBot;

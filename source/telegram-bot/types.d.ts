@@ -1,7 +1,14 @@
 import type { Context } from "grammy";
-import type { BotClients } from "./settings/clients";
 import type { PrismaClient } from "@prisma/client";
 import { refreshCacheFunction, updateCacheFunction } from "./cache";
+import type { AppClients } from "@src/settings/clients";
+import type { AppConfig } from "@src/settings/config";
+
+// declare bot requirements
+export type BotClients = AppClients;
+export type BotConfig = {
+  telegram: AppConfig["telegram"];
+};
 
 // declare custom context type
 export type CustomContext = Context & {

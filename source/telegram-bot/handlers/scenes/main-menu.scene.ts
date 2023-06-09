@@ -1,5 +1,5 @@
 import { Composer, Keyboard } from "grammy";
-import type { CustomContext } from "@src/context";
+import type { CustomContext } from "@bot/types";
 import { enter as enterEditMenu } from "./edit-menu.scene";
 import { getUserInfo, infoText } from "./scene-tools";
 

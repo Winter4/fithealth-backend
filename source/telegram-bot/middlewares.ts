@@ -1,6 +1,6 @@
 import type { BotError, NextFunction } from "grammy";
-import type { CustomContext } from "./context";
-import type { BotClients } from "./settings/clients";
+import type { CustomContext } from "./types";
+import type { BotClients } from "./types";
 import { refreshCacheFunction, updateCacheFunction, UserCache } from "./cache";
 import { sceneIds } from "./handlers/scenes/scenes";
 

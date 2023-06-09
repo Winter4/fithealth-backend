@@ -1,5 +1,5 @@
 import { Composer, Keyboard, NextFunction } from "grammy";
-import type { CustomContext } from "@src/context";
+import type { CustomContext } from "@bot/types";
 import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterWeightSetter } from "./weight.setter.scene";
 import { Gender } from "@prisma/client";

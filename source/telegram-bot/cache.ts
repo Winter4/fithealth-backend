@@ -1,4 +1,4 @@
-import { BotClients } from "./settings/clients";
+import type { BotClients } from "./types";
 
 export type refreshCacheFunction = (
   tgId: string

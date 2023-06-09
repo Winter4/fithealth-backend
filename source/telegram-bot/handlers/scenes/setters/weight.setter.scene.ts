@@ -1,5 +1,5 @@
 import { Composer, NextFunction } from "grammy";
-import type { CustomContext } from "@src/context";
+import type { CustomContext } from "@bot/types";
 import { enter as enterEditMenu } from "../edit-menu.scene";
 import { enter as enterHeightSetter } from "./height.setter.scene";
 import { calcCaloriesMiddleware } from "../scene-tools";

@@ -31,6 +31,8 @@
     "baseUrl": "./",                                    /* Specify the base directory to resolve non-relative module names. */
     "paths": {                                          /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@src/*": ["source/*"],
+      "@bot/*": ["source/telegram-bot/*"],
+      "@api/*": ["source/web-api/*"],
 
       // Just as an example of what you can
       // "@services/*": ["src/services/*"],

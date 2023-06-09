@@ -1,5 +1,5 @@
 import { Composer } from "grammy";
-import type { CustomContext } from "@src/context";
+import type { CustomContext } from "@bot/types";
 
 import mainMenu, {
   sceneId as mainMenuId,

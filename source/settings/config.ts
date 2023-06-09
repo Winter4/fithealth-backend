@@ -19,6 +19,21 @@ function getTelegramConfig(): TelegramConfig {
 
 // - - - - - - - //
 
+type ExpressConfig = {
+  port: number;
+};
+function getExpressConfig(): ExpressConfig {
+  const config: ExpressConfig = {
+    port: Number(process.env.EXPRESS_PORT),
+  };
+
+  if (!config.port) throw new Error("Empty Express port");
+
+  return config;
+}
+
+// - - - - - - - //
+
 type DatabaseConfig = {
   url: string;
   logging: boolean;
@@ -53,14 +68,16 @@ function getRedisConfig(): RedisConfig {
 
 // - - - - - - - //
 
-export type BotConfig = {
+export type AppConfig = {
   telegram: TelegramConfig;
+  express: ExpressConfig;
   database: DatabaseConfig;
   redis: RedisConfig;
 };
-export function getConfig(): BotConfig {
+export function getConfig(): AppConfig {
   return {
     telegram: getTelegramConfig(),
+    express: getExpressConfig(),
     database: getDatabaseConfig(),
     redis: getRedisConfig(),
   };
