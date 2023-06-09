@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { pinoHttp } from "pino-http";
 import { ApiClients } from "@api/types";
 import { IncomingMessage, ServerResponse } from "http";
@@ -26,4 +26,14 @@ function logRequests(logger: ApiClients["logger"]) {
 
 export function preMiddlewares(clients: ApiClients) {
   return [logRequests(clients.logger)];
+}
+
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  req.log.error(err);
+  res.status(500).json({ ok: false, msg: "error" });
 }
