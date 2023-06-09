@@ -39,6 +39,7 @@ model User {
   state          State?
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
+  Report         Report[]
 }
 
 model State {
@@ -46,4 +47,13 @@ model State {
   user       User    @relation(fields: [user_tg_id], references: [tg_id])
   scene      String  @default("NONE")
   registered Boolean @default(false)
+}
+
+model Report {
+  user_uuid      String
+  user           User     @relation(fields: [user_uuid], references: [uuid])
+  calories_limit Int
+  date           DateTime
+
+  @@id([user_uuid, date])
 }
