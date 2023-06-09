@@ -50,10 +50,11 @@ model State {
 }
 
 model Report {
+  id             Int      @id @default(autoincrement())
   user_uuid      String
   user           User     @relation(fields: [user_uuid], references: [uuid])
   calories_limit Int
   date           DateTime
 
-  @@id([user_uuid, date])
+  @@unique([user_uuid, date])
 }
