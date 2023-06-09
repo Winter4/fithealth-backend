@@ -7,6 +7,9 @@ async function startApi(clients: ApiClients, config: ApiConfig) {
   // init app instance
   const app = express();
 
+  // parse body to json
+  app.use(express.json());
+
   // apply pre-route middlewares
   app.use(preMiddlewares(clients));
 

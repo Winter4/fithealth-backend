@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 class ReportController {
   constructor(private db: ApiClients["database"]) {}
 
-  public async get(req: Request, res: Response, next: NextFunction) {
+  public async get(req: Request, res: Response) {
     const { uuid } = req.params;
     const reportUniqueKey = {
       user_uuid_date: {
