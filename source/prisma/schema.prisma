@@ -55,6 +55,35 @@ model Report {
   user           User     @relation(fields: [user_uuid], references: [uuid])
   calories_limit Int
   date           DateTime
+  Meal           Meal[]
 
   @@unique([user_uuid, date])
+}
+
+model Food {
+  id       Int    @id @default(autoincrement())
+  name     String
+  calories Int
+  proteins Int
+  fats     Int
+  carbs    Int
+  Meal     Meal[]
+}
+
+enum Mealtime {
+  BREAKFAST
+  FLUNCH
+  DINNER
+  SLUNCH
+  SUPPER
+}
+
+model Meal {
+  id        Int      @id @default(autoincrement())
+  weight    Int
+  food_id   Int
+  food      Food     @relation(fields: [food_id], references: [id])
+  report_id Int
+  report    Report   @relation(fields: [report_id], references: [id])
+  mealtime  Mealtime
 }
