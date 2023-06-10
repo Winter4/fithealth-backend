@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import { ApiClients, ApiConfig } from "./types";
 import { preMiddlewares } from "./middlewares";
 import api from "./api/router";
@@ -9,6 +10,8 @@ async function startApi(clients: ApiClients, config: ApiConfig) {
 
   // parse body to json
   app.use(express.json());
+  // parse cookies
+  app.use(cookieParser());
 
   // apply pre-route middlewares
   app.use(preMiddlewares(clients));
