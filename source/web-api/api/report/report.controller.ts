@@ -59,6 +59,9 @@ class ReportController {
           },
         });
 
+    // save report_id to cookie
+    res.cookie("report_id", todayReport.id, { maxAge: 900000, httpOnly: true });
+
     // send updated/created report
     res.json({ calories: todayReport.calories_limit, userId: user.id });
   }
