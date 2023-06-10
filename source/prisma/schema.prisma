@@ -61,7 +61,8 @@ model Report {
 }
 
 model Food {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
+  healthy  Boolean
   name     String
   calories Int
   proteins Int
