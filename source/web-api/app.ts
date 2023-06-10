@@ -10,7 +10,7 @@ async function startApi(clients: ApiClients, config: ApiConfig) {
   const app = express();
 
   // enable cors if dev env
-  if (config.deploy.nodeEnv === "development") app.use(cors);
+  if (config.deploy.nodeEnv === "development") app.use(cors());
 
   // parse body to json
   app.use(express.json());
