@@ -1,3 +1,16 @@
+type DeployConfig = {
+  nodeEnv: "development" | "production";
+};
+function getDeployConfig(): DeployConfig {
+  const NODE_ENV = process.env.NODE_ENV;
+
+  const config = NODE_ENV === "production" ? "production" : "development";
+
+  return { nodeEnv: config };
+}
+
+// - - - - - - - //
+
 type TelegramConfig = {
   botToken: string;
   adminChatId: string;
@@ -69,6 +82,7 @@ function getRedisConfig(): RedisConfig {
 // - - - - - - - //
 
 export type AppConfig = {
+  deploy: DeployConfig;
   telegram: TelegramConfig;
   express: ExpressConfig;
   database: DatabaseConfig;
@@ -76,6 +90,7 @@ export type AppConfig = {
 };
 export function getConfig(): AppConfig {
   return {
+    deploy: getDeployConfig(),
     telegram: getTelegramConfig(),
     express: getExpressConfig(),
     database: getDatabaseConfig(),
