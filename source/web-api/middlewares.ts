@@ -1,18 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { pinoHttp } from "pino-http";
 import { ApiClients } from "@api/types";
-import { IncomingMessage, ServerResponse } from "http";
 
 function logRequests(logger: ApiClients["logger"]) {
-  return (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>,
-    next: NextFunction
-  ) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     const expressLogger = pinoHttp({
       logger,
       serializers: {
-        req: (req) => ({
+        req: (req: Request) => ({
           method: req.method,
           url: req.url,
         }),
@@ -24,8 +19,13 @@ function logRequests(logger: ApiClients["logger"]) {
   };
 }
 
+function logBody(req: Request, res: Response, next: NextFunction) {
+  req.log.debug({ body: req.body, check: req.body === undefined });
+  next();
+}
+
 export function preMiddlewares(clients: ApiClients) {
-  return [logRequests(clients.logger)];
+  return [logRequests(clients.logger), logBody];
 }
 
 export function errorHandler(
