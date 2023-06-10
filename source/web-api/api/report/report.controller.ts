@@ -27,6 +27,7 @@ class ReportController {
     // save user uuid to cookie
     res.cookie("user_uuid", uuid, { maxAge: 900000, httpOnly: true });
 
+    // get user's data
     const user = await this.db.user.findUnique({
       where: { uuid },
       select: { id: true, calories_limit: true },
