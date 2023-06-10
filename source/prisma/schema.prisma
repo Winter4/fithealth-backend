@@ -84,7 +84,6 @@ model Meal {
   weight    Int
   food_id   Int
   food      Food     @relation(fields: [food_id], references: [id])
-  calories  Int
   report_id Int
   report    Report   @relation(fields: [report_id], references: [id])
   mealtime  Mealtime
