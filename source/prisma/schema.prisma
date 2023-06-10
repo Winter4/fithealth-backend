@@ -80,11 +80,11 @@ enum Mealtime {
 }
 
 model Meal {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   weight    Int
   food_id   Int
-  food      Food     @relation(fields: [food_id], references: [id])
+  food      Food      @relation(fields: [food_id], references: [id])
   report_id Int
-  report    Report   @relation(fields: [report_id], references: [id])
-  mealtime  Mealtime
+  report    Report    @relation(fields: [report_id], references: [id])
+  mealtime  Mealtime?
 }
