@@ -13,7 +13,13 @@ class ReportController {
       },
     };
 
-    const user = await this.db.user.findUnique({ where: { uuid } });
+    // save user uuid to cookie
+    res.cookie("user_uuid", uuid, { maxAge: 900000, httpOnly: true });
+
+    const user = await this.db.user.findUnique({
+      where: { uuid },
+      select: { id: true, calories_limit: true },
+    });
     if (!user) throw new Error(`Can't find User with uuid = ${uuid}`);
     if (!user!.calories_limit) {
       throw new Error(`User.calories_limit = ${user!.calories_limit}`);
@@ -42,7 +48,7 @@ class ReportController {
         });
 
     // send updated/created report
-    res.json(todayReport);
+    res.json({ calories: todayReport.calories_limit, userId: user.id });
   }
 }
 
