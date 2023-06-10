@@ -6,7 +6,7 @@ import startApi from "./web-api/app";
 
 async function main() {
   const config = getConfig();
-  const { telegram, express } = config;
+  const { deploy, telegram, express } = config;
   const clients = await getClients(config);
   const { database, redis, logger } = clients;
 
@@ -19,7 +19,10 @@ async function main() {
     { telegram }
   );
 
-  await startApi({ database, logger: logger.child({ source: "api" }) }, { express });
+  await startApi(
+    { database, logger: logger.child({ source: "api" }) },
+    { express, deploy }
+  );
 }
 
 main();

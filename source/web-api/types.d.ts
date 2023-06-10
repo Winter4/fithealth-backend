@@ -6,5 +6,6 @@ export type ApiClients = {
   logger: AppClients["logger"];
 };
 export type ApiConfig = {
+  deploy: AppConfig["deploy"];
   express: AppConfig["express"];
 };

@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { ApiClients, ApiConfig } from "./types";
 import { preMiddlewares } from "./middlewares";
 import api from "./api/router";
@@ -7,6 +8,9 @@ import api from "./api/router";
 async function startApi(clients: ApiClients, config: ApiConfig) {
   // init app instance
   const app = express();
+
+  // enable cors if dev env
+  if (config.deploy.nodeEnv === "development") app.use(cors);
 
   // parse body to json
   app.use(express.json());
