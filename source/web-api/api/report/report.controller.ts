@@ -4,12 +4,23 @@ import { Request, Response, NextFunction } from "express";
 class ReportController {
   constructor(private db: ApiClients["database"]) {}
 
+  private getCurrentDate() {
+    const today = new Date();
+    const dd = today.getDate();
+    const mm = today.getMonth();
+    const yyyy = today.getFullYear();
+
+    const date = new Date(yyyy, mm, dd, 9);
+
+    return date;
+  }
+
   public async get(req: Request, res: Response) {
     const { uuid } = req.params;
     const reportUniqueKey = {
       user_uuid_date: {
         user_uuid: uuid,
-        date: new Date(),
+        date: this.getCurrentDate(),
       },
     };
 
@@ -43,7 +54,7 @@ class ReportController {
           data: {
             user_uuid: uuid,
             calories_limit: user.calories_limit,
-            date: new Date(),
+            date: this.getCurrentDate(),
           },
         });
 
