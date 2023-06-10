@@ -19,6 +19,8 @@ export default function meal(dbClient: ApiClients["database"]) {
     .get(wrap(c.getUnhealthy.bind(c)))
     .post(wrap(c.addUnhealthy.bind(c)));
 
+  meal.patch("/", wrap(c.update.bind(c)));
+
   meal.delete("/:id", wrap(c.delete.bind(c)));
 
   return meal;

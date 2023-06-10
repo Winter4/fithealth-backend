@@ -120,6 +120,23 @@ export default class MealController {
     );
   }
 
+  public async update(req: Request, res: Response) {
+    const { id, weight } = req.body;
+
+    const meal = await this.db.meal.update({
+      where: { id },
+      data: { weight },
+      include: { food: true },
+    });
+
+    res.json({
+      id: meal.id,
+      name: meal.food.name,
+      weight: meal.weight,
+      calories: meal.weight * meal.food.calories,
+    });
+  }
+
   public async delete(req: Request, res: Response) {
     const { id } = req.params;
 
