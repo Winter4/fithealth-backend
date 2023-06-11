@@ -139,10 +139,11 @@ export default class MealController {
   }
 
   public async update(req: Request, res: Response) {
-    const { id, weight } = req.body;
+    const { id } = req.params;
+    const { weight } = req.body;
 
     const meal = await this.db.meal.update({
-      where: { id },
+      where: { id: Number(id) },
       data: { weight },
       include: { food: true },
     });
