@@ -18,6 +18,24 @@ export default class MealController {
     }
   }
 
+  public async getCalories(req: Request, res: Response) {
+    const { report_id } = req.cookies;
+
+    // get all the meals (weight and calority) for this report
+    const meals = await this.db.meal.findMany({
+      where: { report_id: Number(report_id) },
+      select: { weight: true, food: { select: { calories: true } } },
+    });
+
+    // count sum of calories
+    let calories = 0;
+    for (const m of meals) {
+      calories += m.weight * m.food.calories;
+    }
+
+    res.json({ calories });
+  }
+
   public async addHealthy(req: Request, res: Response) {
     const { report_id } = req.cookies;
     if (!Number(report_id)) throw new Error("Ошибка. Пожалуйста, перезагрузите страницу");

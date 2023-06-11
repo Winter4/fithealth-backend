@@ -9,6 +9,8 @@ export default function meal(dbClient: ApiClients["database"]) {
 
   const meal = Router();
 
+  meal.get("/calories", wrap(c.getCalories.bind(c)));
+
   meal
     .route("/healthy")
     .get(wrap(c.getHealthy.bind(c)))
