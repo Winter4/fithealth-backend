@@ -9,7 +9,6 @@ async function startApi(clients: ApiClients, config: ApiConfig) {
   // init app instance
   const app = express();
 
-  // enable cors if dev env
   app.use(cors({ credentials: true, origin: config.deploy.frontendUrl }));
 
   // parse body to json
