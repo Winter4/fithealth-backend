@@ -25,7 +25,10 @@ class ReportController {
     };
 
     // save user uuid to cookie
-    res.cookie("user_uuid", uuid, { maxAge: 900000, httpOnly: true });
+    res.cookie("user_uuid", uuid, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
 
     // get user's data
     const user = await this.db.user.findUnique({
@@ -60,7 +63,10 @@ class ReportController {
         });
 
     // save report_id to cookie
-    res.cookie("report_id", todayReport.id, { maxAge: 900000, httpOnly: true });
+    res.cookie("report_id", todayReport.id, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
 
     // send updated/created report
     res.json({ calories: todayReport.calories_limit, userId: user.id });
