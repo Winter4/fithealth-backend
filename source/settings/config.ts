@@ -1,12 +1,18 @@
 type DeployConfig = {
-  nodeEnv: "development" | "production";
+  nodeEnv: string;
+  frontendUrl: string;
 };
 function getDeployConfig(): DeployConfig {
-  const NODE_ENV = process.env.NODE_ENV;
+  const config: DeployConfig = {
+    nodeEnv: process.env.NODE_ENV ?? "",
+    frontendUrl: process.env.FRONTEND_URL ?? "",
+  };
 
-  const config = NODE_ENV === "production" ? "production" : "development";
+  if (!(config.nodeEnv === "development" || config.nodeEnv === "production"))
+    throw new Error("Invalid NODE_ENV variable");
+  if (!config.frontendUrl) throw new Error("Invalid frontend URL");
 
-  return { nodeEnv: config };
+  return config;
 }
 
 // - - - - - - - //
