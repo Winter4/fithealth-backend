@@ -19,11 +19,11 @@ export default class MealController {
   }
 
   public async getCalories(req: Request, res: Response) {
-    const { report_id } = req.cookies;
+    const report_id = Number(req.cookies.report_id);
 
     // get all the meals (weight and calority) for this report
     const meals = await this.db.meal.findMany({
-      where: { report_id: Number(report_id) },
+      where: { report_id },
       select: { weight: true, food: { select: { calories: true } } },
     });
 
@@ -37,8 +37,7 @@ export default class MealController {
   }
 
   public async addHealthy(req: Request, res: Response) {
-    const { report_id } = req.cookies;
-    if (!Number(report_id)) throw new Error("Ошибка. Пожалуйста, перезагрузите страницу");
+    const report_id = Number(req.cookies.report_id);
 
     const { weight, foodId, tab } = req.body;
 
@@ -53,7 +52,7 @@ export default class MealController {
       data: {
         weight,
         food_id: foodId,
-        report_id: Number(report_id),
+        report_id,
         mealtime: this.mealtimeNumberToEnum(tab),
       },
     });
@@ -63,8 +62,7 @@ export default class MealController {
   }
 
   public async addUnhealthy(req: Request, res: Response) {
-    const { report_id } = req.cookies;
-    if (!Number(report_id)) throw new Error("Ошибка. Пожалуйста, перезагрузите страницу");
+    const report_id = Number(req.cookies.report_id);
 
     const { weight, foodId } = req.body;
 
@@ -79,7 +77,7 @@ export default class MealController {
       data: {
         weight,
         food_id: foodId,
-        report_id: Number(report_id),
+        report_id,
         mealtime: null,
       },
     });
@@ -92,11 +90,11 @@ export default class MealController {
     const { tab } = req.query;
     //if (!tab) throw new Error("Empty 'tab' query");
 
-    const { report_id } = req.cookies;
+    const report_id = Number(req.cookies.report_id);
 
     const meals = await this.db.meal.findMany({
       where: {
-        report_id: Number(report_id),
+        report_id,
         mealtime: this.mealtimeNumberToEnum(Number(tab)),
         food: { healthy: true },
       },
@@ -116,11 +114,11 @@ export default class MealController {
   }
 
   public async getUnhealthy(req: Request, res: Response) {
-    const { report_id } = req.cookies;
+    const report_id = Number(req.cookies.report_id);
 
     const meals = await this.db.meal.findMany({
       where: {
-        report_id: Number(report_id),
+        report_id,
         mealtime: null,
       },
       include: { food: true },

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ApiClients } from "../types";
+import { checkCookie } from "./validation";
 
 import ping from "./ping/ping.router";
 import report from "./report/report.router";
@@ -13,7 +14,7 @@ export default function api(clients: ApiClients) {
 
   api.use("/report", report(clients.database));
   api.use("/food", food(clients.database));
-  api.use("/meal", meal(clients.database));
+  api.use("/meal", checkCookie, meal(clients.database));
 
   return api;
 }
