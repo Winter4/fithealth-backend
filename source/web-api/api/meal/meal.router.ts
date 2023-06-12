@@ -13,13 +13,13 @@ export default function meal(dbClient: ApiClients["database"]) {
 
   meal
     .route("/healthy")
-    .get(wrap(c.getHealthy.bind(c)))
-    .post(wrap(c.addHealthy.bind(c)));
+    .post(wrap(c.addHealthy.bind(c)))
+    .get(wrap(c.getHealthy.bind(c)));
 
   meal
     .route("/unhealthy")
-    .get(wrap(c.getUnhealthy.bind(c)))
-    .post(wrap(c.addUnhealthy.bind(c)));
+    .post(wrap(c.addUnhealthy.bind(c)))
+    .get(wrap(c.getUnhealthy.bind(c)));
 
   meal.patch("/:id", wrap(c.update.bind(c)));
 
