@@ -16,7 +16,7 @@ async function main() {
       redis,
       logger: logger.child({ source: "bot" }),
     },
-    { telegram }
+    { deploy, telegram }
   );
 
   await startApi(

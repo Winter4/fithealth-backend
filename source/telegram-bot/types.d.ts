@@ -7,6 +7,7 @@ import type { AppConfig } from "@src/settings/config";
 // declare bot requirements
 export type BotClients = AppClients;
 export type BotConfig = {
+  deploy: AppConfig["deploy"];
   telegram: AppConfig["telegram"];
 };
 
@@ -22,5 +23,6 @@ export type CustomContext = Context & {
   config: {
     errorChatId: string;
     adminChatId: string;
+    frontendUrl: string;
   };
 };

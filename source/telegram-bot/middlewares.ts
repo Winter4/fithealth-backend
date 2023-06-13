@@ -8,7 +8,7 @@ function extendContext(
   clients: BotClients,
   refreshCache: refreshCacheFunction,
   updateCache: updateCacheFunction,
-  config: { errorChatId: string; adminChatId: string }
+  config: { errorChatId: string; adminChatId: string; frontendUrl: string }
 ) {
   return (ctx: CustomContext, next: NextFunction) => {
     ctx.logger = clients.logger;
@@ -42,7 +42,7 @@ function logUpdates(ctx: CustomContext, next: NextFunction) {
 export function preMiddlewares(
   clients: BotClients,
   userCache: UserCache,
-  config: { errorChatId: string; adminChatId: string }
+  config: { errorChatId: string; adminChatId: string; frontendUrl: string }
 ) {
   return [
     extendContext(

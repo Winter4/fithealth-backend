@@ -19,6 +19,7 @@ async function startBot(clients: BotClients, config: BotConfig) {
     ...preMiddlewares(clients, userCache, {
       errorChatId: config.telegram.errorChatId,
       adminChatId: config.telegram.adminChatId,
+      frontendUrl: config.deploy.frontendUrl,
     })
   );
 
