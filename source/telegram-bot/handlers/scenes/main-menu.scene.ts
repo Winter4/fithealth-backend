@@ -1,5 +1,6 @@
 import { Composer, InlineKeyboard, Keyboard } from "grammy";
 import type { CustomContext } from "@bot/types";
+import { enter as enterAnalyticMenu } from "./analytic-menu.scene";
 import { enter as enterEditMenu } from "./edit-menu.scene";
 import { getUserInfo, infoText } from "./scene-tools";
 
@@ -56,7 +57,7 @@ mainMenu.hears(mainMenuKeys["Моё питание"], async (ctx: CustomContext)
 });
 
 mainMenu.hears(mainMenuKeys["Анализ питания"], async (ctx: CustomContext) => {
-  return ctx.reply("Анализ питания");
+  return enterAnalyticMenu(ctx);
 });
 
 mainMenu.hears(mainMenuKeys["Изменить данные"], async (ctx: CustomContext) => {
