@@ -7,12 +7,10 @@ export default class FoodController {
   public async get(req: Request, res: Response) {
     const healthy = await this.db.food.findMany({
       where: { healthy: true },
-      select: { id: true, name: true, calories: true },
     });
 
     const unhealthy = await this.db.food.findMany({
       where: { healthy: false },
-      select: { id: true, name: true, calories: true },
     });
 
     res.json({ healthy, unhealthy });
