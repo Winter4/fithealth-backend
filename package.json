@@ -18,6 +18,8 @@
   "dependencies": {
     "@prisma/client": "^4.10.1",
     "@types/express": "^4.17.17",
+    "chart.js": "^3.9.1",
+    "chartjs-node-canvas": "^4.1.6",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

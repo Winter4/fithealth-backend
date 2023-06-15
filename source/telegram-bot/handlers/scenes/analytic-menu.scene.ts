@@ -1,8 +1,9 @@
-import { Composer, Keyboard } from "grammy";
+import { Composer, InputFile, Keyboard } from "grammy";
 import type { CustomContext } from "@bot/types";
 import { enter as enterMainMenu } from "./main-menu.scene";
 
 import { backButton } from "./scene-tools";
+import { getChartStream } from "./chart";
 
 export const sceneId = "ANALYTIC_MENU";
 
@@ -38,6 +39,18 @@ export async function enter(ctx: CustomContext) {
 const analyticMenu = new Composer<CustomContext>();
 
 analyticMenu.hears(editMenuKeys["Базовый анализ"], async (ctx: CustomContext) => {
+  /*
+  const streams = await getChartStream();
+
+  await ctx.replyWithPhoto(new InputFile(streams.followPercent), {
+    caption: "📊 График процента следования норме калорий за последние 6 месяцев",
+  });
+
+  return ctx.replyWithPhoto(new InputFile(streams.followPercent), {
+    caption: "📊 График дневной нормы калорий за последние 6 месяцев",
+  });
+  */
+
   return ctx.reply("Базовый анализ");
 });
 
