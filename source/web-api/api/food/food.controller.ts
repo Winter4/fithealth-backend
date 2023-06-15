@@ -16,11 +16,28 @@ export default class FoodController {
     res.json({ healthy, unhealthy });
   }
 
-  public async add(req: Request, res: Response, next: NextFunction) {
+  public async add(req: Request, res: Response) {
     const food = req.body;
 
     const created = await this.db.food.create({ data: food });
 
     res.json(created);
+  }
+
+  public async update(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const { body } = req;
+
+    const updated = await this.db.food.update({ where: { id }, data: body });
+
+    res.json(updated);
+  }
+
+  public async delete(req: Request, res: Response) {
+    const id = Number(req.params.id);
+
+    const deleted = await this.db.food.delete({ where: { id }, select: { id: true } });
+
+    res.json(deleted);
   }
 }

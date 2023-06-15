@@ -11,6 +11,7 @@ export default function food(dbClient: ApiClients["database"]) {
 
   food.get("/", wrap(c.get.bind(c)));
   food.post("/", wrap(c.add.bind(c)));
+  food.patch("/:id", wrap(c.update.bind(c)));
 
   return food;
 }
